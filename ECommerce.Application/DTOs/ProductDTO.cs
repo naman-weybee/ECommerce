@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ECommerce.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Application.DTOs
 {
@@ -14,12 +15,10 @@ namespace ECommerce.Application.DTOs
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
-        [Range(1, 100000, ErrorMessage = "Price must be between 1,000 and 100,000.")]
-        public decimal Price { get; set; }
+        public Money Price { get; set; }
 
         [Required(ErrorMessage = "Currency is required.")]
-        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency must be a 3-letter ISO code.")]
-        public string Currency { get; set; }
+        public Currency Currency { get; set; }
 
         [Required(ErrorMessage = "Stock quantity is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative.")]

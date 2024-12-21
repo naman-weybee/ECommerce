@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ECommerce.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Domain.Entities
 {
@@ -12,10 +13,9 @@ namespace ECommerce.Domain.Entities
         [MaxLength(500)]
         public string? Description { get; private set; }
 
-        public decimal Price { get; private set; }
+        public Money Price { get; private set; }
 
-        [StringLength(3, MinimumLength = 3)]
-        public string Currency { get; private set; }
+        public Currency Currency { get; private set; }
 
         public int Stock { get; private set; }
 
@@ -25,7 +25,7 @@ namespace ECommerce.Domain.Entities
 
         public Category CategoryId { get; private set; }
 
-        public Product(Guid id, string name, decimal price, string currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
+        public Product(Guid id, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Product name cannot be empty.");
@@ -33,7 +33,7 @@ namespace ECommerce.Domain.Entities
             if (price <= 0)
                 throw new ArgumentException("Price must be greater than zero.");
 
-            if (currency.Length != 3)
+            if (currency?.ToString()?.Length != 3)
                 throw new ArgumentException("Currency must be a 3-letter ISO code.");
 
             if (stock < 0)
@@ -50,7 +50,7 @@ namespace ECommerce.Domain.Entities
             CategoryId = categoryId;
         }
 
-        public void UpdateDetails(Product product, string name, decimal price, string currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        public void UpdateDetails(Product product, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
         {
             if (product.Id == Guid.Empty)
                 throw new InvalidOperationException("The product does not exist or has an invalid Id.");
@@ -61,7 +61,7 @@ namespace ECommerce.Domain.Entities
             if (price <= 0)
                 throw new ArgumentException("Price must be greater than zero.");
 
-            if (currency.Length != 3)
+            if (currency?.ToString()?.Length != 3)
                 throw new ArgumentException("Currency must be a 3-letter ISO code.");
 
             if (stock < 0)
@@ -98,7 +98,7 @@ namespace ECommerce.Domain.Entities
             Stock -= quantity;
         }
 
-        public void ChangePrice(decimal newPrice)
+        public void ChangePrice(Money newPrice)
         {
             if (newPrice <= 0)
                 throw new ArgumentException("New price must be greater than zero.");
