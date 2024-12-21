@@ -16,17 +16,20 @@ namespace ECommerce.Application.DTOs
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "Currency is required.")]
-        [StringLength(3, ErrorMessage = "Currency must be exactly 3 characters.")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency must be a 3-letter ISO code.")]
         public string Currency { get; set; }
 
         [Required(ErrorMessage = "Stock quantity is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative.")]
         public int Stock { get; set; }
 
+        [MaxLength(50, ErrorMessage = "SKU cannot exceed 50 characters.")]
         public string? SKU { get; set; }
 
+        [MaxLength(50, ErrorMessage = "Brand cannot exceed 50 characters.")]
         public string? Brand { get; set; }
 
-        public int? CategoryId { get; set; }
+        [Required]
+        public Guid CategoryId { get; set; }
     }
 }

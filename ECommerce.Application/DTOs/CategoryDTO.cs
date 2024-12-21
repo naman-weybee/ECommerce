@@ -13,7 +13,9 @@ namespace ECommerce.Application.DTOs
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string? Description { get; set; }
 
-        public int? ParentCategoryId { get; set; }
+        public Guid? ParentCategoryId { get; set; }
+
+        public string? ParentCategoryName { get; set; }
 
         public virtual ICollection<ProductDTO> Products { get; set; }
 
