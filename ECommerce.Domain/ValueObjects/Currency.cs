@@ -11,5 +11,15 @@
 
             Code = code.ToUpper();
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Currency currency && Code == currency.Code;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

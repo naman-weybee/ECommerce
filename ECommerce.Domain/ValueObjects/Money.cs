@@ -31,5 +31,15 @@
         {
             return m1.Amount > amount;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Money money && Amount == money.Amount;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
