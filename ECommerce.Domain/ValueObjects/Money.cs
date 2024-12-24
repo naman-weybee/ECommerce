@@ -7,9 +7,22 @@
         public Money(decimal amount)
         {
             if (amount <= 0)
-                throw new ArgumentException("Price must be greater than zero.", nameof(amount));
+                throw new ArgumentException("Amount must be greater than zero.", nameof(amount));
 
             Amount = amount;
+        }
+
+        public Money Multiply(int factor)
+        {
+            if (factor < 0)
+                throw new ArgumentException("Factor cannot be negative.", nameof(factor));
+
+            return new Money(Amount * factor);
+        }
+
+        public Money Add(Money other)
+        {
+            return new Money(Amount + other.Amount);
         }
 
         public static bool operator <=(Money m1, decimal amount)
