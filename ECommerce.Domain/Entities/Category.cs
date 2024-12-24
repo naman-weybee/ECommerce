@@ -4,21 +4,39 @@ namespace ECommerce.Domain.Entities
 {
     public class Category : Base
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
         [MaxLength(100)]
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         [Length(1, 500)]
-        public string? Description { get; set; }
+        public string? Description { get; private set; }
 
-        public Category? ParentCategory { get; set; }
+        public Category? ParentCategory { get; private set; }
 
-        public Guid? ParentCategoryId { get; set; }
+        public Guid? ParentCategoryId { get; private set; }
 
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Product> Products { get; private set; }
 
-        public virtual ICollection<Category> SubCategories { get; set; } = new List<Category>();
+        public virtual ICollection<Category> SubCategories { get; private set; }
+
+        public Category(string name, string? description, Category? parentCategory = null)
+        {
+            if (string.IsNullOrWhiteSpace(name) || name.Length > 100)
+                throw new ArgumentException("Name must be between 1 and 100 characters.", nameof(name));
+
+            if (description?.Length > 500)
+                throw new ArgumentException("Description must be between 1 and 500 characters.", nameof(description));
+
+            Id = Guid.NewGuid();
+            Name = name;
+            Description = description;
+            ParentCategory = parentCategory;
+            ParentCategoryId = parentCategory?.Id;
+
+            Products = new List<Product>();
+            SubCategories = new List<Category>();
+        }
 
         public void AddSubCategory(Category subCategory)
         {
@@ -31,6 +49,7 @@ namespace ECommerce.Domain.Entities
             SubCategories.Add(subCategory);
 
             subCategory.SetParentCategory(this);
+            DeletedDate = DateTime.UtcNow;
         }
 
         private void SetParentCategory(Category parentCategory)

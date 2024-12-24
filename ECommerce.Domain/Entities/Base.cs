@@ -9,5 +9,11 @@
         public DateTime? DeletedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public void SetDeleted()
+        {
+            IsDeleted = true;
+            DeletedDate = DateTime.UtcNow;
+        }
     }
 }

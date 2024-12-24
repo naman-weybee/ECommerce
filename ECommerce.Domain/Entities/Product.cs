@@ -44,41 +44,13 @@ namespace ECommerce.Domain.Entities
             CategoryId = categoryId;
         }
 
-        public void UpdateDetails(Product product, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
-        {
-            if (product.Id == Guid.Empty)
-                throw new InvalidOperationException("The product does not exist or has an invalid Id.");
-
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Product name cannot be empty.");
-
-            if (price <= 0)
-                throw new ArgumentException("Price must be greater than zero.");
-
-            if (currency?.ToString()?.Length != 3)
-                throw new ArgumentException("Currency must be a 3-letter ISO code.");
-
-            if (stock < 0)
-                throw new ArgumentException("Stock cannot be negative.");
-
-            product.Name = name;
-            product.Price = price;
-            product.Currency = currency;
-            product.Stock = stock;
-            product.Description = description;
-            product.SKU = sku;
-            product.Brand = brand;
-
-            if (categoryId != null)
-                product.CategoryId = categoryId;
-        }
-
         public void IncreaseStock(int quantity)
         {
             if (quantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.");
 
             Stock += quantity;
+            DeletedDate = DateTime.UtcNow;
         }
 
         public void DecreaseStock(int quantity)
@@ -90,6 +62,7 @@ namespace ECommerce.Domain.Entities
                 throw new InvalidOperationException("Not enough stock available.");
 
             Stock -= quantity;
+            DeletedDate = DateTime.UtcNow;
         }
 
         public void ChangePrice(Money newPrice)
@@ -98,6 +71,7 @@ namespace ECommerce.Domain.Entities
                 throw new ArgumentException("New price must be greater than zero.");
 
             Price = newPrice;
+            DeletedDate = DateTime.UtcNow;
         }
     }
 }
