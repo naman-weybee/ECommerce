@@ -7,7 +7,7 @@
         public Money(decimal amount)
         {
             if (amount <= 0)
-                throw new ArgumentException("Amount must be greater than zero.", nameof(amount));
+                throw new ArgumentException("Price must be greater than zero.", nameof(amount));
 
             Amount = amount;
         }

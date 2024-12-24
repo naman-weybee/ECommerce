@@ -30,12 +30,6 @@ namespace ECommerce.Domain.Entities
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Product name cannot be empty.");
 
-            if (price <= 0)
-                throw new ArgumentException("Price must be greater than zero.");
-
-            if (currency?.ToString()?.Length != 3)
-                throw new ArgumentException("Currency must be a 3-letter ISO code.");
-
             if (stock < 0)
                 throw new ArgumentException("Stock cannot be negative.");
 
