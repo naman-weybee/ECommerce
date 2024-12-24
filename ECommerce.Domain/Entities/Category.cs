@@ -49,7 +49,7 @@ namespace ECommerce.Domain.Entities
             SubCategories.Add(subCategory);
 
             subCategory.SetParentCategory(this);
-            DeletedDate = DateTime.UtcNow;
+            Status_Updated();
         }
 
         private void SetParentCategory(Category parentCategory)

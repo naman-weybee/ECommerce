@@ -50,7 +50,7 @@ namespace ECommerce.Domain.Entities
                 throw new ArgumentException("Quantity must be greater than zero.");
 
             Stock += quantity;
-            DeletedDate = DateTime.UtcNow;
+            Status_Updated();
         }
 
         public void DecreaseStock(int quantity)
@@ -62,7 +62,7 @@ namespace ECommerce.Domain.Entities
                 throw new InvalidOperationException("Not enough stock available.");
 
             Stock -= quantity;
-            DeletedDate = DateTime.UtcNow;
+            Status_Updated();
         }
 
         public void ChangePrice(Money newPrice)
@@ -71,7 +71,7 @@ namespace ECommerce.Domain.Entities
                 throw new ArgumentException("New price must be greater than zero.");
 
             Price = newPrice;
-            DeletedDate = DateTime.UtcNow;
+            Status_Updated();
         }
     }
 }
