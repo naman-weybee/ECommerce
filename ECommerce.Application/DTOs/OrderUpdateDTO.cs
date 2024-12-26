@@ -12,10 +12,6 @@ namespace ECommerce.Application.DTOs
         [Required(ErrorMessage = "User ID is required.")]
         public Guid UserId { get; set; }
 
-        [Required(ErrorMessage = "Order date is required.")]
-        [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime OrderDate { get; set; }
-
         [Required(ErrorMessage = "Order status is required.")]
         [EnumDataType(typeof(eOrderStatus), ErrorMessage = "Invalid order status.")]
         public eOrderStatus OrderStatus { get; set; }

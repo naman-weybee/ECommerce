@@ -10,17 +10,15 @@ namespace ECommerce.Domain.Entities
 
         public Guid UserId { get; private set; }
 
-        public DateTime OrderDate { get; private set; }
-
-        public DateTime OrderPlacedDate { get; private set; }
-
-        public DateTime OrderShippedDate { get; private set; }
-
-        public DateTime OrderDeliveredDate { get; private set; }
-
-        public DateTime OrderCanceledDate { get; private set; }
-
         public eOrderStatus OrderStatus { get; private set; } = eOrderStatus.Pending;
+
+        public DateTime? OrderPlacedDate { get; private set; }
+
+        public DateTime? OrderShippedDate { get; private set; }
+
+        public DateTime? OrderDeliveredDate { get; private set; }
+
+        public DateTime? OrderCanceledDate { get; private set; }
 
         public Money TotalAmount { get; private set; }
 
@@ -32,14 +30,10 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; private set; }
 
-        public Order(Guid userId, DateTime orderDate, DateTime orderPlacedDate, DateTime orderShippedDate, DateTime orderDeliveredDate, DateTime orderCanceledDate, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        public Order(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
         {
             Id = Guid.NewGuid();
             UserId = userId;
-            OrderDate = orderDate;
-            OrderPlacedDate = orderPlacedDate;
-            OrderShippedDate = orderShippedDate;
-            OrderCanceledDate = orderCanceledDate;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
@@ -64,7 +58,31 @@ namespace ECommerce.Domain.Entities
         public void UpdateOrderStatus(eOrderStatus newStatus)
         {
             OrderStatus = newStatus;
+
+            UpdateOrderStatusDate();
             StatusUpdated();
+        }
+
+        public void UpdateOrderStatusDate()
+        {
+            switch (OrderStatus)
+            {
+                case eOrderStatus.Placed:
+                    OrderPlacedDate = DateTime.UtcNow;
+                    break;
+
+                case eOrderStatus.Shipped:
+                    OrderShippedDate = DateTime.UtcNow;
+                    break;
+
+                case eOrderStatus.Delivered:
+                    OrderDeliveredDate = DateTime.UtcNow;
+                    break;
+
+                case eOrderStatus.Canceled:
+                    OrderCanceledDate = DateTime.UtcNow;
+                    break;
+            }
         }
 
         public void UpdatePaymentMethod(string newPaymentMethod)
