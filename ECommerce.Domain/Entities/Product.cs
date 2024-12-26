@@ -25,15 +25,9 @@ namespace ECommerce.Domain.Entities
 
         public Category CategoryId { get; set; }
 
-        public Product(Guid id, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
+        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Product name cannot be empty.");
-
-            if (stock < 0)
-                throw new ArgumentException("Stock cannot be negative.");
-
-            Id = id;
+            Id = Guid.NewGuid();
             Name = name;
             Price = price;
             Currency = currency;
@@ -46,30 +40,18 @@ namespace ECommerce.Domain.Entities
 
         public void IncreaseStock(int quantity)
         {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
-
             Stock += quantity;
             StatusUpdated();
         }
 
         public void DecreaseStock(int quantity)
         {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
-
-            if (quantity > Stock)
-                throw new InvalidOperationException("Not enough stock available.");
-
             Stock -= quantity;
             StatusUpdated();
         }
 
         public void ChangePrice(Money newPrice)
         {
-            if (newPrice <= 0)
-                throw new ArgumentException("New price must be greater than zero.");
-
             Price = newPrice;
             StatusUpdated();
         }

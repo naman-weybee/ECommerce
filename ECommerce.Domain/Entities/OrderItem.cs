@@ -4,19 +4,19 @@ namespace ECommerce.Domain.Entities
 {
     public class OrderItem : Base
     {
-        public Guid Id { get;set;}
+        public Guid Id { get; set; }
 
-        public Guid OrderId { get;set;}
+        public Guid OrderId { get; set; }
 
-        public Guid ProductId { get;set;}
+        public Guid ProductId { get; set; }
 
-        public int Quantity { get;set;}
+        public int Quantity { get; set; }
 
-        public Money UnitPrice { get;set;}
+        public Money UnitPrice { get; set; }
 
-        public Order Order { get;set;}
+        public Order Order { get; set; }
 
-        public Product Product { get;set;}
+        public Product Product { get; set; }
 
         public OrderItem(Guid orderId, Guid productId, int quantity, Money unitPrice)
         {

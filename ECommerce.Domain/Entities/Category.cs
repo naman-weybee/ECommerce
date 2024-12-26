@@ -22,30 +22,17 @@ namespace ECommerce.Domain.Entities
 
         public Category(string name, string? description, Category? parentCategory = null)
         {
-            if (string.IsNullOrWhiteSpace(name) || name.Length > 100)
-                throw new ArgumentException("Name must be between 1 and 100 characters.", nameof(name));
-
-            if (description?.Length > 500)
-                throw new ArgumentException("Description must be between 1 and 500 characters.", nameof(description));
-
             Id = Guid.NewGuid();
             Name = name;
             Description = description;
             ParentCategory = parentCategory;
             ParentCategoryId = parentCategory?.Id;
-
             Products = new List<Product>();
             SubCategories = new List<Category>();
         }
 
         public void AddSubCategory(Category subCategory)
         {
-            if (subCategory == null)
-                throw new ArgumentNullException(nameof(subCategory), "Subcategory cannot be null.");
-
-            if (subCategory.Id == Id)
-                throw new InvalidOperationException("A category cannot be its own parent.");
-
             SubCategories.Add(subCategory);
 
             subCategory.SetParentCategory(this);
@@ -54,12 +41,6 @@ namespace ECommerce.Domain.Entities
 
         private void SetParentCategory(Category parentCategory)
         {
-            if (parentCategory == null)
-                throw new ArgumentNullException(nameof(parentCategory), "Parent category cannot be null.");
-
-            if (parentCategory.Id == Id)
-                throw new InvalidOperationException("A category cannot be its own parent.");
-
             ParentCategory = parentCategory;
             ParentCategoryId = parentCategory.Id;
         }
