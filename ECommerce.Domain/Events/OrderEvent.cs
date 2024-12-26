@@ -4,11 +4,11 @@ namespace ECommerce.Domain.Events
 {
     public class OrderEvent : INotification
     {
-        public Guid OrderId { get; private set; }
+        public Guid OrderId { get; set; }
 
-        public Guid UserId { get; private set; }
+        public Guid UserId { get; set; }
 
-        public decimal TotalAmount { get; private set; }
+        public decimal TotalAmount { get; set; }
 
         public OrderEvent(Guid orderId, Guid userId, decimal totalAmount)
         {

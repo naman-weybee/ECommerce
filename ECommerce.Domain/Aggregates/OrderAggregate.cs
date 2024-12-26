@@ -8,9 +8,9 @@ namespace ECommerce.Domain.Aggregates
 {
     public class OrderAggregate
     {
-        public Order Order { get; private set; }
+        public Order Order { get; set; }
 
-        public List<OrderItem> OrderItems { get; private set; }
+        public List<OrderItem> OrderItems { get; set; }
 
         private readonly List<INotification> _domainEvents = new();
 

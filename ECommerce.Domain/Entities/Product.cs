@@ -5,25 +5,25 @@ namespace ECommerce.Domain.Entities
 {
     public class Product : Base
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         [MaxLength(100)]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [MaxLength(500)]
-        public string? Description { get; private set; }
+        public string? Description { get; set; }
 
-        public Money Price { get; private set; }
+        public Money Price { get; set; }
 
-        public Currency Currency { get; private set; }
+        public Currency Currency { get; set; }
 
-        public int Stock { get; private set; }
+        public int Stock { get; set; }
 
-        public string? SKU { get; private set; }
+        public string? SKU { get; set; }
 
-        public string? Brand { get; private set; }
+        public string? Brand { get; set; }
 
-        public Category CategoryId { get; private set; }
+        public Category CategoryId { get; set; }
 
         public Product(Guid id, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
         {

@@ -4,21 +4,21 @@ namespace ECommerce.Domain.Entities
 {
     public class Category : Base
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         [MaxLength(100)]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [Length(1, 500)]
-        public string? Description { get; private set; }
+        public string? Description { get; set; }
 
-        public Category? ParentCategory { get; private set; }
+        public Category? ParentCategory { get; set; }
 
-        public Guid? ParentCategoryId { get; private set; }
+        public Guid? ParentCategoryId { get; set; }
 
-        public virtual ICollection<Product> Products { get; private set; }
+        public virtual ICollection<Product> Products { get; set; }
 
-        public virtual ICollection<Category> SubCategories { get; private set; }
+        public virtual ICollection<Category> SubCategories { get; set; }
 
         public Category(string name, string? description, Category? parentCategory = null)
         {

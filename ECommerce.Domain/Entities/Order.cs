@@ -6,29 +6,29 @@ namespace ECommerce.Domain.Entities
 {
     public class Order : Base
     {
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
-        public Guid UserId { get; private set; }
+        public Guid UserId { get; set; }
 
-        public eOrderStatus OrderStatus { get; private set; } = eOrderStatus.Pending;
+        public eOrderStatus OrderStatus { get; set; } = eOrderStatus.Pending;
 
-        public DateTime? OrderPlacedDate { get; private set; }
+        public DateTime? OrderPlacedDate { get; set; }
 
-        public DateTime? OrderShippedDate { get; private set; }
+        public DateTime? OrderShippedDate { get; set; }
 
-        public DateTime? OrderDeliveredDate { get; private set; }
+        public DateTime? OrderDeliveredDate { get; set; }
 
-        public DateTime? OrderCanceledDate { get; private set; }
+        public DateTime? OrderCanceledDate { get; set; }
 
-        public Money TotalAmount { get; private set; }
+        public Money TotalAmount { get; set; }
 
-        public string PaymentMethod { get; private set; }
+        public string PaymentMethod { get; set; }
 
-        public Address ShippingAddress { get; private set; }
+        public Address ShippingAddress { get; set; }
 
-        public User User { get; private set; }
+        public User User { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; private set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
 
         public Order(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
         {
