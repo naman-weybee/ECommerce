@@ -49,7 +49,7 @@ namespace ECommerce.Domain.Entities
             SubCategories.Add(subCategory);
 
             subCategory.SetParentCategory(this);
-            Status_Updated();
+            StatusUpdated();
         }
 
         private void SetParentCategory(Category parentCategory)

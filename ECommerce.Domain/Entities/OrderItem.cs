@@ -31,17 +31,14 @@ namespace ECommerce.Domain.Entities
 
         public void UpdateQuantity(int newQuantity)
         {
-            if (newQuantity < 0)
-                throw new InvalidOperationException("Quantity cannot be negative.");
-
             Quantity = newQuantity;
-            Status_Updated();
+            StatusUpdated();
         }
 
         public void UpdateUnitPrice(Money newUnitPrice)
         {
             UnitPrice = newUnitPrice;
-            Status_Updated();
+            StatusUpdated();
         }
     }
 }

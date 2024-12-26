@@ -12,7 +12,15 @@ namespace ECommerce.Domain.Entities
 
         public DateTime OrderDate { get; private set; }
 
-        public eOrderStatus OrderStatus { get; private set; }
+        public DateTime OrderPlacedDate { get; private set; }
+
+        public DateTime OrderShippedDate { get; private set; }
+
+        public DateTime OrderDeliveredDate { get; private set; }
+
+        public DateTime OrderCanceledDate { get; private set; }
+
+        public eOrderStatus OrderStatus { get; private set; } = eOrderStatus.Pending;
 
         public Money TotalAmount { get; private set; }
 
@@ -24,11 +32,14 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; private set; }
 
-        public Order(Guid userId, DateTime orderDate, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        public Order(Guid userId, DateTime orderDate, DateTime orderPlacedDate, DateTime orderShippedDate, DateTime orderDeliveredDate, DateTime orderCanceledDate, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
         {
             Id = Guid.NewGuid();
             UserId = userId;
             OrderDate = orderDate;
+            OrderPlacedDate = orderPlacedDate;
+            OrderShippedDate = orderShippedDate;
+            OrderCanceledDate = orderCanceledDate;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
@@ -38,43 +49,34 @@ namespace ECommerce.Domain.Entities
 
         public void AddOrderItem(OrderItem orderItem)
         {
-            if (OrderStatus == eOrderStatus.Canceled)
-                throw new InvalidOperationException("Cannot add items to a canceled order.");
-
             OrderItems.Add(orderItem);
             UpdateTotalAmount();
-            Status_Updated();
+            StatusUpdated();
         }
 
         public void RemoveOrderItem(OrderItem orderItem)
         {
-            if (OrderStatus == eOrderStatus.Canceled)
-                throw new InvalidOperationException("Cannot remove items from a canceled order.");
-
             OrderItems.Remove(orderItem);
             UpdateTotalAmount();
-            Status_Updated();
+            StatusUpdated();
         }
 
         public void UpdateOrderStatus(eOrderStatus newStatus)
         {
-            if (newStatus == eOrderStatus.Canceled && OrderItems.Any(item => item.Quantity > 0))
-                throw new InvalidOperationException("Cannot cancel an order with items that are already in the order.");
-
             OrderStatus = newStatus;
-            Status_Updated();
+            StatusUpdated();
         }
 
         public void UpdatePaymentMethod(string newPaymentMethod)
         {
             PaymentMethod = newPaymentMethod;
-            Status_Updated();
+            StatusUpdated();
         }
 
         public void UpdateShippingAddress(Address newAddress)
         {
             ShippingAddress = newAddress;
-            Status_Updated();
+            StatusUpdated();
         }
 
         private void UpdateTotalAmount()

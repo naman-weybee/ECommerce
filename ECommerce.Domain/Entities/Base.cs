@@ -10,12 +10,12 @@
 
         public bool IsDeleted { get; private set; }
 
-        public void Status_Updated()
+        public void StatusUpdated()
         {
             UpdatedDate = DateTime.UtcNow;
         }
 
-        public void Status_Deleted()
+        public void StatusDeleted()
         {
             IsDeleted = true;
             DeletedDate = DateTime.UtcNow;
