@@ -25,7 +25,7 @@ namespace ECommerce.Domain.Entities
 
         public Category CategoryId { get; set; }
 
-        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category categoryId = null)
+        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -36,6 +36,33 @@ namespace ECommerce.Domain.Entities
             SKU = sku;
             Brand = brand;
             CategoryId = categoryId;
+        }
+
+        public void CreateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        {
+            Id = Guid.NewGuid();
+            Name = name;
+            Price = price;
+            Currency = currency;
+            Stock = stock;
+            Description = description;
+            SKU = sku;
+            Brand = brand;
+            CategoryId = categoryId;
+        }
+
+        public void UpdateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        {
+            Name = name;
+            Price = price;
+            Currency = currency;
+            Stock = stock;
+            Description = description;
+            SKU = sku;
+            Brand = brand;
+            CategoryId = categoryId;
+
+            StatusUpdated();
         }
 
         public void IncreaseStock(int quantity)
@@ -54,6 +81,11 @@ namespace ECommerce.Domain.Entities
         {
             Price = newPrice;
             StatusUpdated();
+        }
+
+        public void DeleteProduct()
+        {
+            StatusDeleted();
         }
     }
 }

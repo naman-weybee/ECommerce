@@ -1,41 +1,52 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects;
-using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
-    public class ProductAggregate
+    public class ProductAggregate : AggregateRoot<Product>
     {
         public Product Product { get; set; }
 
-        private readonly List<INotification> _domainEvents = new();
-
-        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
-
-        public ProductAggregate(Product product)
+        public ProductAggregate(Product entity)
+            : base(entity)
         {
-            Product = product;
+            Product = entity;
+        }
+
+        public void CreateProduct(Product product)
+        {
+            Product.CreateProduct(product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand, product.CategoryId);
+
+            EventType = eEventType.ProductCreated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            Product.UpdateProduct(product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand, product.CategoryId);
+
+            EventType = eEventType.ProductUpdated;
+            RaiseDomainEvent();
         }
 
         public void IncreaseStock(int quantity)
         {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
-
             Product.IncreaseStock(quantity);
+
+            EventType = eEventType.ProductStockIncreased;
             RaiseDomainEvent();
         }
 
         public void DecreaseStock(int quantity)
         {
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.");
-
             if (quantity > Product.Stock)
                 throw new InvalidOperationException("Not enough stock available.");
 
             Product.DecreaseStock(quantity);
+
+            EventType = eEventType.ProductStockDecreased;
             RaiseDomainEvent();
         }
 
@@ -45,18 +56,31 @@ namespace ECommerce.Domain.Aggregates
                 throw new ArgumentException("New price must be greater than zero.");
 
             Product.ChangePrice(newPrice);
+
+            EventType = eEventType.ProductPriceChanged;
+            RaiseDomainEvent();
+        }
+
+        public void DeleteProduct()
+        {
+            if (Product.IsDeleted)
+                throw new InvalidOperationException("Cannnot delete already deleted Product.");
+
+            Product.DeleteProduct();
+
+            EventType = eEventType.ProductDeleted;
             RaiseDomainEvent();
         }
 
         private void RaiseDomainEvent()
         {
-            var orderEvent = new ProductEvent(Product.Id, Product.Name, Product.Price.Amount, Product.Stock);
-            _domainEvents.Add(orderEvent);
+            var domainEvent = new ProductEvent(Product.Id, Product.Name, Product.Price.Amount, Product.Stock, EventType);
+            RaiseDomainEvent(domainEvent);
         }
 
-        public void ClearDomainEvents()
+        public new void ClearDomainEvents()
         {
-            _domainEvents.Clear();
+            base.ClearDomainEvents();
         }
     }
 }

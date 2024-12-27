@@ -10,12 +10,11 @@
 		<PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
 		<PackageReference Include="MediatR" Version="12.4.1" />
 		<PackageReference Include="Microsoft.AspNet.Providers.Core" Version="2.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="DomainServices\" />
-		<Folder Include="Enums\" />
 		<Folder Include="ValueObjects\" />
 	</ItemGroup>
 

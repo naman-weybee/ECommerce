@@ -2,7 +2,7 @@
 {
     public enum eOrderStatus
     {
-        Pending,
+        Pending = 0,
         Placed,
         Shipped,
         Delivered,

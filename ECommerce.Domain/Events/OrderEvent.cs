@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using ECommerce.Domain.Enums;
 
 namespace ECommerce.Domain.Events
 {
-    public class OrderEvent : INotification
+    public class OrderEvent : BaseEvent
     {
         public Guid OrderId { get; set; }
 
@@ -10,7 +10,7 @@ namespace ECommerce.Domain.Events
 
         public decimal TotalAmount { get; set; }
 
-        public OrderEvent(Guid orderId, Guid userId, decimal totalAmount)
+        public OrderEvent(Guid orderId, Guid userId, decimal totalAmount, eEventType eEventType)
         {
             if (orderId == Guid.Empty)
                 throw new ArgumentException("OrderId cannot be empty.", nameof(orderId));
@@ -24,6 +24,7 @@ namespace ECommerce.Domain.Events
             OrderId = orderId;
             UserId = userId;
             TotalAmount = totalAmount;
+            EventType = eEventType;
         }
     }
 }

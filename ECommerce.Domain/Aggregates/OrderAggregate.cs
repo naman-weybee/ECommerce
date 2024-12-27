@@ -2,24 +2,20 @@
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects;
-using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
-    public class OrderAggregate
+    public class OrderAggregate : AggregateRoot<Order>
     {
         public Order Order { get; set; }
 
-        public List<OrderItem> OrderItems { get; set; }
+        public List<OrderItem>? OrderItems { get; set; }
 
-        private readonly List<INotification> _domainEvents = new();
-
-        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
-
-        public OrderAggregate(Order order)
+        public OrderAggregate(Order entity)
+             : base(entity)
         {
-            Order = order;
-            OrderItems = Order.OrderItems.ToList() ?? new List<OrderItem>();
+            Order = entity;
+            OrderItems = entity.OrderItems.ToList() ?? new List<OrderItem>();
         }
 
         public void AddOrderItem(Guid productId, int quantity, Money unitPrice)
@@ -159,15 +155,26 @@ namespace ECommerce.Domain.Aggregates
             Order.UpdateOrderStatus(eOrderStatus.Canceled);
         }
 
-        private void RaiseDomainEvent()
+        public void DeleteOrder()
         {
-            var orderEvent = new OrderEvent(Order.Id, Order.UserId, Order.TotalAmount.Amount);
-            _domainEvents.Add(orderEvent);
+            if (Order.IsDeleted)
+                throw new InvalidOperationException("Cannnot delete already deleted Order.");
+
+            Order.DeleteOrder();
+
+            EventType = eEventType.OrderDeleted;
+            RaiseDomainEvent();
         }
 
-        public void ClearDomainEvents()
+        private void RaiseDomainEvent()
         {
-            _domainEvents.Clear();
+            var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.TotalAmount.Amount, EventType);
+            RaiseDomainEvent(domainEvent);
+        }
+
+        public new void ClearDomainEvents()
+        {
+            base.ClearDomainEvents();
         }
     }
 }

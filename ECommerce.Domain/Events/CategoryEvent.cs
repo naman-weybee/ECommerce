@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using ECommerce.Domain.Enums;
 
 namespace ECommerce.Domain.Events
 {
-    public class CategoryEvent : INotification
+    public class CategoryEvent : BaseEvent
     {
         public Guid CategoryId { get; set; }
 
@@ -10,11 +10,15 @@ namespace ECommerce.Domain.Events
 
         public Guid? ParentCategoryId { get; set; }
 
-        public CategoryEvent(Guid categoryId, string name, Guid? parentCategoryId)
+        public CategoryEvent(Guid categoryId, string name, Guid? parentCategoryId, eEventType eEventType)
         {
+            if (categoryId == Guid.Empty)
+                throw new ArgumentException("CategoryId cannot be empty.", nameof(categoryId));
+
             CategoryId = categoryId;
             Name = name;
             ParentCategoryId = parentCategoryId;
+            EventType = eEventType;
         }
     }
 }

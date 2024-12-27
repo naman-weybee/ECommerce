@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.API.Mappings
@@ -8,21 +9,23 @@ namespace ECommerce.API.Mappings
     {
         public AutoMapperProfile()
         {
-            CreateMap<Product, ProductDTO>().ReverseMap();
-            CreateMap<Product, ProductCreateDTO>().ReverseMap();
-            CreateMap<Product, ProductUpdateDTO>().ReverseMap();
+            ConfigureMappings<Product, ProductDTO, ProductCreateDTO, ProductUpdateDTO>();
+            ConfigureMappings<ProductAggregate, ProductDTO, ProductCreateDTO, ProductUpdateDTO>();
 
-            CreateMap<Category, CategoryDTO>().ReverseMap();
-            CreateMap<Category, CategoryCreateDTO>().ReverseMap();
-            CreateMap<Category, CategoryUpdateDTO>().ReverseMap();
+            ConfigureMappings<Category, CategoryDTO, CategoryCreateDTO, CategoryUpdateDTO>();
+            ConfigureMappings<CategoryAggregate, CategoryDTO, CategoryCreateDTO, CategoryUpdateDTO>();
 
-            CreateMap<Order, OrderDTO>().ReverseMap();
-            CreateMap<Order, OrderCreateDTO>().ReverseMap();
-            CreateMap<Order, OrderUpdateDTO>().ReverseMap();
+            ConfigureMappings<Order, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
+            ConfigureMappings<OrderAggregate, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
 
-            CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
-            CreateMap<OrderItem, OrderItemCreateDTO>().ReverseMap();
-            CreateMap<OrderItem, OrderItemUpdateDTO>().ReverseMap();
+            ConfigureMappings<OrderItem, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
+        }
+
+        private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()
+        {
+            CreateMap<TSource, TDTO>().ReverseMap();
+            CreateMap<TSource, TCreateDTO>().ReverseMap();
+            CreateMap<TSource, TUpdateDTO>().ReverseMap();
         }
     }
 }

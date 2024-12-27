@@ -41,6 +41,29 @@ namespace ECommerce.Domain.Entities
             OrderItems = new List<OrderItem>();
         }
 
+        public void CreateOrder(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        {
+            Id = Guid.NewGuid();
+            UserId = userId;
+            OrderStatus = status;
+            TotalAmount = totalAmount;
+            PaymentMethod = paymentMethod;
+            ShippingAddress = shippingAddress;
+            OrderItems = new List<OrderItem>();
+        }
+
+        public void UpdateOrder(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        {
+            UserId = userId;
+            OrderStatus = status;
+            TotalAmount = totalAmount;
+            PaymentMethod = paymentMethod;
+            ShippingAddress = shippingAddress;
+            OrderItems = new List<OrderItem>();
+
+            StatusUpdated();
+        }
+
         public void AddOrderItem(OrderItem orderItem)
         {
             OrderItems.Add(orderItem);
@@ -100,6 +123,11 @@ namespace ECommerce.Domain.Entities
         private void UpdateTotalAmount()
         {
             TotalAmount = OrderItems.Aggregate(new Money(0), (total, item) => total.Add(item.UnitPrice));
+        }
+
+        public void DeleteOrder()
+        {
+            StatusDeleted();
         }
     }
 }
