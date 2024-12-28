@@ -18,6 +18,22 @@ namespace ECommerce.Domain.Aggregates
             OrderItems = entity.OrderItems.ToList() ?? new List<OrderItem>();
         }
 
+        public void CreateOrder(Order order)
+        {
+            Order.CreateOrder(order.UserId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.ShippingAddress);
+
+            EventType = eEventType.OrderCreated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            Order.UpdateOrder(order.UserId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.ShippingAddress);
+
+            EventType = eEventType.OrderUpdated;
+            RaiseDomainEvent();
+        }
+
         public void AddOrderItem(Guid productId, int quantity, Money unitPrice)
         {
             ValidateOrderForModification();
