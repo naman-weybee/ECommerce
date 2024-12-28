@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllProducts(RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -52,7 +52,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById([FromRoute] Guid id)
+        public async Task<IActionResult> GetProductById(Guid id)
         {
             var response = new ResponseStructure();
 
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDTO productDTO)
+        public async Task<IActionResult> CreateProduct(ProductCreateDTO productDTO)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromForm] ProductUpdateDTO productDTO)
+        public async Task<IActionResult> UpdateProduct(ProductUpdateDTO productDTO)
         {
             var response = new ResponseStructure();
 
@@ -121,7 +121,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteProduct(Guid id)
         {
             var response = new ResponseStructure();
 

@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllCategories(RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -52,7 +52,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
+        public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var response = new ResponseStructure();
 
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateDTO dto)
+        public async Task<IActionResult> CreateCategory(CategoryCreateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromForm] CategoryUpdateDTO dto)
+        public async Task<IActionResult> UpdateCategory(CategoryUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -121,7 +121,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
             var response = new ResponseStructure();
 

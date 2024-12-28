@@ -3,6 +3,7 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.ValueObjects.JsonConverters;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Shared.Interfaces;
@@ -21,7 +22,11 @@ namespace ECommerce.API
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new MoneyJsonConverter());
+                options.SerializerSettings.Converters.Add(new CurrencyJsonConverter());
+            });
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
