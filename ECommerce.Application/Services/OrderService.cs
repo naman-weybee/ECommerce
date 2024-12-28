@@ -53,7 +53,7 @@ namespace ECommerce.Application.Services
         public async Task DeleteOrderAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = _mapper.Map<Order>(item);
+            var aggregate = _mapper.Map<OrderAggregate>(item);
             aggregate.DeleteOrder();
 
             await _repository.DeleteAsync(item);
