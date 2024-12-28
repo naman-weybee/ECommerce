@@ -14,11 +14,5 @@
         {
             UpdatedDate = DateTime.UtcNow;
         }
-
-        public void StatusDeleted()
-        {
-            IsDeleted = true;
-            DeletedDate = DateTime.UtcNow;
-        }
     }
 }

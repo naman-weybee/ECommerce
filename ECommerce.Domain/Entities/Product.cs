@@ -82,10 +82,5 @@ namespace ECommerce.Domain.Entities
             Price = newPrice;
             StatusUpdated();
         }
-
-        public void DeleteProduct()
-        {
-            StatusDeleted();
-        }
     }
 }

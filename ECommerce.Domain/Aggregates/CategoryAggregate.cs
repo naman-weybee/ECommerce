@@ -91,8 +91,6 @@ namespace ECommerce.Domain.Aggregates
             if (Category.IsDeleted)
                 throw new InvalidOperationException("Cannnot delete already deleted Category.");
 
-            Category.DeleteCategory();
-
             EventType = eEventType.CategoryDeleted;
             RaiseDomainEvent();
         }

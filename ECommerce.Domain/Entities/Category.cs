@@ -88,10 +88,5 @@ namespace ECommerce.Domain.Entities
             ParentCategory = parentCategory;
             ParentCategoryId = parentCategory.Id;
         }
-
-        public void DeleteCategory()
-        {
-            StatusDeleted();
-        }
     }
 }

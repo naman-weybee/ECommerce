@@ -124,10 +124,5 @@ namespace ECommerce.Domain.Entities
         {
             TotalAmount = OrderItems.Aggregate(new Money(0), (total, item) => total.Add(item.UnitPrice));
         }
-
-        public void DeleteOrder()
-        {
-            StatusDeleted();
-        }
     }
 }

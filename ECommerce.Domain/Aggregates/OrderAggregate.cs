@@ -176,8 +176,6 @@ namespace ECommerce.Domain.Aggregates
             if (Order.IsDeleted)
                 throw new InvalidOperationException("Cannnot delete already deleted Order.");
 
-            Order.DeleteOrder();
-
             EventType = eEventType.OrderDeleted;
             RaiseDomainEvent();
         }
