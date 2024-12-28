@@ -24,6 +24,22 @@
 
         CategoryCreated,    //Category Evenets
         CategoryUpdated,
-        CategoryDeleted
+        CategoryDeleted,
+
+        UserCreated,        //User Events
+        UserUpdated,
+        UserDeleted,
+        UserEmailChanged,
+        UserPhoneNumberChanged,
+        UserPasswordChanged,
+        UserRoleChanged,
+        UserIsActiveStatusChanged,
+        UserIsEmailVerifiedStatusChanged,
+        UserIsPhoneNumberVerifiedStatusChanged,
+        UserIsSubscribedToNotificationsStatusChanged,
+
+        AddressCreated,     //Address Events
+        AddressUpdated,
+        AddressDeleted
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -40,15 +40,101 @@ namespace ECommerce.Domain.Entities
 
         public bool IsPhoneNumberVerified { get; set; }
 
-        public bool IsSubscribedToNotifications { get; set; } = true;
+        public bool IsSubscribedToNotifications { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedDate { get; set; }
 
         public DateTime? DeletedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public User()
+        {
+        }
+
+        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Password = password;
+            PhoneNumber = phoneNumber;
+            RoleId = roleId;
+            DateOfBirth = dateOfBirth;
+            GenderId = genderId;
+            IsActive = isActive;
+            IsEmailVerified = isEmailVerified;
+            IsPhoneNumberVerified = isPhoneNumberVerified;
+            IsSubscribedToNotifications = isSubscribedToNotifications;
+        }
+
+        public void UpdateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Password = password;
+            PhoneNumber = phoneNumber;
+            RoleId = roleId;
+            DateOfBirth = dateOfBirth;
+            GenderId = genderId;
+            IsActive = isActive;
+            IsEmailVerified = isEmailVerified;
+            IsPhoneNumberVerified = isPhoneNumberVerified;
+            IsSubscribedToNotifications = isSubscribedToNotifications;
+
+            StatusUpdated();
+        }
+
+        public void ChangeEmail(string email)
+        {
+            Email = email;
+            StatusUpdated();
+        }
+
+        public void ChangePhoneNumber(string phoneNumber)
+        {
+            PhoneNumber = phoneNumber;
+            StatusUpdated();
+        }
+
+        public void ChangePassword(string password)
+        {
+            Password = password;
+            StatusUpdated();
+        }
+
+        public void ChangeRole(Guid roleId)
+        {
+            RoleId = roleId;
+            StatusUpdated();
+        }
+
+        public void ChangeIsActiveStatus(bool isActive)
+        {
+            IsActive = isActive;
+            StatusUpdated();
+        }
+
+        public void ChangeIsEmailVerifiedStatus(bool isEmailVerified)
+        {
+            IsEmailVerified = isEmailVerified;
+            StatusUpdated();
+        }
+
+        public void ChangeIsPhoneNumberVerifiedStatus(bool isPhoneNumberVerified)
+        {
+            IsPhoneNumberVerified = isPhoneNumberVerified;
+            StatusUpdated();
+        }
+
+        public void ChangeIsSubscribedToNotificationsStatus(bool isSubscribedToNotifications)
+        {
+            IsSubscribedToNotifications = isSubscribedToNotifications;
+            StatusUpdated();
+        }
 
         public void StatusUpdated()
         {

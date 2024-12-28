@@ -2,7 +2,7 @@
 
 namespace ECommerce.Application.DTOs
 {
-    public class UserDto
+    public class UserDTO
     {
         public Guid Id { get; set; }
 
