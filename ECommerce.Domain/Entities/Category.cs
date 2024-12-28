@@ -7,14 +7,14 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
+        [ForeignKey("Category")]
+        public Guid? ParentCategoryId { get; set; }
+
         [MaxLength(100)]
         public string Name { get; set; }
 
         [Length(1, 500)]
         public string? Description { get; set; }
-
-        [ForeignKey("Category")]
-        public Guid? ParentCategoryId { get; set; }
 
         public Category? ParentCategory { get; set; }
 

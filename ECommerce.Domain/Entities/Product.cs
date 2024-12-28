@@ -8,6 +8,9 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
+        [ForeignKey("Category")]
+        public Guid? CategoryId { get; set; }
+
         [MaxLength(100)]
         public string Name { get; set; }
 
@@ -23,9 +26,6 @@ namespace ECommerce.Domain.Entities
         public string? SKU { get; set; }
 
         public string? Brand { get; set; }
-
-        [ForeignKey("Category")]
-        public Guid? CategoryId { get; set; }
 
         public Category Category { get; set; }
 

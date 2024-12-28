@@ -1,6 +1,6 @@
 ﻿using ECommerce.Domain.Enums;
 using ECommerce.Domain.ValueObjects;
-using System.Web.Providers.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
@@ -8,7 +8,11 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
+        [ForeignKey("User")]
         public Guid UserId { get; set; }
+
+        [ForeignKey("Address")]
+        public Guid AddressId { get; set; }
 
         public eOrderStatus OrderStatus { get; set; } = eOrderStatus.Pending;
 
@@ -30,35 +34,35 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; set; }
 
-        public Order(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        public Order(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
         {
             Id = Guid.NewGuid();
             UserId = userId;
+            AddressId = addressId;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            ShippingAddress = shippingAddress;
             OrderItems = new List<OrderItem>();
         }
 
-        public void CreateOrder(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        public void CreateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
         {
             Id = Guid.NewGuid();
             UserId = userId;
+            AddressId = addressId;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            ShippingAddress = shippingAddress;
             OrderItems = new List<OrderItem>();
         }
 
-        public void UpdateOrder(Guid userId, eOrderStatus status, Money totalAmount, string paymentMethod, Address shippingAddress)
+        public void UpdateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
         {
             UserId = userId;
+            AddressId = addressId;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            ShippingAddress = shippingAddress;
             OrderItems = new List<OrderItem>();
 
             StatusUpdated();
@@ -114,9 +118,9 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        public void UpdateShippingAddress(Address newAddress)
+        public void UpdateShippingAddress(Guid addressId)
         {
-            ShippingAddress = newAddress;
+            AddressId = addressId;
             StatusUpdated();
         }
 

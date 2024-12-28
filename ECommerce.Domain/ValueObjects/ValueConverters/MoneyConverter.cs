@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ECommerce.Domain.ValueObjects.ValueConverters
 {

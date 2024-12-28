@@ -20,7 +20,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateOrder(Order order)
         {
-            Order.CreateOrder(order.UserId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.ShippingAddress);
+            Order.CreateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
 
             EventType = eEventType.OrderCreated;
             RaiseDomainEvent();
@@ -28,7 +28,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateOrder(Order order)
         {
-            Order.UpdateOrder(order.UserId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.ShippingAddress);
+            Order.UpdateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
 
             EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
@@ -100,10 +100,10 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateShippingAddress(Address newAddress)
+        public void UpdateShippingAddress(Guid addressId)
         {
             ValidateOrderForModification();
-            Order.UpdateShippingAddress(newAddress);
+            Order.UpdateShippingAddress(addressId);
             RaiseDomainEvent();
         }
 

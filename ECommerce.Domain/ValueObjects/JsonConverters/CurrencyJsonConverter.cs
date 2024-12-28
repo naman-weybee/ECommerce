@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.ValueObjects;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace ECommerce.Domain.ValueObjects.JsonConverters
 {
