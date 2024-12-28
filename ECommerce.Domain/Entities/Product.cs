@@ -1,5 +1,6 @@
 ﻿using ECommerce.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
@@ -23,9 +24,16 @@ namespace ECommerce.Domain.Entities
 
         public string? Brand { get; set; }
 
-        public Category CategoryId { get; set; }
+        [ForeignKey("Category")]
+        public Guid? CategoryId { get; set; }
 
-        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        public Category Category { get; set; }
+
+        public Product()
+        {
+        }
+
+        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -38,7 +46,7 @@ namespace ECommerce.Domain.Entities
             CategoryId = categoryId;
         }
 
-        public void CreateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        public void CreateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -51,7 +59,7 @@ namespace ECommerce.Domain.Entities
             CategoryId = categoryId;
         }
 
-        public void UpdateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Category? categoryId = null)
+        public void UpdateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
         {
             Name = name;
             Price = price;

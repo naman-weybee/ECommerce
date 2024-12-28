@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
@@ -12,13 +13,18 @@ namespace ECommerce.Domain.Entities
         [Length(1, 500)]
         public string? Description { get; set; }
 
-        public Category? ParentCategory { get; set; }
-
+        [ForeignKey("Category")]
         public Guid? ParentCategoryId { get; set; }
+
+        public Category? ParentCategory { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
 
         public virtual ICollection<Category> SubCategories { get; set; }
+
+        public Category()
+        {
+        }
 
         public Category(string name, string? description, Category? parentCategory = null)
         {

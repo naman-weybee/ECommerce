@@ -1,4 +1,5 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
@@ -50,6 +51,14 @@ namespace ECommerce.Infrastructure.Data
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
                 }
             }
+
+            modelBuilder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasConversion(new MoneyConverter());
+
+            modelBuilder.Entity<Product>()
+            .Property(p => p.Currency)
+            .HasConversion(new CurrencyConverter());
 
             modelBuilder.Entity<Product>()
             .HasIndex(p => p.Id)

@@ -8,7 +8,6 @@ using ECommerce.Infrastructure.Repositories;
 using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ECommerce.API
 {
