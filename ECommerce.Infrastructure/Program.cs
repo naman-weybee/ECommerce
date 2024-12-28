@@ -1,8 +1,3 @@
-using ECommerce.Domain.Aggregates;
-using ECommerce.Domain.Entities;
-using ECommerce.Infrastructure.Repositories;
-using ECommerce.Shared.Repositories;
-
 namespace ECommerce.Infrastructure
 {
     public static class Program
@@ -15,8 +10,6 @@ namespace ECommerce.Infrastructure
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            builder.Services.AddScoped<IRepository<ProductAggregate, Product>, Repository<ProductAggregate, Product>>();
 
             var app = builder.Build();
 
