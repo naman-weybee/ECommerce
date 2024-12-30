@@ -33,6 +33,7 @@
         UserPhoneNumberChanged,
         UserPasswordChanged,
         UserRoleChanged,
+        UserAddressChanged,
         UserIsActiveStatusChanged,
         UserIsEmailVerifiedStatusChanged,
         UserIsPhoneNumberVerifiedStatusChanged,

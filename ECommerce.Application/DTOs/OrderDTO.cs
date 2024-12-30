@@ -37,8 +37,8 @@ namespace ECommerce.Application.DTOs
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Payment method should be between 3 and 50 characters.")]
         public string PaymentMethod { get; set; }
 
-        [Required(ErrorMessage = "Shipping address is required.")]
-        public Address ShippingAddress { get; set; }
+        [Required(ErrorMessage = "ShippingAddressId is required.")]
+        public Guid ShippingAddressId { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; private set; }
     }

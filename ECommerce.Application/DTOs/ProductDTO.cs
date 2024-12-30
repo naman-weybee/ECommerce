@@ -30,6 +30,7 @@ namespace ECommerce.Application.DTOs
         [MaxLength(50, ErrorMessage = "Brand cannot exceed 50 characters.")]
         public string? Brand { get; set; }
 
+        [Required(ErrorMessage = "Category Id is required.")]
         public Guid CategoryId { get; set; }
     }
 }

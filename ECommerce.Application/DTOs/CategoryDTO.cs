@@ -15,8 +15,6 @@ namespace ECommerce.Application.DTOs
 
         public Guid? ParentCategoryId { get; set; }
 
-        public string? ParentCategoryName { get; set; }
-
         public virtual ICollection<ProductDTO> Products { get; set; }
 
         public virtual ICollection<CategoryDTO> SubCategories { get; set; }

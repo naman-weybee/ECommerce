@@ -34,6 +34,11 @@ namespace ECommerce.Domain.Entities
 
         public Gender Gender { get; set; }
 
+        [ForeignKey("Address")]
+        public Guid AddressId { get; set; }
+
+        public Address Address { get; set; }
+
         public bool IsActive { get; set; } = true;
 
         public bool IsEmailVerified { get; set; }
@@ -54,7 +59,7 @@ namespace ECommerce.Domain.Entities
         {
         }
 
-        public User(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public User(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -65,13 +70,14 @@ namespace ECommerce.Domain.Entities
             RoleId = roleId;
             DateOfBirth = dateOfBirth;
             GenderId = genderId;
+            AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             IsPhoneNumberVerified = isPhoneNumberVerified;
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
 
-        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -82,13 +88,14 @@ namespace ECommerce.Domain.Entities
             RoleId = roleId;
             DateOfBirth = dateOfBirth;
             GenderId = genderId;
+            AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             IsPhoneNumberVerified = isPhoneNumberVerified;
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
 
-        public void UpdateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void UpdateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             FirstName = firstName;
             LastName = lastName;
@@ -98,6 +105,7 @@ namespace ECommerce.Domain.Entities
             RoleId = roleId;
             DateOfBirth = dateOfBirth;
             GenderId = genderId;
+            AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             IsPhoneNumberVerified = isPhoneNumberVerified;
@@ -127,6 +135,12 @@ namespace ECommerce.Domain.Entities
         public void ChangeRole(Guid roleId)
         {
             RoleId = roleId;
+            StatusUpdated();
+        }
+
+        public void ChangeAddress(Guid addressId)
+        {
+            AddressId = addressId;
             StatusUpdated();
         }
 

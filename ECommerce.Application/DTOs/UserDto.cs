@@ -25,6 +25,9 @@ namespace ECommerce.Application.DTOs
         [Required(ErrorMessage = "RoleId is required.")]
         public Guid RoleId { get; set; }
 
+        [Required(ErrorMessage = "AddressId is required.")]
+        public Guid AddressId { get; set; }
+
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateOfBirth { get; set; }
 
