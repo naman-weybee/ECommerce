@@ -22,7 +22,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateCategory(Category category)
         {
-            Category.CreateCategory(category.Name, category.Description, category.ParentCategory);
+            Category.CreateCategory(category.Name, category.Description, category.ParentCategoryId);
 
             EventType = eEventType.CategoryCreated;
             RaiseDomainEvent();
@@ -30,7 +30,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateCategory(Category category)
         {
-            Category.UpdateCategory(category.Name, category.Description, category.ParentCategory);
+            Category.UpdateCategory(category.Name, category.Description, category.ParentCategoryId);
 
             EventType = eEventType.CategoryUpdated;
             RaiseDomainEvent();

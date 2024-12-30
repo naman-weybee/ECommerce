@@ -26,34 +26,31 @@ namespace ECommerce.Domain.Entities
         {
         }
 
-        public Category(string name, string? description, Category? parentCategory = null)
+        public Category(string name, string? description, Guid? parentCategoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
             Description = description;
-            ParentCategory = parentCategory;
-            ParentCategoryId = parentCategory?.Id;
+            ParentCategoryId = parentCategoryId;
             Products = new List<Product>();
             SubCategories = new List<Category>();
         }
 
-        public void CreateCategory(string name, string? description, Category? parentCategory = null)
+        public void CreateCategory(string name, string? description, Guid? parentCategoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
             Description = description;
-            ParentCategory = parentCategory;
-            ParentCategoryId = parentCategory?.Id;
+            ParentCategoryId = parentCategoryId;
             Products = new List<Product>();
             SubCategories = new List<Category>();
         }
 
-        public void UpdateCategory(string name, string? description, Category? parentCategory = null)
+        public void UpdateCategory(string name, string? description, Guid? parentCategoryId = null)
         {
             Name = name;
             Description = description;
-            ParentCategory = parentCategory;
-            ParentCategoryId = parentCategory?.Id;
+            ParentCategoryId = parentCategoryId;
             Products = new List<Product>();
             SubCategories = new List<Category>();
 
