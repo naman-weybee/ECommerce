@@ -2,7 +2,7 @@
 
 namespace ECommerce.Domain.Entities
 {
-    public class Roles
+    public class Role
     {
         public Guid Id { get; set; }
 

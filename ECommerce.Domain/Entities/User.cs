@@ -25,7 +25,7 @@ namespace ECommerce.Domain.Entities
         [ForeignKey("Role")]
         public Guid RoleId { get; set; }
 
-        public Roles Role { get; set; }
+        public Role Role { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 
