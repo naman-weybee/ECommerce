@@ -14,6 +14,8 @@ namespace ECommerce.API
                 .AddDomainServices()
                 .AddInfrastructureServices(builder.Configuration);
 
+            builder.Services.AddFluentValidationServices();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

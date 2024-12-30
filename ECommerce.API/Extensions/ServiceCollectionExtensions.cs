@@ -1,6 +1,8 @@
 ﻿using ECommerce.API.Mappings;
+using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
+using ECommerce.Application.Validators;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.ValueObjects.JsonConverters;
@@ -8,6 +10,8 @@ using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API.Extensions
@@ -52,6 +56,38 @@ namespace ECommerce.API.Extensions
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            return services;
+        }
+
+        public static IServiceCollection AddFluentValidationServices(this IServiceCollection services)
+        {
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+
+            services.AddValidatorsFromAssemblyContaining<ProductDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<CategoryDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<OrderDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<OrderItemDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderItemCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderItemUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<AddressDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<AddressUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
 
             return services;
         }
