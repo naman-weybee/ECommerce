@@ -54,8 +54,26 @@ namespace ECommerce.Domain.Entities
         {
         }
 
+        public User(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        {
+            Id = Guid.NewGuid();
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Password = password;
+            PhoneNumber = phoneNumber;
+            RoleId = roleId;
+            DateOfBirth = dateOfBirth;
+            GenderId = genderId;
+            IsActive = isActive;
+            IsEmailVerified = isEmailVerified;
+            IsPhoneNumberVerified = isPhoneNumberVerified;
+            IsSubscribedToNotifications = isSubscribedToNotifications;
+        }
+
         public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
+            Id = Guid.NewGuid();
             FirstName = firstName;
             LastName = lastName;
             Email = email;

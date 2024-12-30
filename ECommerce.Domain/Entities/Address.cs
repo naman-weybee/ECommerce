@@ -25,8 +25,21 @@ namespace ECommerce.Domain.Entities
         {
         }
 
+        public Address(string street, string city, string state, string postalCode, string country)
+        {
+            Id = Guid.NewGuid();
+            Street = street;
+            City = city;
+            State = state;
+            PostalCode = postalCode;
+            Country = country;
+            CreatedDate = DateTime.UtcNow;
+            UpdatedDate = DateTime.UtcNow;
+        }
+
         public void CreateAddress(string street, string city, string state, string postalCode, string country)
         {
+            Id = Guid.NewGuid();
             Street = street;
             City = city;
             State = state;
