@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts(RequestParams requestParams)
+        public async Task<IActionResult> GetAllProducts([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -78,8 +78,8 @@ namespace ECommerce.API.Controllers
             }
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateProduct(ProductCreateDTO productDTO)
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO productDTO)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(ProductUpdateDTO productDTO)
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO productDTO)
         {
             var response = new ResponseStructure();
 

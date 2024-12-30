@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers(RequestParams requestParams)
+        public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -78,8 +78,8 @@ namespace ECommerce.API.Controllers
             }
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateUser(UserCreateDTO userDTO)
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO userDTO)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(UserUpdateDTO userDTO)
+        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO userDTO)
         {
             var response = new ResponseStructure();
 

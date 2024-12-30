@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories(RequestParams requestParams)
+        public async Task<IActionResult> GetAllCategories([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -78,8 +78,8 @@ namespace ECommerce.API.Controllers
             }
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateCategory(CategoryCreateDTO dto)
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory(CategoryUpdateDTO dto)
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateDTO dto)
         {
             var response = new ResponseStructure();
 

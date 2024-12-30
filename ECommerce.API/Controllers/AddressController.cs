@@ -20,7 +20,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAddresses(RequestParams requestParams)
+        public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
@@ -78,8 +78,8 @@ namespace ECommerce.API.Controllers
             }
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateAddress(AddressCreateDTO addressDTO)
+        [HttpPost]
+        public async Task<IActionResult> CreateAddress([FromBody] AddressCreateDTO addressDTO)
         {
             var response = new ResponseStructure();
 
@@ -100,7 +100,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAddress(AddressUpdateDTO addressDTO)
+        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateDTO addressDTO)
         {
             var response = new ResponseStructure();
 
