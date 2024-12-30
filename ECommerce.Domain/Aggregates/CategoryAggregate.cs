@@ -8,16 +8,10 @@ namespace ECommerce.Domain.Aggregates
     {
         public Category Category { get; set; }
 
-        public List<Product>? Products { get; set; }
-
-        public List<Category>? SubCategories { get; set; }
-
         public CategoryAggregate(Category entity)
             : base(entity)
         {
             Category = entity;
-            Products = entity.Products.ToList() ?? new List<Product>();
-            SubCategories = entity.SubCategories.ToList() ?? new List<Category>();
         }
 
         public void CreateCategory(Category category)
@@ -30,7 +24,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateCategory(Category category)
         {
-            Category.UpdateCategory(category.Name, category.Description, category.ParentCategoryId);
+            Category.UpdateCategory(category.Id, category.Name, category.Description, category.ParentCategoryId);
 
             EventType = eEventType.CategoryUpdated;
             RaiseDomainEvent();

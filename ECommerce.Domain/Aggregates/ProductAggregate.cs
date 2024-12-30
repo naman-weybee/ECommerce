@@ -25,7 +25,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateProduct(Product product)
         {
-            Product.UpdateProduct(product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand, product.CategoryId);
+            Product.UpdateProduct(product.Id, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand, product.CategoryId);
 
             EventType = eEventType.ProductUpdated;
             RaiseDomainEvent();

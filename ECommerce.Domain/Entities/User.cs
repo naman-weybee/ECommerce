@@ -95,8 +95,9 @@ namespace ECommerce.Domain.Entities
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
 
-        public void UpdateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void UpdateUser(Guid id, string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
+            Id = id;
             FirstName = firstName;
             LastName = lastName;
             Email = email;

@@ -49,8 +49,9 @@ namespace ECommerce.Domain.Entities
             UpdatedDate = DateTime.UtcNow;
         }
 
-        public void UpdateAddress(string street, string city, string state, string postalCode, string country)
+        public void UpdateAddress(Guid id, string street, string city, string state, string postalCode, string country)
         {
+            Id = id;
             Street = street;
             City = city;
             State = state;

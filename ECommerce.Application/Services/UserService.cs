@@ -45,7 +45,7 @@ namespace ECommerce.Application.Services
         public async Task UpdateUserAsync(UserUpdateDTO dto)
         {
             var user = _mapper.Map<User>(dto);
-            var aggregate = new UserAggregate(user);
+            var aggregate = _mapper.Map<UserAggregate>(user);
             aggregate.UpdateUser(user);
 
             await _repository.UpdateAsync(aggregate);

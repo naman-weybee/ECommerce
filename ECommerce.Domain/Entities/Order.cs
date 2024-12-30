@@ -56,8 +56,9 @@ namespace ECommerce.Domain.Entities
             OrderItems = new List<OrderItem>();
         }
 
-        public void UpdateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
+        public void UpdateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
         {
+            Id = id;
             UserId = userId;
             AddressId = addressId;
             OrderStatus = status;

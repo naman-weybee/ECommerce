@@ -24,7 +24,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateAddress(Address address)
         {
-            Address.UpdateAddress(address.Street, address.City, address.State, address.PostalCode, address.Country);
+            Address.UpdateAddress(address.Id, address.Street, address.City, address.State, address.PostalCode, address.Country);
 
             EventType = eEventType.AddressUpdated;
             RaiseDomainEvent();

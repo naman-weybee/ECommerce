@@ -44,7 +44,8 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateCategoryAsync(CategoryUpdateDTO dto)
         {
-            var aggregate = _mapper.Map<CategoryAggregate>(dto);
+            var category = _mapper.Map<Category>(dto);
+            var aggregate = new CategoryAggregate(category);
             aggregate.UpdateCategory(aggregate.Category);
 
             await _repository.UpdateAsync(aggregate);

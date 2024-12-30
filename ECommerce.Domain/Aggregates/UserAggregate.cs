@@ -24,7 +24,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateUser(User user)
         {
-            User.UpdateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            User.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserUpdated;
             RaiseDomainEvent();

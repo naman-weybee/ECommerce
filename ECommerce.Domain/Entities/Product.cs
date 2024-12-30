@@ -59,8 +59,9 @@ namespace ECommerce.Domain.Entities
             CategoryId = categoryId;
         }
 
-        public void UpdateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
+        public void UpdateProduct(Guid id, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
         {
+            Id = id;
             Name = name;
             Price = price;
             Currency = currency;

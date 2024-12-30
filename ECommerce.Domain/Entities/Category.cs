@@ -46,8 +46,9 @@ namespace ECommerce.Domain.Entities
             SubCategories = new List<Category>();
         }
 
-        public void UpdateCategory(string name, string? description, Guid? parentCategoryId = null)
+        public void UpdateCategory(Guid id, string name, string? description, Guid? parentCategoryId = null)
         {
+            Id = id;
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;

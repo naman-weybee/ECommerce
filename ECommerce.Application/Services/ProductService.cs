@@ -44,7 +44,8 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateProductAsync(ProductUpdateDTO dto)
         {
-            var aggregate = _mapper.Map<ProductAggregate>(dto);
+            var product = _mapper.Map<Product>(dto);
+            var aggregate = _mapper.Map<ProductAggregate>(product);
             aggregate.UpdateProduct(aggregate.Product);
 
             await _repository.UpdateAsync(aggregate);

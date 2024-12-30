@@ -28,7 +28,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateOrder(Order order)
         {
-            Order.UpdateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
+            Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
 
             EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
