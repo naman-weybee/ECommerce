@@ -33,7 +33,7 @@ namespace ECommerce.Infrastructure.Data
                 {
                     item.State = EntityState.Unchanged;
                     baseDto.IsDeleted = true;
-                    baseDto.DeletedDate = DateTime.Now;
+                    baseDto.DeletedDate = DateTime.UtcNow;
                 }
             }
 
