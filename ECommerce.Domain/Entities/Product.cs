@@ -9,7 +9,7 @@ namespace ECommerce.Domain.Entities
         public Guid Id { get; set; }
 
         [ForeignKey("Category")]
-        public Guid? CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         [MaxLength(100)]
         public string Name { get; set; }
@@ -33,9 +33,10 @@ namespace ECommerce.Domain.Entities
         {
         }
 
-        public Product(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
+        public Product(Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
         {
             Id = Guid.NewGuid();
+            CategoryId = categoryId;
             Name = name;
             Price = price;
             Currency = currency;
@@ -43,12 +44,12 @@ namespace ECommerce.Domain.Entities
             Description = description;
             SKU = sku;
             Brand = brand;
-            CategoryId = categoryId;
         }
 
-        public void CreateProduct(string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
+        public void CreateProduct(Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
         {
             Id = Guid.NewGuid();
+            CategoryId = categoryId;
             Name = name;
             Price = price;
             Currency = currency;
@@ -56,12 +57,12 @@ namespace ECommerce.Domain.Entities
             Description = description;
             SKU = sku;
             Brand = brand;
-            CategoryId = categoryId;
         }
 
-        public void UpdateProduct(Guid id, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null, Guid? categoryId = null)
+        public void UpdateProduct(Guid id, Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
         {
             Id = id;
+            CategoryId = categoryId;
             Name = name;
             Price = price;
             Currency = currency;
@@ -69,7 +70,6 @@ namespace ECommerce.Domain.Entities
             Description = description;
             SKU = sku;
             Brand = brand;
-            CategoryId = categoryId;
 
             StatusUpdated();
         }
