@@ -81,6 +81,9 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try
@@ -102,6 +105,9 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try

@@ -81,6 +81,9 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO userDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try
@@ -102,6 +105,9 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO userDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try

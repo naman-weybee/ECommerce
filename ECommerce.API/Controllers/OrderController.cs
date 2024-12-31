@@ -81,6 +81,9 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try
@@ -102,6 +105,9 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateDTO dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var response = new ResponseStructure();
 
             try
