@@ -23,9 +23,9 @@ namespace ECommerce.Infrastructure.Repositories
             _pagination = pagination;
         }
 
-        public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams)
+        public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity>? query = null)
         {
-            var query = _context.Set<TEntity>().AsQueryable();
+            query ??= _context.Set<TEntity>().AsQueryable();
 
             if (!string.IsNullOrEmpty(requestParams.search))
             {
@@ -42,13 +42,16 @@ namespace ECommerce.Infrastructure.Repositories
             return await _pagination.SortResult(query, requestParams);
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(Guid id)
+        public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null)
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
+            query ??= _context.Set<TEntity>().AsQueryable();
+
+            var entity = await query.SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id));
+
             if (entity != null)
-                return await DbSet.FindAsync(id);
-            else
-                throw new InvalidOperationException($"Data for Id = {id} is not Available...!");
+                return entity;
+
+            throw new InvalidOperationException($"Data for Id = {id} is not available.");
         }
 
         public virtual async Task InsertAsync(TAggregate aggregate)
@@ -86,6 +89,11 @@ namespace ECommerce.Infrastructure.Repositories
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public virtual IQueryable<TEntity> GetDbSet()
+        {
+            return DbSet = _context.Set<TEntity>();
         }
     }
 }

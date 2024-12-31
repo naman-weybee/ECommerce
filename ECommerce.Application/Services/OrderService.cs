@@ -5,6 +5,7 @@ using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -21,14 +22,20 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var query = _repository.GetDbSet();
+            query = query.Include(c => c.OrderItems);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
         }
 
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var query = _repository.GetDbSet();
+            query = query.Include(c => c.OrderItems);
+
+            var item = await _repository.GetByIdAsync(id, query);
 
             return _mapper.Map<OrderDTO>(item);
         }

@@ -19,6 +19,12 @@ namespace ECommerce.API.Mappings
             ConfigureMappings<OrderAggregate, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
 
             ConfigureMappings<OrderItem, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
+
+            ConfigureMappings<User, UserDTO, UserCreateDTO, UserUpdateDTO>();
+            ConfigureMappings<UserAggregate, UserDTO, UserCreateDTO, UserUpdateDTO>();
+
+            ConfigureMappings<Address, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
+            ConfigureMappings<AddressAggregate, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()
