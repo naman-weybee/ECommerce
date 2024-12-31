@@ -10,13 +10,8 @@
     public class ResponseMetadata<T>
     {
         public int page_number = 1;
-        public int page_size = 0;
-        public int total_records_count = 0;
-        public T records;
-    }
-
-    public class ResponseTreeMetadata<T>
-    {
+        public int page_size;
+        public int total_records_count;
         public T records;
     }
 }
