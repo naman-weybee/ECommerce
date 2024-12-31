@@ -18,6 +18,6 @@ namespace ECommerce.Application.DTOs
 
         public Guid ShippingAddressId { get; set; }
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

@@ -28,9 +28,9 @@ namespace ECommerce.Domain.Entities
 
         public string PaymentMethod { get; set; }
 
-        public Address ShippingAddress { get; set; }
+        public virtual Address ShippingAddress { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
 

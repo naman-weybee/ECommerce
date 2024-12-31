@@ -59,7 +59,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Product", b =>
@@ -116,7 +116,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("IX_Product_Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>

@@ -16,7 +16,7 @@ namespace ECommerce.Domain.Entities
         [Length(1, 500)]
         public string? Description { get; set; }
 
-        public Category? ParentCategory { get; set; }
+        public virtual Category? ParentCategory { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
 

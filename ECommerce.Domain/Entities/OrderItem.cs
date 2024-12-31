@@ -14,9 +14,9 @@ namespace ECommerce.Domain.Entities
 
         public Money UnitPrice { get; set; }
 
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
 
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         public OrderItem(Guid orderId, Guid productId, int quantity, Money unitPrice)
         {

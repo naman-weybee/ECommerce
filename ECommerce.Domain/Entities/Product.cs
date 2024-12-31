@@ -27,7 +27,7 @@ namespace ECommerce.Domain.Entities
 
         public string? Brand { get; set; }
 
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public Product()
         {

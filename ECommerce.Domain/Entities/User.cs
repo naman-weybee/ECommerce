@@ -25,19 +25,19 @@ namespace ECommerce.Domain.Entities
         [ForeignKey("Role")]
         public Guid RoleId { get; set; }
 
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 
         [ForeignKey("Gender")]
         public Guid GenderId { get; set; }
 
-        public Gender Gender { get; set; }
+        public virtual Gender Gender { get; set; }
 
         [ForeignKey("Address")]
         public Guid AddressId { get; set; }
 
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
 
         public bool IsActive { get; set; } = true;
 
