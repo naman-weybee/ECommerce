@@ -14,10 +14,11 @@ namespace ECommerce.Application.EventHandlers
 
         public async Task Handle(CategoryEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("CategoryEvent received: CategoryId = {CategoryId}, Name = {Name}, ParentCategoryId = {ParentCategoryId}",
+            _logger.LogInformation("CategoryEvent received: EventType = {EventType}, CategoryId = {CategoryId}, Name = {Name}, ParentCategoryId = {ParentCategoryId}",
                 notification.CategoryId,
                 notification.Name,
-                notification.ParentCategoryId);
+                notification.ParentCategoryId,
+                notification.EventType);
 
             await NotifyExternalSystems(notification);
 

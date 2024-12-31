@@ -14,10 +14,11 @@ namespace ECommerce.Application.EventHandlers
 
         public async Task Handle(OrderEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("OrderEvent received: OrderId = {OrderId}, UserId = {UserId}, TotalAmount = {TotalAmount}",
+            _logger.LogInformation("OrderEvent received: EventType = {EventType}, OrderId = {OrderId}, UserId = {UserId}, TotalAmount = {TotalAmount}",
                 notification.OrderId,
                 notification.UserId,
-                notification.TotalAmount);
+                notification.TotalAmount,
+                notification.EventType);
 
             await NotifyExternalSystems(notification);
 
