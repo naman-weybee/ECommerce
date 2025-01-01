@@ -21,7 +21,7 @@ namespace ECommerce.API.Extensions
     {
         public static IServiceCollection AddAPIServices(this IServiceCollection services)
         {
-            services.AddControllers(options => options.Filters.Add<ExecutionFilter>());
+            services.AddScoped<ExecutionFilter>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile));
 

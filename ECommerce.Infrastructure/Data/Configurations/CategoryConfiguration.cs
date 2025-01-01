@@ -12,6 +12,11 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .HasIndex(p => p.Id)
             .HasDatabaseName("IX_Category_Id")
             .IsUnique();
+
+            builder
+            .HasIndex(p => p.Name)
+            .HasDatabaseName("IX_Category_Name")
+            .IsUnique();
         }
     }
 }
