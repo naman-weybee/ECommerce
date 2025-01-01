@@ -1,4 +1,5 @@
-﻿using ECommerce.API.Mappings;
+﻿using ECommerce.API.Filters;
+using ECommerce.API.Mappings;
 using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
@@ -20,6 +21,8 @@ namespace ECommerce.API.Extensions
     {
         public static IServiceCollection AddAPIServices(this IServiceCollection services)
         {
+            services.AddControllers(options => options.Filters.Add<ExecutionFilter>());
+
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
             return services;

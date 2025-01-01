@@ -1,3 +1,4 @@
+using ECommerce.API.Filters;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -11,12 +12,10 @@ namespace ECommerce.API.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _service;
-        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService service, ILogger<UserController> logger)
+        public UserController(IUserService service)
         {
             _service = service;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -24,31 +23,21 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            try
+            var data = await _service.GetAllUsersAsync(requestParams);
+            if (data != null)
             {
-                var data = await _service.GetAllUsersAsync(requestParams);
-                if (data != null)
+                response.data = new ResponseMetadata<object>()
                 {
-                    response.data = new ResponseMetadata<object>()
-                    {
-                        page_number = requestParams.pageNumber,
-                        page_size = requestParams.pageSize,
-                        records = data,
-                        total_records_count = requestParams.recordCount
-                    };
+                    page_number = requestParams.pageNumber,
+                    page_size = requestParams.pageSize,
+                    records = data,
+                    total_records_count = requestParams.recordCount
+                };
 
-                    response.success = true;
-                }
-
-                return Ok(response);
+                response.success = true;
             }
-            catch (Exception ex)
-            {
-                response.error = ex.Message;
-                _logger.LogError(ex.Message);
 
-                return StatusCode(500, response);
-            }
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -56,74 +45,40 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            try
+            var data = await _service.GetUserByIdAsync(id);
+            if (data != null)
             {
-                var data = await _service.GetUserByIdAsync(id);
-                if (data != null)
-                {
-                    response.data = data;
-                    response.success = true;
-                    return StatusCode(200, data);
-                }
-
-                response.error = $"Requested User for Id = {id} is Not Found...!";
-                return NotFound(response);
+                response.data = data;
+                response.success = true;
+                return StatusCode(200, data);
             }
-            catch (Exception ex)
-            {
-                response.error = ex.Message;
-                _logger.LogError(ex.Message);
 
-                return StatusCode(500, response);
-            }
+            response.error = $"Requested User for Id = {id} is Not Found.";
+            return NotFound(response);
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO userDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var response = new ResponseStructure();
 
-            try
-            {
-                await _service.CreateUserAsync(userDTO);
-                response.data = new { Message = "New User Added Successfully...!" };
-                response.success = true;
-                return StatusCode(201, response);
-            }
-            catch (Exception ex)
-            {
-                response.error = ex.Message;
-                _logger.LogError(ex.Message);
-
-                return StatusCode(500, response);
-            }
+            await _service.CreateUserAsync(userDTO);
+            response.data = new { Message = "New User Added Successfully." };
+            response.success = true;
+            return StatusCode(201, response);
         }
 
         [HttpPut]
+        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO userDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var response = new ResponseStructure();
 
-            try
-            {
-                await _service.UpdateUserAsync(userDTO);
-                response.data = new { Message = "User Modified Successfully...!" };
-                response.success = true;
-                return StatusCode(200, response);
-            }
-            catch (Exception ex)
-            {
-                response.error = ex.Message;
-                _logger.LogError(ex.Message);
-
-                return StatusCode(500, response);
-            }
+            await _service.UpdateUserAsync(userDTO);
+            response.data = new { Message = "User Modified Successfully." };
+            response.success = true;
+            return StatusCode(200, response);
         }
 
         [HttpDelete("{id}")]
@@ -131,20 +86,10 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            try
-            {
-                await _service.DeleteUserAsync(id);
-                response.data = new { Message = $"User with Id = {id} is Deleted Successfully...!" };
-                response.success = true;
-                return StatusCode(200, response);
-            }
-            catch (Exception ex)
-            {
-                response.error = ex.Message;
-                _logger.LogError(ex.Message);
-
-                return StatusCode(500, response);
-            }
+            await _service.DeleteUserAsync(id);
+            response.data = new { Message = $"User with Id = {id} is Deleted Successfully." };
+            response.success = true;
+            return StatusCode(200, response);
         }
     }
 }
