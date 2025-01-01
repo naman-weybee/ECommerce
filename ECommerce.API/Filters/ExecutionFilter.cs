@@ -1,6 +1,7 @@
 ﻿using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Text;
 
 namespace ECommerce.API.Filters
 {
@@ -27,6 +28,7 @@ namespace ECommerce.API.Filters
                         success = false,
                         error = $"Parameter '{param.Key}' cannot be null."
                     });
+
                     _logger.LogWarning($"[WARN] Validation failed for parameter '{param.Key}'.");
                     return;
                 }
@@ -48,12 +50,22 @@ namespace ECommerce.API.Filters
             var exception = context.Exception;
             var actionName = context.ActionDescriptor.DisplayName;
 
-            _logger.LogError($"[ERROR] Exception in action '{actionName}': {exception.Message}");
+            var allErrorMessages = new StringBuilder();
+
+            while (exception != null)
+            {
+                allErrorMessages.AppendLine(exception.Message);
+                exception = exception.InnerException;
+            }
+
+            string finalErrorMessage = allErrorMessages.ToString();
+
+            _logger.LogError($"[ERROR] Exception in action '{actionName}': {finalErrorMessage}");
 
             var response = new ResponseStructure
             {
                 success = false,
-                error = exception.Message
+                error = finalErrorMessage
             };
 
             context.Result = new JsonResult(response)

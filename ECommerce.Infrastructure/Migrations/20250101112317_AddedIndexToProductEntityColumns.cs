@@ -5,7 +5,7 @@
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedUniqueConstrainForNameInProductAndCategoryEntities : Migration
+    public partial class AddedIndexToProductEntityColumns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,21 +22,12 @@ namespace ECommerce.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Product_Brand",
                 table: "Products",
-                column: "Brand",
-                unique: true,
-                filter: "[Brand] IS NOT NULL");
+                column: "Brand");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_Name",
                 table: "Products",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Category_Name",
-                table: "Categories",
-                column: "Name",
-                unique: true);
+                column: "Name");
         }
 
         /// <inheritdoc />
@@ -49,10 +40,6 @@ namespace ECommerce.Infrastructure.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_Product_Name",
                 table: "Products");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Category_Name",
-                table: "Categories");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Brand",
