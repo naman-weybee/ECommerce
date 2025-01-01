@@ -26,34 +26,34 @@ namespace ECommerce.Domain.Entities
         {
         }
 
-        public Category(string name, string? description, Guid? parentCategoryId = null)
+        public Category(string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;
-            Products = new List<Product>();
-            SubCategories = new List<Category>();
+            Products = products ?? new List<Product>();
+            SubCategories = categories ?? new List<Category>();
         }
 
-        public void CreateCategory(string name, string? description, Guid? parentCategoryId = null)
+        public void CreateCategory(string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
         {
             Id = Guid.NewGuid();
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;
-            Products = new List<Product>();
-            SubCategories = new List<Category>();
+            Products = products ?? new List<Product>();
+            SubCategories = categories ?? new List<Category>();
         }
 
-        public void UpdateCategory(Guid id, string name, string? description, Guid? parentCategoryId = null)
+        public void UpdateCategory(Guid id, string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
         {
             Id = id;
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;
-            Products = new List<Product>();
-            SubCategories = new List<Category>();
+            Products = products ?? new List<Product>();
+            SubCategories = categories ?? new List<Category>();
 
             StatusUpdated();
         }
@@ -80,17 +80,17 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
+        private void SetParentCategory(Category parentCategory)
+        {
+            ParentCategory = parentCategory;
+            ParentCategoryId = parentCategory.Id;
+        }
+
         public void RemoveSubCategory(Category subCategory)
         {
             SubCategories.Remove(subCategory);
 
             StatusUpdated();
-        }
-
-        private void SetParentCategory(Category parentCategory)
-        {
-            ParentCategory = parentCategory;
-            ParentCategoryId = parentCategory.Id;
         }
     }
 }

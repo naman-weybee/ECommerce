@@ -12,11 +12,13 @@ namespace ECommerce.Domain.Aggregates
             : base(entity)
         {
             Category = entity;
+            Category.Products ??= new List<Product>();
+            Category.SubCategories ??= new List<Category>();
         }
 
         public void CreateCategory(Category category)
         {
-            Category.CreateCategory(category.Name, category.Description, category.ParentCategoryId);
+            Category.CreateCategory(category.Name, category.Description, Category.Products, Category.SubCategories, category.ParentCategoryId);
 
             EventType = eEventType.CategoryCreated;
             RaiseDomainEvent();
@@ -24,7 +26,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateCategory(Category category)
         {
-            Category.UpdateCategory(category.Id, category.Name, category.Description, category.ParentCategoryId);
+            Category.UpdateCategory(category.Id, category.Name, category.Description, Category.Products, Category.SubCategories, category.ParentCategoryId);
 
             EventType = eEventType.CategoryUpdated;
             RaiseDomainEvent();
@@ -37,18 +39,18 @@ namespace ECommerce.Domain.Aggregates
 
             Category.AddProduct(product);
 
-            EventType = eEventType.CategoryUpdated;
+            EventType = eEventType.ProductAddedInCategory;
             RaiseDomainEvent();
         }
 
-        public void RemoveProduct(Product product)
+        public void RemoveProduct(Guid productId)
         {
-            if (product == null)
-                throw new ArgumentNullException(nameof(product), "Product cannot be null.");
+            var item = Category.Products.FirstOrDefault(o => o.Id == productId)
+                ?? throw new InvalidOperationException("Product not found.");
 
-            Category.RemoveProduct(product);
+            Category.RemoveProduct(item);
 
-            EventType = eEventType.CategoryUpdated;
+            EventType = eEventType.ProductRemovedFromCategory;
             RaiseDomainEvent();
         }
 
@@ -62,21 +64,21 @@ namespace ECommerce.Domain.Aggregates
 
             Category.AddSubCategory(subCategory);
 
-            EventType = eEventType.CategoryUpdated;
+            EventType = eEventType.SubCategoryAddedInCategory;
             RaiseDomainEvent();
         }
 
-        public void RemoveSubCategory(Category subCategory)
+        public void RemoveSubCategory(Guid subCategoryId)
         {
-            if (subCategory == null)
-                throw new ArgumentNullException(nameof(subCategory), "Subcategory cannot be null.");
+            var subCategory = Category.SubCategories.FirstOrDefault(o => o.Id == subCategoryId)
+                ?? throw new InvalidOperationException("SubCategory not found.");
 
             if (subCategory.Id == Category.Id)
                 throw new InvalidOperationException("A category cannot be its own parent.");
 
             Category.RemoveSubCategory(subCategory);
 
-            EventType = eEventType.CategoryUpdated;
+            EventType = eEventType.SubCategoryRemovedFromCategory;
             RaiseDomainEvent();
         }
 

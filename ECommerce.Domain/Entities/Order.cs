@@ -34,7 +34,7 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; set; }
 
-        public Order(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
+        public Order(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = Guid.NewGuid();
             UserId = userId;
@@ -42,10 +42,10 @@ namespace ECommerce.Domain.Entities
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            OrderItems = new List<OrderItem>();
+            OrderItems = orderItems ?? new List<OrderItem>();
         }
 
-        public void CreateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
+        public void CreateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = Guid.NewGuid();
             UserId = userId;
@@ -53,10 +53,10 @@ namespace ECommerce.Domain.Entities
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            OrderItems = new List<OrderItem>();
+            OrderItems = orderItems ?? new List<OrderItem>();
         }
 
-        public void UpdateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod)
+        public void UpdateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = id;
             UserId = userId;
@@ -64,7 +64,7 @@ namespace ECommerce.Domain.Entities
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            OrderItems = new List<OrderItem>();
+            OrderItems = orderItems ?? new List<OrderItem>();
 
             StatusUpdated();
         }
@@ -72,6 +72,7 @@ namespace ECommerce.Domain.Entities
         public void AddOrderItem(OrderItem orderItem)
         {
             OrderItems.Add(orderItem);
+
             UpdateTotalAmount();
             StatusUpdated();
         }
@@ -79,6 +80,7 @@ namespace ECommerce.Domain.Entities
         public void RemoveOrderItem(OrderItem orderItem)
         {
             OrderItems.Remove(orderItem);
+
             UpdateTotalAmount();
             StatusUpdated();
         }

@@ -14,6 +14,8 @@
         OrderPaymentMethodUpdated,
         OrderShippingAddressUpdated,
         OrderDeleted,
+        OrderItemAddedInOrder,
+        OrderItemRemovedFromOrder,
 
         ProductCreated,     //Product Evenets
         ProductUpdated,
@@ -25,6 +27,10 @@
         CategoryCreated,    //Category Evenets
         CategoryUpdated,
         CategoryDeleted,
+        ProductAddedInCategory,
+        ProductRemovedFromCategory,
+        SubCategoryAddedInCategory,
+        SubCategoryRemovedFromCategory,
 
         UserCreated,        //User Events
         UserUpdated,

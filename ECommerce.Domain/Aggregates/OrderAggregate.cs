@@ -9,18 +9,16 @@ namespace ECommerce.Domain.Aggregates
     {
         public Order Order { get; set; }
 
-        public List<OrderItem>? OrderItems { get; set; }
-
         public OrderAggregate(Order entity)
              : base(entity)
         {
             Order = entity;
-            OrderItems = entity.OrderItems.ToList() ?? new List<OrderItem>();
+            Order.OrderItems ??= new List<OrderItem>();
         }
 
         public void CreateOrder(Order order)
         {
-            Order.CreateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
+            Order.CreateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderCreated;
             RaiseDomainEvent();
@@ -28,49 +26,50 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateOrder(Order order)
         {
-            Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod);
+            Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
         }
 
-        public void AddOrderItem(Guid productId, int quantity, Money unitPrice)
+        public void AddOrderItem(OrderItem item)
         {
             ValidateOrderForModification();
 
-            if (quantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
+            if (item.Quantity <= 0)
+                throw new ArgumentException("Quantity must be greater than zero.", nameof(item.Quantity));
 
-            if (unitPrice.Amount <= 0)
-                throw new ArgumentException("Unit price must be greater than zero.", nameof(unitPrice));
-
-            var item = new OrderItem(Order.Id, productId, quantity, unitPrice);
+            if (item.UnitPrice.Amount <= 0)
+                throw new ArgumentException("Unit price must be greater than zero.", nameof(item.UnitPrice.Amount));
 
             Order.AddOrderItem(item);
+
+            EventType = eEventType.OrderItemAddedInOrder;
             RaiseDomainEvent();
         }
 
-        public void RemoveOrderItem(Guid orderItemId, Guid productId)
+        public void RemoveOrderItem(Guid orderItemId)
         {
             ValidateOrderForModification();
 
-            var item = OrderItems.Find(o => o.OrderId == Order.Id && o.ProductId == productId && o.Id == orderItemId);
-            if (item == null)
-                throw new InvalidOperationException("Order item not found.");
+            var item = Order.OrderItems.FirstOrDefault(o => o.Id == orderItemId)
+                ?? throw new InvalidOperationException("Order item not found.");
 
             Order.RemoveOrderItem(item);
+
+            EventType = eEventType.OrderItemRemovedFromOrder;
             RaiseDomainEvent();
         }
 
         public void UpdateOrderStatus(eOrderStatus newStatus)
         {
-            if (!OrderItems.Any())
+            if (!Order.OrderItems.Any())
                 throw new InvalidOperationException("Cannot change order status of an order without items.");
 
             if (Order.OrderStatus == newStatus)
                 throw new InvalidOperationException("Order status cannot be same as current status.");
 
-            if (newStatus == eOrderStatus.Canceled && OrderItems.Any(item => item.Quantity > 0))
+            if (newStatus == eOrderStatus.Canceled && Order.OrderItems.Any(item => item.Quantity > 0))
                 throw new InvalidOperationException("Cannot cancel an order with items that are already in the order.");
 
             switch (newStatus)
@@ -112,11 +111,12 @@ namespace ECommerce.Domain.Aggregates
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
 
-            var item = OrderItems.Find(o => o.OrderId == Order.Id && o.ProductId == productId && o.Id == orderItemId);
-            if (item == null)
-                throw new InvalidOperationException("Order item not found.");
+            var item = Order.OrderItems.FirstOrDefault(o => o.ProductId == productId && o.Id == orderItemId)
+                ?? throw new InvalidOperationException("Order item not found.");
 
             item.UpdateQuantity(newQuantity);
+
+            EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
         }
 
@@ -125,11 +125,12 @@ namespace ECommerce.Domain.Aggregates
             if (newUnitPrice.Amount <= 0)
                 throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
 
-            var item = OrderItems.Find(o => o.OrderId == Order.Id && o.ProductId == productId && o.Id == orderItemId);
-            if (item == null)
-                throw new InvalidOperationException("Order item not found.");
+            var item = Order.OrderItems.FirstOrDefault(o => o.ProductId == productId && o.Id == orderItemId)
+                ?? throw new InvalidOperationException("Order item not found.");
 
             item.UpdateUnitPrice(newUnitPrice);
+
+            EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
         }
 
