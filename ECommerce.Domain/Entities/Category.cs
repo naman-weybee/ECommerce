@@ -85,12 +85,5 @@ namespace ECommerce.Domain.Entities
             ParentCategory = parentCategory;
             ParentCategoryId = parentCategory.Id;
         }
-
-        public void RemoveSubCategory(Category subCategory)
-        {
-            SubCategories.Remove(subCategory);
-
-            StatusUpdated();
-        }
     }
 }

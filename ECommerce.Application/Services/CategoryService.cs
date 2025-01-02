@@ -58,6 +58,29 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
+        public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
+        {
+            var category = await _repository.GetByIdAsync(id);
+            var aggregate = new CategoryAggregate(category);
+
+            var subCategory = _mapper.Map<Category>(dto);
+            aggregate.AddSubCategory(subCategory);
+
+            await _repository.UpdateAsync(aggregate);
+        }
+
+        public async Task RemoveSubCategoryAsync(Guid id)
+        {
+            var item = await _repository.GetByIdAsync(id);
+            if (item.ParentCategoryId == null)
+                throw new Exception("Provided Category is not Sub Caegory, Its Parent Category.");
+
+            var aggregate = _mapper.Map<CategoryAggregate>(item);
+            aggregate.RemoveSubCategory();
+
+            await _repository.DeleteAsync(item);
+        }
+
         public async Task DeleteCategoryAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);

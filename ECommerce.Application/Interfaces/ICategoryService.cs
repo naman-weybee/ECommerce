@@ -13,6 +13,10 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateCategoryAsync(CategoryUpdateDTO dto);
 
+        Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto);
+
+        Task RemoveSubCategoryAsync(Guid id);
+
         Task DeleteCategoryAsync(Guid id);
     }
 }

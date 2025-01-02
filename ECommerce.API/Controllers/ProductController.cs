@@ -54,6 +54,7 @@ namespace ECommerce.API.Controllers
             }
 
             response.error = $"Requested Product for Id = {id} is Not Found.";
+
             return NotFound(response);
         }
 
@@ -66,6 +67,7 @@ namespace ECommerce.API.Controllers
             await _service.CreateProductAsync(productDTO);
             response.data = new { Message = "New Product Added Successfully." };
             response.success = true;
+
             return StatusCode(201, response);
         }
 
@@ -78,6 +80,7 @@ namespace ECommerce.API.Controllers
             await _service.UpdateProductAsync(productDTO);
             response.data = new { Message = "Product Modified Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -90,6 +93,7 @@ namespace ECommerce.API.Controllers
             await _service.ProductStockChangeAsync(productDTO, true);
             response.data = new { Message = "Product Stock Increased Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -102,6 +106,7 @@ namespace ECommerce.API.Controllers
             await _service.ProductStockChangeAsync(productDTO, false);
             response.data = new { Message = "Product Stock Decreased Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -114,6 +119,7 @@ namespace ECommerce.API.Controllers
             await _service.ProductPriceChangeAsync(productDTO);
             response.data = new { Message = "Product Price Changed Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -125,6 +131,7 @@ namespace ECommerce.API.Controllers
             await _service.DeleteProductAsync(id);
             response.data = new { Message = $"Product with Id = {id} is Deleted Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
     }

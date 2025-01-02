@@ -32,9 +32,6 @@ namespace ECommerce.Domain.Aggregates
 
         public void DeleteAddress()
         {
-            if (Address.IsDeleted)
-                throw new InvalidOperationException("Cannot delete already deleted Address.");
-
             EventType = eEventType.AddressDeleted;
             RaiseDomainEvent();
         }

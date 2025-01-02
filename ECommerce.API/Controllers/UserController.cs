@@ -54,6 +54,7 @@ namespace ECommerce.API.Controllers
             }
 
             response.error = $"Requested User for Id = {id} is Not Found.";
+
             return NotFound(response);
         }
 
@@ -66,6 +67,7 @@ namespace ECommerce.API.Controllers
             await _service.CreateUserAsync(userDTO);
             response.data = new { Message = "New User Added Successfully." };
             response.success = true;
+
             return StatusCode(201, response);
         }
 
@@ -78,6 +80,7 @@ namespace ECommerce.API.Controllers
             await _service.UpdateUserAsync(userDTO);
             response.data = new { Message = "User Modified Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -89,6 +92,7 @@ namespace ECommerce.API.Controllers
             await _service.DeleteUserAsync(id);
             response.data = new { Message = $"User with Id = {id} is Deleted Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
     }

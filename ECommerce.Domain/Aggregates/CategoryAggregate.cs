@@ -68,25 +68,14 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void RemoveSubCategory(Guid subCategoryId)
+        public void RemoveSubCategory()
         {
-            var subCategory = Category.SubCategories.FirstOrDefault(o => o.Id == subCategoryId)
-                ?? throw new InvalidOperationException("SubCategory not found.");
-
-            if (subCategory.Id == Category.Id)
-                throw new InvalidOperationException("A category cannot be its own parent.");
-
-            Category.RemoveSubCategory(subCategory);
-
             EventType = eEventType.SubCategoryRemovedFromCategory;
             RaiseDomainEvent();
         }
 
         public void DeleteCategory()
         {
-            if (Category.IsDeleted)
-                throw new InvalidOperationException("Cannnot delete already deleted Category.");
-
             EventType = eEventType.CategoryDeleted;
             RaiseDomainEvent();
         }

@@ -63,9 +63,6 @@ namespace ECommerce.Domain.Aggregates
 
         public void DeleteProduct()
         {
-            if (Product.IsDeleted)
-                throw new InvalidOperationException("Cannnot delete already deleted Product.");
-
             EventType = eEventType.ProductDeleted;
             RaiseDomainEvent();
         }

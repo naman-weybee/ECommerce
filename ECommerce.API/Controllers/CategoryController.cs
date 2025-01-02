@@ -54,6 +54,7 @@ namespace ECommerce.API.Controllers
             }
 
             response.error = $"Requested Category for Id = {id} is Not Found.";
+
             return NotFound(response);
         }
 
@@ -66,6 +67,7 @@ namespace ECommerce.API.Controllers
             await _service.CreateCategoryAsync(dto);
             response.data = new { Message = "New Category Added Successfully." };
             response.success = true;
+
             return StatusCode(201, response);
         }
 
@@ -78,6 +80,33 @@ namespace ECommerce.API.Controllers
             await _service.UpdateCategoryAsync(dto);
             response.data = new { Message = "Category Modified Successfully." };
             response.success = true;
+
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("AddSubCategory/{id}")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> AddSubCategory(Guid id, [FromBody] CategoryCreateDTO dto)
+        {
+            var response = new ResponseStructure();
+
+            await _service.AddSubCategoryAsync(id, dto);
+            response.data = new { Message = "SubCategory Added Successfully." };
+            response.success = true;
+
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("RemoveSubCategory/{id}")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> RemoveSubCategory(Guid id)
+        {
+            var response = new ResponseStructure();
+
+            await _service.RemoveSubCategoryAsync(id);
+            response.data = new { Message = "SubCategory Removed Successfully." };
+            response.success = true;
+
             return StatusCode(200, response);
         }
 
@@ -89,6 +118,7 @@ namespace ECommerce.API.Controllers
             await _service.DeleteCategoryAsync(id);
             response.data = new { Message = $"Category with Id = {id} is Deleted Successfully." };
             response.success = true;
+
             return StatusCode(200, response);
         }
     }

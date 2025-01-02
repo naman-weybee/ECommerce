@@ -104,9 +104,6 @@ namespace ECommerce.Domain.Aggregates
 
         public void DeleteUser()
         {
-            if (User.IsDeleted)
-                throw new InvalidOperationException("Cannot delete already deleted User.");
-
             EventType = eEventType.UserDeleted;
             RaiseDomainEvent();
         }
