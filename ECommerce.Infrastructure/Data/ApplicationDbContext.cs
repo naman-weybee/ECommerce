@@ -54,7 +54,9 @@ namespace ECommerce.Infrastructure.Data
 
             modelBuilder
             .ApplyConfiguration(new ProductConfiguration())
-            .ApplyConfiguration(new CategoryConfiguration());
+            .ApplyConfiguration(new CategoryConfiguration())
+            .ApplyConfiguration(new AddressConfiguration())
+            .ApplyConfiguration(new UserConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

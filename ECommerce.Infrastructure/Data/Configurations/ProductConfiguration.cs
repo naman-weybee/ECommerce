@@ -10,14 +10,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder
-            .Property(p => p.Price)
-            .HasConversion(new MoneyConverter());
-
-            builder
-            .Property(p => p.Currency)
-            .HasConversion(new CurrencyConverter());
-
-            builder
             .HasIndex(p => p.Id)
             .HasDatabaseName("IX_Product_Id")
             .IsUnique();
@@ -25,6 +17,14 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .HasIndex(p => p.Name)
             .HasDatabaseName("IX_Product_Name");
+
+            builder
+            .Property(p => p.Price)
+            .HasConversion(new MoneyConverter());
+
+            builder
+            .Property(p => p.Currency)
+            .HasConversion(new CurrencyConverter());
 
             builder
             .HasIndex(p => p.Brand)

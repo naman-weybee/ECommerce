@@ -18,7 +18,7 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .HasDatabaseName("IX_Category_Name");
 
             builder
-            .HasIndex(p => new { p.Name, p.ParentCategoryId })
+            .HasIndex(c => new { c.Name, c.ParentCategoryId })
             .HasDatabaseName("IX_Category_Name_ParentCategoryId")
             .IsUnique();
         }
