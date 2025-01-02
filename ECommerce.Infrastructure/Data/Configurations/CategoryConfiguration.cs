@@ -9,13 +9,17 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder
-            .HasIndex(p => p.Id)
+            .HasIndex(c => c.Id)
             .HasDatabaseName("IX_Category_Id")
             .IsUnique();
 
             builder
-            .HasIndex(p => p.Name)
-            .HasDatabaseName("IX_Category_Name")
+            .HasIndex(c => c.Name)
+            .HasDatabaseName("IX_Category_Name");
+
+            builder
+            .HasIndex(p => new { p.Name, p.ParentCategoryId })
+            .HasDatabaseName("IX_Category_Name_ParentCategoryId")
             .IsUnique();
         }
     }

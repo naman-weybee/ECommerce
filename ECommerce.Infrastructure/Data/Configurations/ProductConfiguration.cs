@@ -29,6 +29,16 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .HasIndex(p => p.Brand)
             .HasDatabaseName("IX_Product_Brand");
+
+            builder
+            .HasIndex(p => p.SKU)
+            .HasDatabaseName("IX_Product_SKU")
+            .IsUnique();
+
+            builder
+            .HasIndex(p => new { p.Name, p.Brand, p.CategoryId })
+            .HasDatabaseName("IX_Product_Name_Brand_CategoryId")
+            .IsUnique();
         }
     }
 }
