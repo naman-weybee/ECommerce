@@ -25,6 +25,8 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<Address, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
             ConfigureMappings<AddressAggregate, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
+
+            ConfigureMappings<Product, ProductDTO, ProductStockChangeDTO, ProductPriceChangeDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()

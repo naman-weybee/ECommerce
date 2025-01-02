@@ -81,6 +81,42 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
+        [HttpPut("IncreaseStock")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO productDTO)
+        {
+            var response = new ResponseStructure();
+
+            await _service.ProductStockChangeAsync(productDTO, true);
+            response.data = new { Message = "Product Stock Increased Successfully." };
+            response.success = true;
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("DecreaseStock")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO productDTO)
+        {
+            var response = new ResponseStructure();
+
+            await _service.ProductStockChangeAsync(productDTO, false);
+            response.data = new { Message = "Product Stock Decreased Successfully." };
+            response.success = true;
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("PriceChange")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO productDTO)
+        {
+            var response = new ResponseStructure();
+
+            await _service.ProductPriceChangeAsync(productDTO);
+            response.data = new { Message = "Product Price Changed Successfully." };
+            response.success = true;
+            return StatusCode(200, response);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {

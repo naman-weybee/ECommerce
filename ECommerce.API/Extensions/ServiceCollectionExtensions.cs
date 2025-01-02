@@ -71,6 +71,8 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<ProductDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<ProductCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<ProductUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductStockChangeDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<ProductPriceChangeDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<CategoryDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<CategoryCreateDTOValidator>();
