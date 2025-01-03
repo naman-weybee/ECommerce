@@ -34,6 +34,10 @@ namespace ECommerce.Domain.Entities
 
         public ICollection<OrderItem> OrderItems { get; set; }
 
+        public Order()
+        {
+        }
+
         public Order(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = Guid.NewGuid();

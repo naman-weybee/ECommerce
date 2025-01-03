@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
@@ -19,12 +19,16 @@ namespace ECommerce.API.Mappings
             ConfigureMappings<OrderAggregate, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
 
             ConfigureMappings<OrderItem, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
+            ConfigureMappings<OrderItemAggregate, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
 
             ConfigureMappings<User, UserDTO, UserCreateDTO, UserUpdateDTO>();
             ConfigureMappings<UserAggregate, UserDTO, UserCreateDTO, UserUpdateDTO>();
 
             ConfigureMappings<Address, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
             ConfigureMappings<AddressAggregate, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
+
+            ConfigureMappings<CartItem, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
+            ConfigureMappings<CartItemAggregate, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
 
             ConfigureMappings<Product, ProductDTO, ProductStockChangeDTO, ProductPriceChangeDTO>();
         }

@@ -35,18 +35,18 @@ namespace ECommerce.Application.Services
 
         public async Task CreateUserAsync(UserCreateDTO dto)
         {
-            var user = _mapper.Map<User>(dto);
-            var aggregate = new UserAggregate(user);
-            aggregate.CreateUser(user);
+            var item = _mapper.Map<User>(dto);
+            var aggregate = new UserAggregate(item);
+            aggregate.CreateUser(item);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateUserAsync(UserUpdateDTO dto)
         {
-            var user = _mapper.Map<User>(dto);
-            var aggregate = _mapper.Map<UserAggregate>(user);
-            aggregate.UpdateUser(user);
+            var item = _mapper.Map<User>(dto);
+            var aggregate = _mapper.Map<UserAggregate>(item);
+            aggregate.UpdateUser(item);
 
             await _repository.UpdateAsync(aggregate);
         }

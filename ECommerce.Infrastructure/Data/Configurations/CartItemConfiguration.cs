@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ECommerce.Infrastructure.Data.Configurations
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
+        public void Configure(EntityTypeBuilder<CartItem> builder)
         {
             builder
-            .HasIndex(o => o.Id)
-            .HasDatabaseName("IX_OrderItem_Id")
+            .HasIndex(c => c.Id)
+            .HasDatabaseName("IX_CartItem_Id")
             .IsUnique();
 
             builder
@@ -19,8 +19,8 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .HasConversion(new MoneyConverter());
 
             builder
-            .HasIndex(o => new { o.OrderId, o.ProductId })
-            .HasDatabaseName("IX_OrderItem_OrderId_ProductId")
+            .HasIndex(c => new { c.UserId, c.ProductId })
+            .HasDatabaseName("IX_CartItem_UserId_ProductId")
             .IsUnique();
         }
     }

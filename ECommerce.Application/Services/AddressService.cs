@@ -35,18 +35,18 @@ namespace ECommerce.Application.Services
 
         public async Task CreateAddressAsync(AddressCreateDTO dto)
         {
-            var address = _mapper.Map<Address>(dto);
-            var aggregate = new AddressAggregate(address);
-            aggregate.CreateAddress(address);
+            var item = _mapper.Map<Address>(dto);
+            var aggregate = new AddressAggregate(item);
+            aggregate.CreateAddress(item);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateAddressAsync(AddressUpdateDTO dto)
         {
-            var address = _mapper.Map<Address>(dto);
-            var aggregate = new AddressAggregate(address);
-            aggregate.UpdateAddress(address);
+            var item = _mapper.Map<Address>(dto);
+            var aggregate = new AddressAggregate(item);
+            aggregate.UpdateAddress(item);
 
             await _repository.UpdateAsync(aggregate);
         }

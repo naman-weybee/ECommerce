@@ -23,6 +23,10 @@
         OrderItemQuantityUpdated,
         OrderItemUnitPriceUpdated,
 
+        CartItemCreated,     //Cart Item Evenets
+        CartItemUpdated,
+        CartItemDeleted,
+
         ProductCreated,     //Product Evenets
         ProductUpdated,
         ProductStockIncreased,

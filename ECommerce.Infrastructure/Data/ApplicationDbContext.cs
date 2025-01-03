@@ -27,6 +27,8 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<OrderItem> OrderItems { get; set; }
 
+        public DbSet<CartItem> CartItems { get; set; }
+
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<Gender> Gender { get; set; }
@@ -71,9 +73,10 @@ namespace ECommerce.Infrastructure.Data
             modelBuilder
             .ApplyConfiguration(new ProductConfiguration())
             .ApplyConfiguration(new CategoryConfiguration())
-            .ApplyConfiguration(new AddressConfiguration())
             .ApplyConfiguration(new OrderItemConfiguration())
+            .ApplyConfiguration(new CartItemConfiguration())
             .ApplyConfiguration(new OrderConfiguration())
+            .ApplyConfiguration(new AddressConfiguration())
             .ApplyConfiguration(new GenderConfiguration())
             .ApplyConfiguration(new RoleConfiguration())
             .ApplyConfiguration(new UserConfiguration());

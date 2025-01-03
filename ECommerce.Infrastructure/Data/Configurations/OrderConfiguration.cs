@@ -1,4 +1,5 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.ValueObjects.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,6 +17,10 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .HasIndex(o => o.UserId)
             .HasDatabaseName("IX_Order_UserId");
+
+            builder
+            .Property(p => p.TotalAmount)
+            .HasConversion(new MoneyConverter());
 
             builder
             .HasIndex(o => o.AddressId)

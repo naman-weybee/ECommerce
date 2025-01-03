@@ -42,17 +42,17 @@ namespace ECommerce.Application.Services
 
         public async Task CreateCategoryAsync(CategoryCreateDTO dto)
         {
-            var category = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(category);
-            aggregate.CreateCategory(category);
+            var item = _mapper.Map<Category>(dto);
+            var aggregate = new CategoryAggregate(item);
+            aggregate.CreateCategory(item);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateCategoryAsync(CategoryUpdateDTO dto)
         {
-            var category = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(category);
+            var item = _mapper.Map<Category>(dto);
+            var aggregate = new CategoryAggregate(item);
             aggregate.UpdateCategory(aggregate.Category);
 
             await _repository.UpdateAsync(aggregate);
@@ -60,8 +60,8 @@ namespace ECommerce.Application.Services
 
         public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
         {
-            var category = await _repository.GetByIdAsync(id);
-            var aggregate = new CategoryAggregate(category);
+            var item = await _repository.GetByIdAsync(id);
+            var aggregate = new CategoryAggregate(item);
 
             var subCategory = _mapper.Map<Category>(dto);
             aggregate.AddSubCategory(subCategory);

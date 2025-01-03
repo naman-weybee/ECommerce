@@ -42,17 +42,17 @@ namespace ECommerce.Application.Services
 
         public async Task CreateOrderAsync(OrderCreateDTO dto)
         {
-            var order = _mapper.Map<Order>(dto);
-            var aggregate = new OrderAggregate(order);
-            aggregate.CreateOrder(order);
+            var item = _mapper.Map<Order>(dto);
+            var aggregate = new OrderAggregate(item);
+            aggregate.CreateOrder(item);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateOrderAsync(OrderUpdateDTO dto)
         {
-            var order = _mapper.Map<Order>(dto);
-            var aggregate = _mapper.Map<OrderAggregate>(order);
+            var item = _mapper.Map<Order>(dto);
+            var aggregate = _mapper.Map<OrderAggregate>(item);
             aggregate.UpdateOrder(aggregate.Order);
 
             await _repository.UpdateAsync(aggregate);

@@ -35,17 +35,17 @@ namespace ECommerce.Application.Services
 
         public async Task CreateProductAsync(ProductCreateDTO dto)
         {
-            var product = _mapper.Map<Product>(dto);
-            var aggregate = new ProductAggregate(product);
-            aggregate.CreateProduct(product);
+            var item = _mapper.Map<Product>(dto);
+            var aggregate = new ProductAggregate(item);
+            aggregate.CreateProduct(item);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateProductAsync(ProductUpdateDTO dto)
         {
-            var product = _mapper.Map<Product>(dto);
-            var aggregate = _mapper.Map<ProductAggregate>(product);
+            var item = _mapper.Map<Product>(dto);
+            var aggregate = _mapper.Map<ProductAggregate>(item);
             aggregate.UpdateProduct(aggregate.Product);
 
             await _repository.UpdateAsync(aggregate);
@@ -53,8 +53,8 @@ namespace ECommerce.Application.Services
 
         public async Task ProductStockChangeAsync(ProductStockChangeDTO dto, bool isIncrease)
         {
-            var product = await _repository.GetByIdAsync(dto.Id);
-            var aggregate = _mapper.Map<ProductAggregate>(product);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            var aggregate = _mapper.Map<ProductAggregate>(item);
 
             if (isIncrease)
                 aggregate.IncreaseStock(dto.Quantity);
@@ -66,8 +66,8 @@ namespace ECommerce.Application.Services
 
         public async Task ProductPriceChangeAsync(ProductPriceChangeDTO dto)
         {
-            var product = await _repository.GetByIdAsync(dto.Id);
-            var aggregate = _mapper.Map<ProductAggregate>(product);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            var aggregate = _mapper.Map<ProductAggregate>(item);
             aggregate.ChangePrice(dto.Price);
 
             await _repository.UpdateAsync(aggregate);

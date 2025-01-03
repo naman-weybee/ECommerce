@@ -32,7 +32,11 @@ namespace ECommerce.API.Extensions
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IOrderItemService, OrderItemService>();
+            services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IPaginationService, PaginationService>();
 
@@ -43,7 +47,11 @@ namespace ECommerce.API.Extensions
         {
             services.AddScoped<IRepository<ProductAggregate, Product>, Repository<ProductAggregate, Product>>();
             services.AddScoped<IRepository<CategoryAggregate, Category>, Repository<CategoryAggregate, Category>>();
+            services.AddScoped<IRepository<OrderItemAggregate, OrderItem>, Repository<OrderItemAggregate, OrderItem>>();
+            services.AddScoped<IRepository<CartItemAggregate, CartItem>, Repository<CartItemAggregate, CartItem>>();
             services.AddScoped<IRepository<OrderAggregate, Order>, Repository<OrderAggregate, Order>>();
+            services.AddScoped<IRepository<AddressAggregate, Address>, Repository<AddressAggregate, Address>>();
+            services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
             {
@@ -78,13 +86,18 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<CategoryCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<CategoryUpdateDTOValidator>();
 
-            services.AddValidatorsFromAssemblyContaining<OrderDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderUpdateDTOValidator>();
-
             services.AddValidatorsFromAssemblyContaining<OrderItemDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<OrderItemCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<OrderItemUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderItemQuantityUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<CartItemDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CartItemCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CartItemUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<OrderDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderUpdateDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<AddressDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();
