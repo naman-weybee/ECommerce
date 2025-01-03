@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
-    public class User : IdentityUser
+    public class User
     {
         public Guid Id { get; set; }
 

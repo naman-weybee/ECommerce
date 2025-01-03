@@ -2,6 +2,7 @@
 using ECommerce.Domain.ValueObjects.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace ECommerce.Infrastructure.Data.Configurations
 {
@@ -25,6 +26,18 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .HasIndex(o => o.AddressId)
             .HasDatabaseName("IX_Order_AddressId");
+
+            builder
+            .HasOne(o => o.User)
+            .WithMany()
+            .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+            .HasOne(o => o.ShippingAddress)
+            .WithMany()
+            .HasForeignKey(o => o.AddressId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

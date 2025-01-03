@@ -22,6 +22,12 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .HasIndex(o => new { o.OrderId, o.ProductId })
             .HasDatabaseName("IX_OrderItem_OrderId_ProductId")
             .IsUnique();
+
+            builder
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.OrderItems)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
