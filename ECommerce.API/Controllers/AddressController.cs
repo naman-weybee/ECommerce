@@ -60,11 +60,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPost]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> CreateAddress([FromBody] AddressCreateDTO addressDTO)
+        public async Task<IActionResult> CreateAddress([FromBody] AddressCreateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.CreateAddressAsync(addressDTO);
+            await _service.CreateAddressAsync(dto);
             response.data = new { Message = "New Address Added Successfully." };
             response.success = true;
 
@@ -73,11 +73,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPut]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateDTO addressDTO)
+        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.UpdateAddressAsync(addressDTO);
+            await _service.UpdateAddressAsync(dto);
             response.data = new { Message = "Address Modified Successfully." };
             response.success = true;
 

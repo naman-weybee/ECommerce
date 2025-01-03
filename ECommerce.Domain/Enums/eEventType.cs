@@ -17,6 +17,12 @@
         OrderItemAddedInOrder,
         OrderItemRemovedFromOrder,
 
+        OrderItemCreated,     //Order Item Evenets
+        OrderItemUpdated,
+        OrderItemDeleted,
+        OrderItemQuantityUpdated,
+        OrderItemUnitPriceUpdated,
+
         ProductCreated,     //Product Evenets
         ProductUpdated,
         ProductStockIncreased,

@@ -38,7 +38,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new AddressEvent(Address.Id, Address.Street, Address.City, Address.State, Address.PostalCode, Address.Country, EventType);
+            var domainEvent = new AddressEvent(Address.Id, EventType);
             RaiseDomainEvent(domainEvent);
         }
 

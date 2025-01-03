@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/v1/[controller]")]
-    public class UserController : Controller
+    public class OrderItemController : ControllerBase
     {
-        private readonly IUserService _service;
+        private readonly IOrderItemService _service;
 
-        public UserController(IUserService service)
+        public OrderItemController(IOrderItemService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllOrderItems([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllUsersAsync(requestParams);
+            var data = await _service.GetAllOrderItemsAsync(requestParams);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -41,11 +41,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetOrderItemById(Guid id)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetUserByIdAsync(id);
+            var data = await _service.GetOrderItemByIdAsync(id);
             if (data != null)
             {
                 response.data = data;
@@ -53,44 +53,44 @@ namespace ECommerce.API.Controllers
                 return StatusCode(200, data);
             }
 
-            response.error = $"Requested User for Id = {id} is Not Found.";
+            response.error = $"Requested Order Item for Id = {id} is Not Found.";
 
             return NotFound(response);
         }
 
         [HttpPost]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.CreateUserAsync(dto);
-            response.data = new { Message = "New User Added Successfully." };
+            await _service.CreateOrderItemAsync(dto);
+            response.data = new { Message = "New Order Item Successfully." };
             response.success = true;
 
             return StatusCode(201, response);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
+        public async Task<IActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItemUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.UpdateUserAsync(dto);
-            response.data = new { Message = "User Modified Successfully." };
+            await _service.UpdateOrderItemAsync(dto);
+            response.data = new { Message = "Order Item Modified Successfully." };
             response.success = true;
 
             return StatusCode(200, response);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteOrderItem(Guid id)
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteUserAsync(id);
-            response.data = new { Message = $"User with Id = {id} is Deleted Successfully." };
+            await _service.DeleteOrderItemAsync(id);
+            response.data = new { Message = $"Order Item with Id = {id} is Deleted Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

@@ -106,34 +106,6 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateQuantity(Guid orderItemId, Guid productId, int newQuantity)
-        {
-            if (newQuantity <= 0)
-                throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
-
-            var item = Order.OrderItems.FirstOrDefault(o => o.ProductId == productId && o.Id == orderItemId)
-                ?? throw new InvalidOperationException("Order item not found.");
-
-            item.UpdateQuantity(newQuantity);
-
-            EventType = eEventType.OrderUpdated;
-            RaiseDomainEvent();
-        }
-
-        public void UpdateUnitPrice(Guid orderItemId, Guid productId, Money newUnitPrice)
-        {
-            if (newUnitPrice.Amount <= 0)
-                throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
-
-            var item = Order.OrderItems.FirstOrDefault(o => o.ProductId == productId && o.Id == orderItemId)
-                ?? throw new InvalidOperationException("Order item not found.");
-
-            item.UpdateUnitPrice(newUnitPrice);
-
-            EventType = eEventType.OrderUpdated;
-            RaiseDomainEvent();
-        }
-
         private void ValidateOrderForModification()
         {
             if (Order.OrderStatus == eOrderStatus.Canceled)

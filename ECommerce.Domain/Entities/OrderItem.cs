@@ -27,6 +27,24 @@ namespace ECommerce.Domain.Entities
             UnitPrice = unitPrice;
         }
 
+        public void CreateOrderItem(Guid orderId, Guid productId, int quantity, Money unitPrice)
+        {
+            Id = Guid.NewGuid();
+            OrderId = orderId;
+            ProductId = productId;
+            Quantity = quantity;
+            UnitPrice = unitPrice;
+        }
+
+        public void UpdateOrderItem(Guid id, Guid orderId, Guid productId, int quantity, Money unitPrice)
+        {
+            Id = id;
+            OrderId = orderId;
+            ProductId = productId;
+            Quantity = quantity;
+            UnitPrice = unitPrice;
+        }
+
         public Money TotalAmount => UnitPrice.Multiply(Quantity);
 
         public void UpdateQuantity(int newQuantity)

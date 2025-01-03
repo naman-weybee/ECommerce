@@ -60,11 +60,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPost]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO productDTO)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.CreateProductAsync(productDTO);
+            await _service.CreateProductAsync(dto);
             response.data = new { Message = "New Product Added Successfully." };
             response.success = true;
 
@@ -73,11 +73,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPut]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO productDTO)
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.UpdateProductAsync(productDTO);
+            await _service.UpdateProductAsync(dto);
             response.data = new { Message = "Product Modified Successfully." };
             response.success = true;
 
@@ -86,11 +86,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPut("IncreaseStock")]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO productDTO)
+        public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.ProductStockChangeAsync(productDTO, true);
+            await _service.ProductStockChangeAsync(dto, true);
             response.data = new { Message = "Product Stock Increased Successfully." };
             response.success = true;
 
@@ -99,11 +99,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPut("DecreaseStock")]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO productDTO)
+        public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.ProductStockChangeAsync(productDTO, false);
+            await _service.ProductStockChangeAsync(dto, false);
             response.data = new { Message = "Product Stock Decreased Successfully." };
             response.success = true;
 
@@ -112,11 +112,11 @@ namespace ECommerce.API.Controllers
 
         [HttpPut("PriceChange")]
         [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO productDTO)
+        public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.ProductPriceChangeAsync(productDTO);
+            await _service.ProductPriceChangeAsync(dto);
             response.data = new { Message = "Product Price Changed Successfully." };
             response.success = true;
 
