@@ -13,6 +13,10 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateCartItemAsync(CartItemUpdateDTO dto);
 
+        Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto);
+
+        Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto);
+
         Task DeleteCartItemAsync(Guid id);
     }
 }

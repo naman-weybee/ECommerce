@@ -1,7 +1,6 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
-using ECommerce.Domain.ValueObjects;
 
 namespace ECommerce.Domain.Aggregates
 {

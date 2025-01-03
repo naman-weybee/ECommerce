@@ -1,4 +1,3 @@
-using ECommerce.Domain.ValueObjects;
 using ECommerce.Domain.Enums;
 
 namespace ECommerce.Domain.Events

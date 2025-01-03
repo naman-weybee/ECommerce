@@ -84,6 +84,32 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
+        [HttpPut("UpdateQuantity/{id}")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> UpdateQuantity(Guid id, [FromBody] CartItemQuantityUpdateDTO dto)
+        {
+            var response = new ResponseStructure();
+
+            await _service.UpdateQuantityAsync(dto);
+            response.data = new { Message = "Quantity Modified Successfully." };
+            response.success = true;
+
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("UpdateUnitPrice/{id}")]
+        [ServiceFilter(typeof(ExecutionFilter))]
+        public async Task<IActionResult> UpdateUnitPrice(Guid id, [FromBody] CartItemUnitPriceUpdateDTO dto)
+        {
+            var response = new ResponseStructure();
+
+            await _service.UpdateUnitPriceAsync(dto);
+            response.data = new { Message = "Unit Price Modified Successfully." };
+            response.success = true;
+
+            return StatusCode(200, response);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {

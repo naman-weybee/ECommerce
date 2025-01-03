@@ -51,6 +51,24 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
+        public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
+        {
+            var item = _mapper.Map<CartItem>(dto);
+            var aggregate = new CartItemAggregate(item);
+            aggregate.UpdateQuantity(dto.Quantity);
+
+            await _repository.UpdateAsync(aggregate);
+        }
+
+        public async Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto)
+        {
+            var item = _mapper.Map<CartItem>(dto);
+            var aggregate = new CartItemAggregate(item);
+            aggregate.UpdateUnitPrice(dto.UnitPrice);
+
+            await _repository.UpdateAsync(aggregate);
+        }
+
         public async Task DeleteCartItemAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);

@@ -1,6 +1,7 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using ECommerce.Domain.ValueObjects;
 
 namespace ECommerce.Domain.Aggregates
 {
@@ -27,6 +28,28 @@ namespace ECommerce.Domain.Aggregates
             CartItem.UpdateCartItem(cartItem.Id, cartItem.UserId, cartItem.ProductId, cartItem.Quantity, cartItem.UnitPrice);
 
             EventType = eEventType.CartItemUpdated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateQuantity(int newQuantity)
+        {
+            if (newQuantity <= 0)
+                throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
+
+            CartItem.UpdateQuantity(newQuantity);
+
+            EventType = eEventType.OrderItemQuantityUpdated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateUnitPrice(Money newUnitPrice)
+        {
+            if (newUnitPrice.Amount <= 0)
+                throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
+
+            CartItem.UpdateUnitPrice(newUnitPrice);
+
+            EventType = eEventType.OrderItemUnitPriceUpdated;
             RaiseDomainEvent();
         }
 
