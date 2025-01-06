@@ -7,6 +7,9 @@ namespace ECommerce.API.Validators
     {
         public UserUpdateDTOValidator()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty().WithMessage("User ID is required.");
+
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required.")
                 .MaximumLength(100).WithMessage("First Name cannot exceed 100 characters.");

@@ -10,9 +10,6 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("User Id is required.");
 
-            RuleFor(x => x.OrderStatus)
-                .IsInEnum().WithMessage("Invalid order status.");
-
             RuleFor(x => x.TotalAmount)
                 .NotNull().WithMessage("Total amount is required.");
 
@@ -22,10 +19,6 @@ namespace ECommerce.API.Validators
 
             RuleFor(x => x.ShippingAddressId)
                 .NotEmpty().WithMessage("ShippingAddressId is required.");
-
-            RuleFor(x => x.OrderItems)
-                .NotEmpty().WithMessage("Order items are required.")
-                .Must(items => items?.Count > 0).WithMessage("Order must contain at least one item.");
         }
     }
 }

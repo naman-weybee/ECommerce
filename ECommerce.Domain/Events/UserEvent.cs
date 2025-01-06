@@ -12,7 +12,7 @@ namespace ECommerce.Domain.Events
 
         public string Password { get; }
 
-        public string Role { get; }
+        public Guid RoleId { get; }
 
         public bool IsActive { get; set; } = true;
 
@@ -22,11 +22,10 @@ namespace ECommerce.Domain.Events
 
         public bool IsSubscribedToNotifications { get; set; }
 
-        public UserEvent(Guid userId, string email, string phoneNumber, string password, string role, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications, eEventType eventType)
+        public UserEvent(Guid userId, string email, string phoneNumber, string password, Guid roleId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications, eEventType eventType)
         {
             if (userId == Guid.Empty)
                 throw new ArgumentException("UserId cannot be empty.", nameof(userId));
-
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("Email cannot be empty.", nameof(email));
 
@@ -36,14 +35,14 @@ namespace ECommerce.Domain.Events
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("Password cannot be empty.", nameof(password));
 
-            if (string.IsNullOrWhiteSpace(role))
-                throw new ArgumentException("Role cannot be empty.", nameof(role));
+            if (roleId == Guid.Empty)
+                throw new ArgumentException("RoleId cannot be empty.", nameof(roleId));
 
             UserId = userId;
             Email = email;
             PhoneNumber = phoneNumber;
             Password = password;
-            Role = role;
+            RoleId = roleId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             IsPhoneNumberVerified = isPhoneNumberVerified;

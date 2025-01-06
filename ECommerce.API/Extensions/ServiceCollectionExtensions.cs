@@ -1,4 +1,5 @@
-﻿using ECommerce.API.Filters;
+﻿using ECommerce.API.Conventions;
+using ECommerce.API.Filters;
 using ECommerce.API.Mappings;
 using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
@@ -13,7 +14,9 @@ using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace ECommerce.API.Extensions
 {
@@ -53,8 +56,15 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<AddressAggregate, Address>, Repository<AddressAggregate, Address>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
 
-            services.AddControllers().AddNewtonsoftJson(options =>
+            services.AddControllers(options =>
             {
+                options.Filters.Add(new ApiControllerAttribute());
+                options.Conventions.Add(new RoutePrefixConvention("api/v1"));
+                options.Filters.Add<ExecutionFilter>();
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 options.SerializerSettings.Converters.Add(new MoneyJsonConverter());
                 options.SerializerSettings.Converters.Add(new CurrencyJsonConverter());
             });

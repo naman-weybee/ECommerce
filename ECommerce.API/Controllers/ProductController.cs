@@ -1,5 +1,4 @@
-﻿using ECommerce.API.Filters;
-using ECommerce.Application.DTOs;
+﻿using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
     public class ProductController : Controller
     {
         private readonly IProductService _service;
@@ -37,7 +34,7 @@ namespace ECommerce.API.Controllers
                 response.success = true;
             }
 
-            return Ok(response);
+            return StatusCode(200, response);
         }
 
         [HttpGet("{id}")]
@@ -50,16 +47,12 @@ namespace ECommerce.API.Controllers
             {
                 response.data = data;
                 response.success = true;
-                return StatusCode(200, data);
             }
 
-            response.error = $"Requested Product for Id = {id} is Not Found.";
-
-            return NotFound(response);
+            return StatusCode(200, response);
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
         {
             var response = new ResponseStructure();
@@ -72,7 +65,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
         {
             var response = new ResponseStructure();
@@ -85,7 +77,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("IncreaseStock")]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
@@ -98,7 +89,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("DecreaseStock")]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
@@ -111,7 +101,6 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("PriceChange")]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO dto)
         {
             var response = new ResponseStructure();

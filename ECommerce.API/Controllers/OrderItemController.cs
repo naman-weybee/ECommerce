@@ -1,4 +1,3 @@
-using ECommerce.API.Filters;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class OrderItemController : ControllerBase
     {
         private readonly IOrderItemService _service;
@@ -37,7 +34,7 @@ namespace ECommerce.API.Controllers
                 response.success = true;
             }
 
-            return Ok(response);
+            return StatusCode(200, response);
         }
 
         [HttpGet("{id}")]
@@ -50,16 +47,12 @@ namespace ECommerce.API.Controllers
             {
                 response.data = data;
                 response.success = true;
-                return StatusCode(200, data);
             }
 
-            response.error = $"Requested Order Item for Id = {id} is Not Found.";
-
-            return NotFound(response);
+            return StatusCode(200, response);
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(ExecutionFilter))]
         public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
         {
             var response = new ResponseStructure();
@@ -71,9 +64,8 @@ namespace ECommerce.API.Controllers
             return StatusCode(201, response);
         }
 
-        [HttpPut("{id}")]
-        [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateOrderItem(Guid id, [FromBody] OrderItemUpdateDTO dto)
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderItem([FromBody] OrderItemUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -84,9 +76,8 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpPut("UpdateQuantity/{id}")]
-        [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateQuantity(Guid id, [FromBody] OrderItemQuantityUpdateDTO dto)
+        [HttpPut("UpdateQuantity")]
+        public async Task<IActionResult> UpdateQuantity([FromBody] OrderItemQuantityUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -97,9 +88,8 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpPut("UpdateUnitPrice/{id}")]
-        [ServiceFilter(typeof(ExecutionFilter))]
-        public async Task<IActionResult> UpdateUnitPrice(Guid id, [FromBody] OrderItemUnitPriceUpdateDTO dto)
+        [HttpPut("UpdateUnitPrice")]
+        public async Task<IActionResult> UpdateUnitPrice([FromBody] OrderItemUnitPriceUpdateDTO dto)
         {
             var response = new ResponseStructure();
 

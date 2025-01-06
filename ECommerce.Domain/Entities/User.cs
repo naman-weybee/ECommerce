@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
-    public class User
+    public class User : Base
     {
         public Guid Id { get; set; }
 
@@ -45,14 +45,6 @@ namespace ECommerce.Domain.Entities
         public bool IsPhoneNumberVerified { get; set; }
 
         public bool IsSubscribedToNotifications { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedDate { get; set; }
-
-        public DateTime? DeletedDate { get; set; }
-
-        public bool IsDeleted { get; set; }
 
         public User()
         {
@@ -166,11 +158,6 @@ namespace ECommerce.Domain.Entities
         {
             IsSubscribedToNotifications = isSubscribedToNotifications;
             StatusUpdated();
-        }
-
-        public void StatusUpdated()
-        {
-            UpdatedDate = DateTime.UtcNow;
         }
     }
 }

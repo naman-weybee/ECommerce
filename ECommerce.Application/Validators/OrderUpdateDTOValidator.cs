@@ -25,10 +25,6 @@ namespace ECommerce.API.Validators
 
             RuleFor(x => x.ShippingAddressId)
                 .NotEmpty().WithMessage("Shipping address ID is required.");
-
-            RuleFor(x => x.OrderItems)
-                .NotEmpty().WithMessage("Order items are required.")
-                .Must(items => items.Count > 0).WithMessage("Order must contain at least one item.");
         }
     }
 }

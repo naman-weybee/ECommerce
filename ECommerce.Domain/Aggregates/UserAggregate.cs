@@ -110,7 +110,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new UserEvent(User.Id, User.Email, User.PhoneNumber, User.Password, User.Role.Name, User.IsActive, User.IsEmailVerified, User.IsPhoneNumberVerified, User.IsSubscribedToNotifications, EventType);
+            var domainEvent = new UserEvent(User.Id, User.Email, User.PhoneNumber, User.Password, User.RoleId, User.IsActive, User.IsEmailVerified, User.IsPhoneNumberVerified, User.IsSubscribedToNotifications, EventType);
             RaiseDomainEvent(domainEvent);
         }
 

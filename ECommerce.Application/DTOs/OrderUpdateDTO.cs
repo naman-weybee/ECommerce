@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
+﻿using ECommerce.Domain.Enums;
 using ECommerce.Domain.ValueObjects;
 
 namespace ECommerce.Application.DTOs
@@ -17,7 +16,5 @@ namespace ECommerce.Application.DTOs
         public string PaymentMethod { get; set; }
 
         public Guid ShippingAddressId { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

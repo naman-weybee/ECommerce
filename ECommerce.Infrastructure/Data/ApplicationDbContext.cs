@@ -44,15 +44,12 @@ namespace ECommerce.Infrastructure.Data
 
             foreach (var item in markedAsDeleted)
             {
-                var entity = item.Entity;
-
-                item.State = EntityState.Unchanged;
-
-                var isDeleted = entity.GetType().GetProperty("IsDeleted");
-                isDeleted?.SetValue(entity, true);
-
-                var deletedDate = entity.GetType().GetProperty("DeletedDate");
-                deletedDate?.SetValue(entity, DateTime.UtcNow);
+                if (item.Entity is Base baseDto)
+                {
+                    item.State = EntityState.Unchanged;
+                    baseDto.IsDeleted = true;
+                    baseDto.DeletedDate = DateTime.UtcNow;
+                }
             }
 
             return Task.FromResult(base.SaveChanges());
