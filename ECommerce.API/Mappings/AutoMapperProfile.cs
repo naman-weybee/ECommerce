@@ -27,10 +27,16 @@ namespace ECommerce.API.Mappings
             ConfigureMappings<Address, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
             ConfigureMappings<AddressAggregate, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
 
+            ConfigureMappings<Product, ProductDTO, ProductStockChangeDTO, ProductPriceChangeDTO>();
+
             ConfigureMappings<CartItem, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
             ConfigureMappings<CartItemAggregate, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
 
-            ConfigureMappings<Product, ProductDTO, ProductStockChangeDTO, ProductPriceChangeDTO>();
+            ConfigureMappings<Gender, GenderDTO, GenderCreateDTO, GenderUpdateDTO>();
+            ConfigureMappings<GenderAggregate, GenderDTO, GenderCreateDTO, GenderUpdateDTO>();
+
+            ConfigureMappings<Role, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
+            ConfigureMappings<RoleAggregate, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()

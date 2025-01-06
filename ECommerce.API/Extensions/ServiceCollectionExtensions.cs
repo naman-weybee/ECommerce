@@ -39,6 +39,8 @@ namespace ECommerce.API.Extensions
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IGenderService, GenderService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IPaginationService, PaginationService>();
@@ -54,6 +56,8 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<CartItemAggregate, CartItem>, Repository<CartItemAggregate, CartItem>>();
             services.AddScoped<IRepository<OrderAggregate, Order>, Repository<OrderAggregate, Order>>();
             services.AddScoped<IRepository<AddressAggregate, Address>, Repository<AddressAggregate, Address>>();
+            services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
+            services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
 
             services.AddControllers(options =>
@@ -114,6 +118,14 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<AddressDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<AddressUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<GenderDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<GenderCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<GenderUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<RoleDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RoleCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RoleUpdateDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();

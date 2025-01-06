@@ -2,7 +2,6 @@
 using ECommerce.Domain.ValueObjects.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace ECommerce.Infrastructure.Data.Configurations
 {

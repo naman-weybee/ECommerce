@@ -7,7 +7,7 @@ namespace ECommerce.Domain.Aggregates
 {
     public class CartItemAggregate : AggregateRoot<CartItem>
     {
-        public CartItem CartItem { get; private set; }
+        public CartItem CartItem { get; set; }
 
         public CartItemAggregate(CartItem entity)
             : base(entity)

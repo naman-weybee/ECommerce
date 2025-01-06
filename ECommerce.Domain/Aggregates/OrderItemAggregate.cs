@@ -7,7 +7,7 @@ namespace ECommerce.Domain.Aggregates
 {
     public class OrderItemAggregate : AggregateRoot<OrderItem>
     {
-        public OrderItem OrderItem { get; private set; }
+        public OrderItem OrderItem { get; set; }
 
         public OrderItemAggregate(OrderItem entity)
             : base(entity)

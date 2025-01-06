@@ -57,6 +57,14 @@
 
         AddressCreated,     //Address Events
         AddressUpdated,
-        AddressDeleted
+        AddressDeleted,
+
+        GenderCreated,     //Gender Events
+        GenderUpdated,
+        GenderDeleted,
+
+        RoleCreated,     //Role Events
+        RoleUpdated,
+        RoleDeleted
     }
 }

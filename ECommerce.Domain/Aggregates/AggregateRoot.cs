@@ -12,7 +12,7 @@ namespace ECommerce.Domain.Aggregates
 
         public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
-        public TEntity Entity { get; private set; }
+        public TEntity Entity { get; set; }
 
         public AggregateRoot(TEntity entity)
         {

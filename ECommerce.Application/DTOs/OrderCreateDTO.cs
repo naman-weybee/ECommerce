@@ -1,6 +1,4 @@
-﻿using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
-using ECommerce.Domain.ValueObjects;
+﻿using ECommerce.Domain.ValueObjects;
 
 namespace ECommerce.Application.DTOs
 {
