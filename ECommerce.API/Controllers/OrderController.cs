@@ -53,7 +53,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateDTO dto)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreateFromCartDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -71,6 +71,18 @@ namespace ECommerce.API.Controllers
 
             await _service.UpdateOrderAsync(dto);
             response.data = new { Message = "Order Modified Successfully." };
+            response.success = true;
+
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("UpdateOrderStatus")]
+        public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderUpdateStatusDTO dto)
+        {
+            var response = new ResponseStructure();
+
+            await _service.UpdateOrderStatusAsync(dto);
+            response.data = new { Message = "Order Status Modified Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

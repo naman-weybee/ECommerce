@@ -34,6 +34,13 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OrderItemDTO>(item);
         }
 
+        public async Task<List<OrderItemDTO>> GetOrderItemByOrderIdAsync(Guid orderId)
+        {
+            var items = await _repository.GetAllByPropertyAsync("OrderId", orderId);
+
+            return _mapper.Map<List<OrderItemDTO>>(items);
+        }
+
         public async Task CreateOrderItemAsync(OrderItemCreateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);

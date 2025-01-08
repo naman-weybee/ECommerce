@@ -9,6 +9,8 @@ namespace ECommerce.Application.Interfaces
 
         Task<CartItemDTO> GetCartItemByIdAsync(Guid id);
 
+        Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId);
+
         Task CreateCartItemAsync(CartItemCreateDTO dto);
 
         Task UpdateCartItemAsync(CartItemUpdateDTO dto);
@@ -18,5 +20,7 @@ namespace ECommerce.Application.Interfaces
         Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto);
 
         Task DeleteCartItemAsync(Guid id);
+
+        Task ClearCartItemsAsync(Guid uerId);
     }
 }

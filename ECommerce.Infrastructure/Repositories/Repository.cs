@@ -54,6 +54,21 @@ namespace ECommerce.Infrastructure.Repositories
             throw new InvalidOperationException($"Data for Id = {id} is not available.");
         }
 
+        public virtual async Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue, IQueryable<TEntity>? query = null)
+        {
+            var property = (typeof(TEntity).GetProperty(columnName))
+                ?? throw new InvalidOperationException("Given property does not exist in the entity.");
+
+            query ??= _context.Set<TEntity>().AsQueryable();
+
+            var entities = await query.Where(e => EF.Property<Guid>(e, columnName) == columnValue).ToListAsync();
+
+            if (!entities.Any() || entities.Count == 0)
+                throw new InvalidOperationException($"No data found for columnValue = {columnValue}.");
+
+            return entities;
+        }
+
         public virtual async Task InsertAsync(TAggregate aggregate)
         {
             var entity = aggregate.Entity;
@@ -82,6 +97,21 @@ namespace ECommerce.Infrastructure.Repositories
             else
             {
                 throw new InvalidOperationException("Data is not Available...!");
+            }
+        }
+
+        public virtual async Task DeleteByUserIdAsync(Guid userId)
+        {
+            var entities = await GetAllByPropertyAsync("UserId", userId);
+
+            if (entities.Any())
+            {
+                DbSet.RemoveRange(entities);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException($"No data found for UserId = {userId}.");
             }
         }
 

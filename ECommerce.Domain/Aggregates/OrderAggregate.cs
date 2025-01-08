@@ -17,7 +17,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateOrder(Order order)
         {
-            Order.CreateOrder(order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
+            Order.CreateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderCreated;
             RaiseDomainEvent();
@@ -64,12 +64,6 @@ namespace ECommerce.Domain.Aggregates
         {
             if (!Order.OrderItems.Any())
                 throw new InvalidOperationException("Cannot change order status of an order without items.");
-
-            if (Order.OrderStatus == newStatus)
-                throw new InvalidOperationException("Order status cannot be same as current status.");
-
-            if (newStatus == eOrderStatus.Canceled && Order.OrderItems.Any(item => item.Quantity > 0))
-                throw new InvalidOperationException("Cannot cancel an order with items that are already in the order.");
 
             switch (newStatus)
             {

@@ -14,9 +14,9 @@ namespace ECommerce.Domain.Entities
         [ForeignKey("Address")]
         public Guid AddressId { get; set; }
 
-        public eOrderStatus OrderStatus { get; set; } = eOrderStatus.Pending;
+        public eOrderStatus OrderStatus { get; set; } = eOrderStatus.Placed;
 
-        public DateTime? OrderPlacedDate { get; set; }
+        public DateTime? OrderPlacedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? OrderShippedDate { get; set; }
 
@@ -49,9 +49,9 @@ namespace ECommerce.Domain.Entities
             OrderItems = orderItems ?? new List<OrderItem>();
         }
 
-        public void CreateOrder(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
+        public void CreateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             UserId = userId;
             AddressId = addressId;
             OrderStatus = status;

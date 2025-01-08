@@ -12,11 +12,15 @@ namespace ECommerce.Shared.Repositories
 
         Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null);
 
+        Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue, IQueryable<TEntity>? query = null);
+
         Task InsertAsync(TAggregate aggregate);
 
         Task UpdateAsync(TAggregate aggregate);
 
         Task DeleteAsync(TEntity entity);
+
+        Task DeleteByUserIdAsync(Guid userId);
 
         Task SaveAsync(TEntity entity);
 

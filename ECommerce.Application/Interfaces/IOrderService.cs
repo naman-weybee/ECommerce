@@ -9,9 +9,11 @@ namespace ECommerce.Application.Interfaces
 
         Task<OrderDTO> GetOrderByIdAsync(Guid id);
 
-        Task CreateOrderAsync(OrderCreateDTO dto);
+        Task CreateOrderAsync(OrderCreateFromCartDTO dto);
 
         Task UpdateOrderAsync(OrderUpdateDTO dto);
+
+        Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto);
 
         Task DeleteOrderAsync(Guid id);
     }

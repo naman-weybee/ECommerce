@@ -13,7 +13,7 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateProductAsync(ProductUpdateDTO dto);
 
-        Task ProductStockChangeAsync(ProductStockChangeDTO dto, bool isIncrease);
+        Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease);
 
         Task ProductPriceChangeAsync(ProductPriceChangeDTO dto);
 

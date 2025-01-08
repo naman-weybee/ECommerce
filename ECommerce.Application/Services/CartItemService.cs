@@ -33,6 +33,13 @@ namespace ECommerce.Application.Services
             return _mapper.Map<CartItemDTO>(item);
         }
 
+        public async Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId)
+        {
+            var items = await _repository.GetAllByPropertyAsync("UserId", userId);
+
+            return _mapper.Map<List<CartItemDTO>>(items);
+        }
+
         public async Task CreateCartItemAsync(CartItemCreateDTO dto)
         {
             var item = _mapper.Map<CartItem>(dto);
@@ -76,6 +83,11 @@ namespace ECommerce.Application.Services
             aggregate.DeleteCartItem();
 
             await _repository.DeleteAsync(item);
+        }
+
+        public async Task ClearCartItemsAsync(Guid uerId)
+        {
+            await _repository.DeleteByUserIdAsync(uerId);
         }
     }
 }

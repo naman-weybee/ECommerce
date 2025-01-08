@@ -2,13 +2,14 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
+using ECommerce.Domain.DomainInterfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
 
 namespace ECommerce.Application.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IProductService, IIProductDomainService
     {
         private readonly IRepository<ProductAggregate, Product> _repository;
         private readonly IMapper _mapper;
@@ -33,6 +34,13 @@ namespace ECommerce.Application.Services
             return _mapper.Map<ProductDTO>(item);
         }
 
+        public async Task<int> GetProductStockByIdAsync(Guid id)
+        {
+            var item = await GetProductByIdAsync(id);
+
+            return item.Stock;
+        }
+
         public async Task CreateProductAsync(ProductCreateDTO dto)
         {
             var item = _mapper.Map<Product>(dto);
@@ -51,15 +59,15 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
-        public async Task ProductStockChangeAsync(ProductStockChangeDTO dto, bool isIncrease)
+        public async Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease)
         {
-            var item = await _repository.GetByIdAsync(dto.Id);
+            var item = await _repository.GetByIdAsync(id);
             var aggregate = _mapper.Map<ProductAggregate>(item);
 
             if (isIncrease)
-                aggregate.IncreaseStock(dto.Quantity);
+                aggregate.IncreaseStock(quantity);
             else
-                aggregate.DecreaseStock(dto.Quantity);
+                aggregate.DecreaseStock(quantity);
 
             await _repository.UpdateAsync(aggregate);
         }

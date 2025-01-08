@@ -6,6 +6,8 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Application.Validators;
 using ECommerce.Domain.Aggregates;
+using ECommerce.Domain.DomainInterfaces;
+using ECommerce.Domain.DomainServices;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.ValueObjects.JsonConverters;
 using ECommerce.Infrastructure.Data;
@@ -50,6 +52,9 @@ namespace ECommerce.API.Extensions
 
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
+            services.AddScoped<IInventoryService, InventoryService>();
+            services.AddScoped<IIProductDomainService, ProductService>();
+
             services.AddScoped<IRepository<ProductAggregate, Product>, Repository<ProductAggregate, Product>>();
             services.AddScoped<IRepository<CategoryAggregate, Category>, Repository<CategoryAggregate, Category>>();
             services.AddScoped<IRepository<OrderItemAggregate, OrderItem>, Repository<OrderItemAggregate, OrderItem>>();
@@ -114,6 +119,7 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<OrderDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<OrderCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<OrderUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OrderUpdateStatusDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<AddressDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();

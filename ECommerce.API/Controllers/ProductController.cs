@@ -81,7 +81,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            await _service.ProductStockChangeAsync(dto, true);
+            await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, true);
             response.data = new { Message = "Product Stock Increased Successfully." };
             response.success = true;
 
@@ -93,7 +93,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            await _service.ProductStockChangeAsync(dto, false);
+            await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, false);
             response.data = new { Message = "Product Stock Decreased Successfully." };
             response.success = true;
 
