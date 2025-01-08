@@ -15,18 +15,18 @@ namespace ECommerce.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IRepository<OrderAggregate, Order> _repository;
+        private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
         private readonly IOrderItemService _orderItemService;
-        private readonly IUserService _userService;
         private readonly IInventoryService _inventoryService;
         private readonly IMapper _mapper;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, ICartItemService cartItemService, IOrderItemService orderItemService, IUserService userService, IInventoryService inventoryService, IMapper mapper)
+        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IMapper mapper)
         {
             _repository = repository;
+            _userService = userService;
             _cartItemService = cartItemService;
             _orderItemService = orderItemService;
-            _userService = userService;
             _inventoryService = inventoryService;
             _mapper = mapper;
         }
@@ -53,60 +53,30 @@ namespace ECommerce.Application.Services
 
         public async Task CreateOrderAsync(OrderCreateFromCartDTO dto)
         {
-            //Get User
-            var user = await _userService.GetUserByIdAsync(dto.UserId)
-                ?? throw new InvalidOperationException("User not found.");
+            // Get User
+            var user = await GetUserById(dto.UserId);
 
-            //Get Cart Items Based on UserId
-            var cartItems = await _cartItemService.GetCartItemsByUserIdAsync(user.Id);
-            if (!cartItems.Any() || cartItems.Count == 0)
-                throw new InvalidOperationException("Cart is empty!");
+            // Get Cart Items
+            var cartItems = await GetUserCartItems(user.Id);
 
-            //Check Product Stock Availability
-            var cartItemEntities = _mapper.Map<List<CartItem>>(cartItems);
-            await _inventoryService.ValidateCartItemsAsync(cartItemEntities);
+            // Check Product Stock Availability
+            await CheckProductStockAvailability(cartItems);
 
-            //Calculate Total Amount
+            // Calculate Total Amount
             var totalAmount = cartItems.Sum(c => c.Quantity * c.UnitPrice.Amount);
 
-            //Create Order
+            // Create Order
             var orderId = Guid.NewGuid();
+            await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, user.AddressId);
 
-            var orderDto = new OrderCreateDTO
-            {
-                Id = orderId,
-                UserId = user.Id,
-                TotalAmount = new Money(totalAmount),
-                PaymentMethod = dto.PaymentMethod,
-                ShippingAddressId = user.AddressId
-            };
+            // Create Order Items
+            await CreateOrderItemsFromCartItems(orderId, cartItems);
 
-            var order = _mapper.Map<Order>(orderDto);
-            var aggregate = new OrderAggregate(order);
-            aggregate.CreateOrder(order);
+            // Update Prodct Stock - Domain Service
+            await UpdateProductStock(cartItems, false);
 
-            await _repository.InsertAsync(aggregate);
-
-            //Create Order Items
-            foreach (var cartItem in cartItems)
-            {
-                var orderItem = new OrderItemCreateDTO
-                {
-                    OrderId = orderId,
-                    ProductId = cartItem.ProductId,
-                    Quantity = cartItem.Quantity,
-                    UnitPrice = cartItem.UnitPrice
-                };
-
-                await _orderItemService.CreateOrderItemAsync(orderItem);
-            }
-
-            // Adjust Prodct Stock - Domain Service
-            foreach (var cartItem in cartItems)
-                await _inventoryService.StockChange(cartItem.ProductId, cartItem.Quantity, false);
-
-            //Clear Cart Item
-            await _cartItemService.ClearCartItemsAsync(user.Id);
+            //Clear Cart
+            await ClearCart(user.Id);
         }
 
         public async Task UpdateOrderAsync(OrderUpdateDTO dto)
@@ -127,15 +97,14 @@ namespace ECommerce.Application.Services
             var aggregate = _mapper.Map<OrderAggregate>(order);
             aggregate.UpdateOrderStatus(dto.OrderStatus);
 
+            // For Order Cancelation
             if (dto.OrderStatus == eOrderStatus.Canceled)
             {
-                var orderItems = await _orderItemService.GetOrderItemByOrderIdAsync(dto.Id);
-                if (!orderItems.Any() || orderItems.Count == 0)
-                    throw new InvalidOperationException("Order is empty!");
+                // Get Order Items
+                var orderItems = await GetOrderItems(dto);
 
-                // Adjust Prodct Stock - Domain Service
-                foreach (var orderItem in orderItems)
-                    await _inventoryService.StockChange(orderItem.ProductId, orderItem.Quantity, true);
+                // Update Prodct Stock - Domain Service
+                await UpdateProductStock(orderItems, false);
             }
 
             await _repository.UpdateAsync(aggregate);
@@ -148,6 +117,86 @@ namespace ECommerce.Application.Services
             aggregate.DeleteOrder();
 
             await _repository.DeleteAsync(item);
+        }
+
+        private async Task<UserDTO> GetUserById(Guid userId)
+        {
+            return await _userService.GetUserByIdAsync(userId)
+                 ?? throw new InvalidOperationException("User not found.");
+        }
+
+        private async Task<List<CartItemDTO>> GetUserCartItems(Guid userId)
+        {
+            var cartItems = await _cartItemService.GetCartItemsByUserIdAsync(userId);
+            if (!cartItems.Any() || cartItems.Count == 0)
+                throw new InvalidOperationException("Cart is empty!");
+
+            return cartItems;
+        }
+
+        private async Task CheckProductStockAvailability(List<CartItemDTO> cartItems)
+        {
+            var cartItemEntities = _mapper.Map<List<CartItem>>(cartItems);
+            await _inventoryService.ValidateCartItemsAsync(cartItemEntities);
+        }
+
+        private async Task CreateOrderFromCartItems(Guid orderId, Guid userId, string paymentMethod, decimal totalAmount, Guid addressId)
+        {
+            var orderDto = new OrderCreateDTO
+            {
+                Id = orderId,
+                UserId = userId,
+                TotalAmount = new Money(totalAmount),
+                PaymentMethod = paymentMethod,
+                ShippingAddressId = addressId
+            };
+
+            var order = _mapper.Map<Order>(orderDto);
+            var aggregate = new OrderAggregate(order);
+            aggregate.CreateOrder(order);
+
+            await _repository.InsertAsync(aggregate);
+        }
+
+        private async Task CreateOrderItemsFromCartItems(Guid orderId, List<CartItemDTO> cartItems)
+        {
+            foreach (var cartItem in cartItems)
+            {
+                var orderItem = new OrderItemCreateDTO
+                {
+                    OrderId = orderId,
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity,
+                    UnitPrice = cartItem.UnitPrice
+                };
+
+                await _orderItemService.CreateOrderItemAsync(orderItem);
+            }
+        }
+
+        private async Task<List<OrderItemDTO>> GetOrderItems(OrderUpdateStatusDTO dto)
+        {
+            var orderItems = await _orderItemService.GetOrderItemByOrderIdAsync(dto.Id);
+            if (!orderItems.Any() || orderItems.Count == 0)
+                throw new InvalidOperationException("Order is empty!");
+            return orderItems;
+        }
+
+        private async Task UpdateProductStock(List<CartItemDTO> cartItems, bool isIncrease)
+        {
+            foreach (var cartItem in cartItems)
+                await _inventoryService.StockChange(cartItem.ProductId, cartItem.Quantity, isIncrease);
+        }
+
+        private async Task UpdateProductStock(List<OrderItemDTO> orderItems, bool isIncrease)
+        {
+            foreach (var orderItem in orderItems)
+                await _inventoryService.StockChange(orderItem.ProductId, orderItem.Quantity, isIncrease);
+        }
+
+        private async Task ClearCart(Guid userId)
+        {
+            await _cartItemService.ClearCartItemsAsync(userId);
         }
     }
 }
