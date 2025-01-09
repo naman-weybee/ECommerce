@@ -31,6 +31,7 @@
         ProductUpdated,
         ProductStockIncreased,
         ProductStockDecreased,
+        ProductStockDepleted,
         ProductPriceChanged,
         ProductDeleted,
 

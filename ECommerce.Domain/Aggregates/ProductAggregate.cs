@@ -29,6 +29,9 @@ namespace ECommerce.Domain.Aggregates
 
             EventType = eEventType.ProductUpdated;
             RaiseDomainEvent();
+
+            if (Product.Stock == 0)
+                ProductStockDepletedEvent();
         }
 
         public void IncreaseStock(int quantity)
@@ -48,6 +51,9 @@ namespace ECommerce.Domain.Aggregates
 
             EventType = eEventType.ProductStockDecreased;
             RaiseDomainEvent();
+
+            if (Product.Stock == 0)
+                ProductStockDepletedEvent();
         }
 
         public void ChangePrice(Money newPrice)
@@ -64,6 +70,12 @@ namespace ECommerce.Domain.Aggregates
         public void DeleteProduct()
         {
             EventType = eEventType.ProductDeleted;
+            RaiseDomainEvent();
+        }
+
+        private void ProductStockDepletedEvent()
+        {
+            EventType = eEventType.ProductStockDepleted;
             RaiseDomainEvent();
         }
 
