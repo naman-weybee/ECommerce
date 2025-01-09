@@ -18,19 +18,6 @@ namespace ECommerce.Domain.Entities
 
         public virtual Product Product { get; set; }
 
-        public OrderItem()
-        {
-        }
-
-        public OrderItem(Guid orderId, Guid productId, int quantity, Money unitPrice)
-        {
-            Id = Guid.NewGuid();
-            OrderId = orderId;
-            ProductId = productId;
-            Quantity = quantity;
-            UnitPrice = unitPrice;
-        }
-
         public void CreateOrderItem(Guid orderId, Guid productId, int quantity, Money unitPrice)
         {
             Id = Guid.NewGuid();

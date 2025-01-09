@@ -46,28 +46,6 @@ namespace ECommerce.Domain.Entities
 
         public bool IsSubscribedToNotifications { get; set; }
 
-        public User()
-        {
-        }
-
-        public User(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
-        {
-            Id = Guid.NewGuid();
-            FirstName = firstName;
-            LastName = lastName;
-            Email = email;
-            Password = password;
-            PhoneNumber = phoneNumber;
-            RoleId = roleId;
-            DateOfBirth = dateOfBirth;
-            GenderId = genderId;
-            AddressId = addressId;
-            IsActive = isActive;
-            IsEmailVerified = isEmailVerified;
-            IsPhoneNumberVerified = isPhoneNumberVerified;
-            IsSubscribedToNotifications = isSubscribedToNotifications;
-        }
-
         public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();

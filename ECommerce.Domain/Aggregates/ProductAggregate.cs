@@ -2,47 +2,51 @@
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class ProductAggregate : AggregateRoot<Product>
     {
+        private readonly IMediator _mediator;
+
         public Product Product { get; set; }
 
-        public ProductAggregate(Product entity)
-            : base(entity)
+        public ProductAggregate(Product entity, IMediator mediator)
+            : base(entity, mediator)
         {
             Product = entity;
+            _mediator = mediator;
         }
 
-        public void CreateProduct(Product product)
+        public async Task CreateProduct(Product product)
         {
             Product.CreateProduct(product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
 
             EventType = eEventType.ProductCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateProduct(Product product)
+        public async Task UpdateProduct(Product product)
         {
             Product.UpdateProduct(product.Id, product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
 
             EventType = eEventType.ProductUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
 
             if (Product.Stock == 0)
-                ProductStockDepletedEvent();
+                await ProductStockDepletedEvent();
         }
 
-        public void IncreaseStock(int quantity)
+        public async Task IncreaseStock(int quantity)
         {
             Product.IncreaseStock(quantity);
 
             EventType = eEventType.ProductStockIncreased;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DecreaseStock(int quantity)
+        public async Task DecreaseStock(int quantity)
         {
             if (quantity > Product.Stock)
                 throw new InvalidOperationException("Not enough stock available.");
@@ -50,13 +54,13 @@ namespace ECommerce.Domain.Aggregates
             Product.DecreaseStock(quantity);
 
             EventType = eEventType.ProductStockDecreased;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
 
             if (Product.Stock == 0)
-                ProductStockDepletedEvent();
+                await ProductStockDepletedEvent();
         }
 
-        public void ChangePrice(Money newPrice)
+        public async Task ChangePrice(Money newPrice)
         {
             if (newPrice <= 0)
                 throw new ArgumentException("New price must be greater than zero.");
@@ -64,25 +68,25 @@ namespace ECommerce.Domain.Aggregates
             Product.ChangePrice(newPrice);
 
             EventType = eEventType.ProductPriceChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteProduct()
+        public async Task DeleteProduct()
         {
             EventType = eEventType.ProductDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void ProductStockDepletedEvent()
+        private async Task ProductStockDepletedEvent()
         {
             EventType = eEventType.ProductStockDepleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
-            var domainEvent = new ProductEvent(Product.Id, Product.Name, Product.Price.Amount, Product.Stock, EventType);
-            RaiseDomainEvent(domainEvent);
+            var domainEvent = new ProductEvent(Product.Id, Product.Name, Product.SKU, Product.Price.Amount, Product.Stock, EventType);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

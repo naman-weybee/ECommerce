@@ -9,16 +9,6 @@ namespace ECommerce.Domain.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
-        public Gender()
-        {
-        }
-
-        public Gender(string name)
-        {
-            Id = Guid.NewGuid();
-            Name = name;
-        }
-
         public void CreateGender(string name)
         {
             Id = Guid.NewGuid();

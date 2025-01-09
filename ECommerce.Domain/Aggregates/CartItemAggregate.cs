@@ -2,36 +2,40 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class CartItemAggregate : AggregateRoot<CartItem>
     {
+        private readonly IMediator _mediator;
+
         public CartItem CartItem { get; set; }
 
-        public CartItemAggregate(CartItem entity)
-            : base(entity)
+        public CartItemAggregate(CartItem entity, IMediator mediator)
+            : base(entity, mediator)
         {
             CartItem = entity;
+            _mediator = mediator;
         }
 
-        public void CreateCartItem(CartItem cartItem)
+        public async Task CreateCartItem(CartItem cartItem)
         {
             CartItem.CreateCartItem(cartItem.UserId, cartItem.ProductId, cartItem.Quantity, cartItem.UnitPrice);
 
             EventType = eEventType.CartItemCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateCartItem(CartItem cartItem)
+        public async Task UpdateCartItem(CartItem cartItem)
         {
             CartItem.UpdateCartItem(cartItem.Id, cartItem.UserId, cartItem.ProductId, cartItem.Quantity, cartItem.UnitPrice);
 
             EventType = eEventType.CartItemUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateQuantity(int newQuantity)
+        public async Task UpdateQuantity(int newQuantity)
         {
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
@@ -39,10 +43,10 @@ namespace ECommerce.Domain.Aggregates
             CartItem.UpdateQuantity(newQuantity);
 
             EventType = eEventType.OrderItemQuantityUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateUnitPrice(Money newUnitPrice)
+        public async Task UpdateUnitPrice(Money newUnitPrice)
         {
             if (newUnitPrice.Amount <= 0)
                 throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
@@ -50,19 +54,19 @@ namespace ECommerce.Domain.Aggregates
             CartItem.UpdateUnitPrice(newUnitPrice);
 
             EventType = eEventType.OrderItemUnitPriceUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteCartItem()
+        public async Task DeleteCartItem()
         {
             EventType = eEventType.CartItemDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
             var domainEvent = new CartItemEvent(CartItem.Id, CartItem.UserId, CartItem.ProductId, EventType);
-            RaiseDomainEvent(domainEvent);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

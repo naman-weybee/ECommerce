@@ -34,21 +34,6 @@ namespace ECommerce.Domain.Entities
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
-        public Order()
-        {
-        }
-
-        public Order(Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
-        {
-            Id = Guid.NewGuid();
-            UserId = userId;
-            AddressId = addressId;
-            OrderStatus = status;
-            TotalAmount = totalAmount;
-            PaymentMethod = paymentMethod;
-            OrderItems = orderItems ?? new List<OrderItem>();
-        }
-
         public void CreateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = id;

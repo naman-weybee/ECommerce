@@ -5,6 +5,7 @@ using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -12,11 +13,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<UserAggregate, User> _repository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public UserService(IRepository<UserAggregate, User> repository, IMapper mapper)
+        public UserService(IRepository<UserAggregate, User> repository, IMapper mapper, IMediator mediator)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams requestParams)
@@ -36,8 +39,8 @@ namespace ECommerce.Application.Services
         public async Task CreateUserAsync(UserCreateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
-            var aggregate = new UserAggregate(item);
-            aggregate.CreateUser(item);
+            var aggregate = new UserAggregate(item, _mediator);
+            await aggregate.CreateUser(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -45,8 +48,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateUserAsync(UserUpdateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
-            var aggregate = _mapper.Map<UserAggregate>(item);
-            aggregate.UpdateUser(item);
+            var aggregate = new UserAggregate(item, _mediator);
+            await aggregate.UpdateUser(item);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -54,8 +57,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteUserAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new UserAggregate(item);
-            aggregate.DeleteUser();
+            var aggregate = new UserAggregate(item, _mediator);
+            await aggregate.DeleteUser();
 
             await _repository.DeleteAsync(item);
         }

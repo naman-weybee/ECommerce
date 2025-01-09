@@ -14,14 +14,24 @@ namespace ECommerce.Domain.Aggregates
 
         public TEntity Entity { get; set; }
 
+        private readonly IMediator _mediator;
+
         public AggregateRoot(TEntity entity)
         {
             Entity = entity;
         }
 
-        public void RaiseDomainEvent(INotification domainEvent)
+        public AggregateRoot(TEntity entity, IMediator mediator)
+        {
+            Entity = entity;
+            _mediator = mediator;
+        }
+
+        public async Task RaiseDomainEvent(INotification domainEvent)
         {
             _domainEvents.Add(domainEvent);
+
+            await _mediator.Publish(domainEvent);
         }
 
         public void ClearDomainEvents()

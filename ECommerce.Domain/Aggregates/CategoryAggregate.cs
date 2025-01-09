@@ -1,38 +1,42 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class CategoryAggregate : AggregateRoot<Category>
     {
+        private readonly IMediator _mediator;
+
         public Category Category { get; set; }
 
-        public CategoryAggregate(Category entity)
-            : base(entity)
+        public CategoryAggregate(Category entity, IMediator mediator)
+            : base(entity, mediator)
         {
             Category = entity;
             Category.Products ??= new List<Product>();
             Category.SubCategories ??= new List<Category>();
+            _mediator = mediator;
         }
 
-        public void CreateCategory(Category category)
+        public async Task CreateCategory(Category category)
         {
             Category.CreateCategory(category.Name, category.Description, Category.Products, Category.SubCategories, category.ParentCategoryId);
 
             EventType = eEventType.CategoryCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateCategory(Category category)
+        public async Task UpdateCategory(Category category)
         {
             Category.UpdateCategory(category.Id, category.Name, category.Description, Category.Products, Category.SubCategories, category.ParentCategoryId);
 
             EventType = eEventType.CategoryUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void AddProduct(Product product)
+        public async Task AddProduct(Product product)
         {
             if (product == null)
                 throw new ArgumentNullException(nameof(product), "Product cannot be null.");
@@ -40,10 +44,10 @@ namespace ECommerce.Domain.Aggregates
             Category.AddProduct(product);
 
             EventType = eEventType.ProductAddedInCategory;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void RemoveProduct(Guid productId)
+        public async Task RemoveProduct(Guid productId)
         {
             var item = Category.Products.FirstOrDefault(o => o.Id == productId)
                 ?? throw new InvalidOperationException("Product not found.");
@@ -51,10 +55,10 @@ namespace ECommerce.Domain.Aggregates
             Category.RemoveProduct(item);
 
             EventType = eEventType.ProductRemovedFromCategory;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void AddSubCategory(Category subCategory)
+        public async Task AddSubCategory(Category subCategory)
         {
             if (subCategory == null)
                 throw new ArgumentNullException(nameof(subCategory), "Subcategory cannot be null.");
@@ -65,25 +69,25 @@ namespace ECommerce.Domain.Aggregates
             Category.AddSubCategory(subCategory);
 
             EventType = eEventType.SubCategoryAddedInCategory;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void RemoveSubCategory()
+        public async Task RemoveSubCategory()
         {
             EventType = eEventType.SubCategoryRemovedFromCategory;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteCategory()
+        public async Task DeleteCategory()
         {
             EventType = eEventType.CategoryDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
             var domainEvent = new CategoryEvent(Category.Id, Category.Name, Category.ParentCategoryId, EventType);
-            RaiseDomainEvent(domainEvent);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

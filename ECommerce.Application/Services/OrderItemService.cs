@@ -5,6 +5,7 @@ using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -12,11 +13,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<OrderItemAggregate, OrderItem> _repository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public OrderItemService(IRepository<OrderItemAggregate, OrderItem> repository, IMapper mapper)
+        public OrderItemService(IRepository<OrderItemAggregate, OrderItem> repository, IMapper mapper, IMediator mediator)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams requestParams)
@@ -44,8 +47,8 @@ namespace ECommerce.Application.Services
         public async Task CreateOrderItemAsync(OrderItemCreateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);
-            var aggregate = new OrderItemAggregate(item);
-            aggregate.CreateOrderItem(item);
+            var aggregate = new OrderItemAggregate(item, _mediator);
+            await aggregate.CreateOrderItem(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -53,8 +56,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateOrderItemAsync(OrderItemUpdateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);
-            var aggregate = new OrderItemAggregate(item);
-            aggregate.UpdateOrderItem(item);
+            var aggregate = new OrderItemAggregate(item, _mediator);
+            await aggregate.UpdateOrderItem(item);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -62,8 +65,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateQuantityAsync(OrderItemQuantityUpdateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);
-            var aggregate = new OrderItemAggregate(item);
-            aggregate.UpdateQuantity(dto.Quantity);
+            var aggregate = new OrderItemAggregate(item, _mediator);
+            await aggregate.UpdateQuantity(dto.Quantity);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -71,8 +74,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateUnitPriceAsync(OrderItemUnitPriceUpdateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);
-            var aggregate = new OrderItemAggregate(item);
-            aggregate.UpdateUnitPrice(dto.UnitPrice);
+            var aggregate = new OrderItemAggregate(item, _mediator);
+            await aggregate.UpdateUnitPrice(dto.UnitPrice);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -80,8 +83,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteOrderItemAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new OrderItemAggregate(item);
-            aggregate.DeleteOrderItem();
+            var aggregate = new OrderItemAggregate(item, _mediator);
+            await aggregate.DeleteOrderItem();
 
             await _repository.DeleteAsync(item);
         }

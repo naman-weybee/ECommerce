@@ -1,45 +1,49 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class GenderAggregate : AggregateRoot<Gender>
     {
+        private readonly IMediator _mediator;
+
         public Gender Gender { get; set; }
 
-        public GenderAggregate(Gender entity)
-            : base(entity)
+        public GenderAggregate(Gender entity, IMediator mediator)
+            : base(entity, mediator)
         {
             Gender = entity;
+            _mediator = mediator;
         }
 
-        public void CreateGender(Gender gender)
+        public async Task CreateGender(Gender gender)
         {
             Gender.CreateGender(gender.Name);
 
             EventType = eEventType.GenderCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateGender(Gender gender)
+        public async Task UpdateGender(Gender gender)
         {
             Gender.UpdateGender(gender.Id, gender.Name);
 
             EventType = eEventType.GenderUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteGender()
+        public async Task DeleteGender()
         {
             EventType = eEventType.GenderDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
-            var domainEvent = new GenderEvent(Gender.Id, EventType);
-            RaiseDomainEvent(domainEvent);
+            var domainEvent = new GenderEvent(Gender.Id, Gender.Name, EventType);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

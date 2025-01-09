@@ -8,6 +8,7 @@ using ECommerce.Domain.Enums;
 using ECommerce.Domain.ValueObjects;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
@@ -20,8 +21,9 @@ namespace ECommerce.Application.Services
         private readonly IOrderItemService _orderItemService;
         private readonly IInventoryService _inventoryService;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IMapper mapper)
+        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IMapper mapper, IMediator mediator)
         {
             _repository = repository;
             _userService = userService;
@@ -29,6 +31,7 @@ namespace ECommerce.Application.Services
             _orderItemService = orderItemService;
             _inventoryService = inventoryService;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams)
@@ -82,8 +85,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateOrderAsync(OrderUpdateDTO dto)
         {
             var item = _mapper.Map<Order>(dto);
-            var aggregate = _mapper.Map<OrderAggregate>(item);
-            aggregate.UpdateOrder(aggregate.Order);
+            var aggregate = new OrderAggregate(item, _mediator);
+            await aggregate.UpdateOrder(aggregate.Order);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -113,8 +116,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteOrderAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = _mapper.Map<OrderAggregate>(item);
-            aggregate.DeleteOrder();
+            var aggregate = new OrderAggregate(item, _mediator);
+            await aggregate.DeleteOrder();
 
             await _repository.DeleteAsync(item);
         }
@@ -152,8 +155,8 @@ namespace ECommerce.Application.Services
             };
 
             var order = _mapper.Map<Order>(orderDto);
-            var aggregate = new OrderAggregate(order);
-            aggregate.CreateOrder(order);
+            var aggregate = new OrderAggregate(order, _mediator);
+            await aggregate.CreateOrder(order);
 
             await _repository.InsertAsync(aggregate);
         }

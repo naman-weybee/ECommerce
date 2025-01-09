@@ -6,6 +6,7 @@ using ECommerce.Domain.DomainInterfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -13,11 +14,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<ProductAggregate, Product> _repository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public ProductService(IRepository<ProductAggregate, Product> repository, IMapper mapper)
+        public ProductService(IRepository<ProductAggregate, Product> repository, IMapper mapper, IMediator mediator)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync(RequestParams requestParams)
@@ -44,8 +47,8 @@ namespace ECommerce.Application.Services
         public async Task CreateProductAsync(ProductCreateDTO dto)
         {
             var item = _mapper.Map<Product>(dto);
-            var aggregate = new ProductAggregate(item);
-            aggregate.CreateProduct(item);
+            var aggregate = new ProductAggregate(item, _mediator);
+            await aggregate.CreateProduct(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -53,8 +56,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateProductAsync(ProductUpdateDTO dto)
         {
             var item = _mapper.Map<Product>(dto);
-            var aggregate = _mapper.Map<ProductAggregate>(item);
-            aggregate.UpdateProduct(aggregate.Product);
+            var aggregate = new ProductAggregate(item, _mediator);
+            await aggregate.UpdateProduct(aggregate.Product);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -62,12 +65,12 @@ namespace ECommerce.Application.Services
         public async Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = _mapper.Map<ProductAggregate>(item);
+            var aggregate = new ProductAggregate(item, _mediator);
 
             if (isIncrease)
-                aggregate.IncreaseStock(quantity);
+                await aggregate.IncreaseStock(quantity);
             else
-                aggregate.DecreaseStock(quantity);
+                await aggregate.DecreaseStock(quantity);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -75,8 +78,8 @@ namespace ECommerce.Application.Services
         public async Task ProductPriceChangeAsync(ProductPriceChangeDTO dto)
         {
             var item = await _repository.GetByIdAsync(dto.Id);
-            var aggregate = _mapper.Map<ProductAggregate>(item);
-            aggregate.ChangePrice(dto.Price);
+            var aggregate = new ProductAggregate(item, _mediator);
+            await aggregate.ChangePrice(dto.Price);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -84,8 +87,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteProductAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = _mapper.Map<ProductAggregate>(item);
-            aggregate.DeleteProduct();
+            var aggregate = new ProductAggregate(item, _mediator);
+            await aggregate.DeleteProduct();
 
             await _repository.DeleteAsync(item);
         }

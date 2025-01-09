@@ -1,45 +1,48 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class RoleAggregate : AggregateRoot<Role>
     {
+        private readonly IMediator _mediator;
         public Role Role { get; set; }
 
-        public RoleAggregate(Role entity)
-            : base(entity)
+        public RoleAggregate(Role entity, IMediator mediator)
+            : base(entity, mediator)
         {
             Role = entity;
+            _mediator = mediator;
         }
 
-        public void CreateRole(Role role)
+        public async Task CreateRole(Role role)
         {
             Role.CreateRole(role.Name);
 
             EventType = eEventType.RoleCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateRole(Role role)
+        public async Task UpdateRole(Role role)
         {
             Role.UpdateRole(role.Id, role.Name);
 
             EventType = eEventType.RoleUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteRole()
+        public async Task DeleteRole()
         {
             EventType = eEventType.RoleDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
-            var domainEvent = new RoleEvent(Role.Id, EventType);
-            RaiseDomainEvent(domainEvent);
+            var domainEvent = new RoleEvent(Role.Id, Role.Name, EventType);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

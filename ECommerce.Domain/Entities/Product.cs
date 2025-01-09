@@ -23,17 +23,13 @@ namespace ECommerce.Domain.Entities
 
         public int Stock { get; set; }
 
-        public string? SKU { get; set; }
+        public string SKU { get; set; }
 
         public string? Brand { get; set; }
 
         public virtual Category Category { get; set; }
 
-        public Product()
-        {
-        }
-
-        public Product(Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
+        public void CreateProduct(Guid categoryId, string name, Money price, Currency currency, int stock, string sku, string? description = null, string? brand = null)
         {
             Id = Guid.NewGuid();
             CategoryId = categoryId;
@@ -41,25 +37,12 @@ namespace ECommerce.Domain.Entities
             Price = price;
             Currency = currency;
             Stock = stock;
-            Description = description;
             SKU = sku;
+            Description = description;
             Brand = brand;
         }
 
-        public void CreateProduct(Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
-        {
-            Id = Guid.NewGuid();
-            CategoryId = categoryId;
-            Name = name;
-            Price = price;
-            Currency = currency;
-            Stock = stock;
-            Description = description;
-            SKU = sku;
-            Brand = brand;
-        }
-
-        public void UpdateProduct(Guid id, Guid categoryId, string name, Money price, Currency currency, int stock, string? description = null, string? sku = null, string? brand = null)
+        public void UpdateProduct(Guid id, Guid categoryId, string name, Money price, Currency currency, int stock, string sku, string? description = null, string? brand = null)
         {
             Id = id;
             CategoryId = categoryId;
@@ -67,8 +50,8 @@ namespace ECommerce.Domain.Entities
             Price = price;
             Currency = currency;
             Stock = stock;
-            Description = description;
             SKU = sku;
+            Description = description;
             Brand = brand;
 
             StatusUpdated();

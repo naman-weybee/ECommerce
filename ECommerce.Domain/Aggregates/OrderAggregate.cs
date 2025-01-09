@@ -1,37 +1,41 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class OrderAggregate : AggregateRoot<Order>
     {
+        private readonly IMediator _mediator;
+
         public Order Order { get; set; }
 
-        public OrderAggregate(Order entity)
-             : base(entity)
+        public OrderAggregate(Order entity, IMediator mediator)
+             : base(entity, mediator)
         {
             Order = entity;
             Order.OrderItems ??= new List<OrderItem>();
+            _mediator = mediator;
         }
 
-        public void CreateOrder(Order order)
+        public async Task CreateOrder(Order order)
         {
             Order.CreateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateOrder(Order order)
+        public async Task UpdateOrder(Order order)
         {
             Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void AddOrderItem(OrderItem item)
+        public async Task AddOrderItem(OrderItem item)
         {
             ValidateOrderForModification();
 
@@ -44,10 +48,10 @@ namespace ECommerce.Domain.Aggregates
             Order.AddOrderItem(item);
 
             EventType = eEventType.OrderItemAddedInOrder;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void RemoveOrderItem(Guid orderItemId)
+        public async Task RemoveOrderItem(Guid orderItemId)
         {
             ValidateOrderForModification();
 
@@ -57,7 +61,7 @@ namespace ECommerce.Domain.Aggregates
             Order.RemoveOrderItem(item);
 
             EventType = eEventType.OrderItemRemovedFromOrder;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
         public void UpdateOrderStatus(eOrderStatus newStatus)
@@ -85,18 +89,18 @@ namespace ECommerce.Domain.Aggregates
             }
         }
 
-        public void UpdatePaymentMethod(string newPaymentMethod)
+        public async Task UpdatePaymentMethod(string newPaymentMethod)
         {
             ValidateOrderForModification();
             Order.UpdatePaymentMethod(newPaymentMethod);
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateShippingAddress(Guid addressId)
+        public async Task UpdateShippingAddress(Guid addressId)
         {
             ValidateOrderForModification();
             Order.UpdateShippingAddress(addressId);
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
         private void ValidateOrderForModification()
@@ -137,16 +141,16 @@ namespace ECommerce.Domain.Aggregates
             Order.UpdateOrderStatus(eOrderStatus.Canceled);
         }
 
-        public void DeleteOrder()
+        public async Task DeleteOrder()
         {
             EventType = eEventType.OrderDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
             var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.TotalAmount.Amount, EventType);
-            RaiseDomainEvent(domainEvent);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

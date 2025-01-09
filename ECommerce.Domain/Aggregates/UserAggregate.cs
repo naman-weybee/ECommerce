@@ -1,117 +1,121 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
+using MediatR;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class UserAggregate : AggregateRoot<User>
     {
+        private readonly IMediator _mediator;
+
         public User User { get; set; }
 
-        public UserAggregate(User entity)
-            : base(entity)
+        public UserAggregate(User entity, IMediator mediator)
+            : base(entity, mediator)
         {
             User = entity;
+            _mediator = mediator;
         }
 
-        public void CreateUser(User user)
+        public async Task CreateUser(User user)
         {
             User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserCreated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void UpdateUser(User user)
+        public async Task UpdateUser(User user)
         {
             User.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserUpdated;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeEmail(string email)
+        public async Task ChangeEmail(string email)
         {
             User.ChangeEmail(email);
 
             EventType = eEventType.UserEmailChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangePhoneNumber(string phoneNumber)
+        public async Task ChangePhoneNumber(string phoneNumber)
         {
             User.ChangePhoneNumber(phoneNumber);
 
             EventType = eEventType.UserPhoneNumberChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangePassword(string password)
+        public async Task ChangePassword(string password)
         {
             User.ChangePassword(password);
 
             EventType = eEventType.UserPasswordChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeRole(Guid roleId)
+        public async Task ChangeRole(Guid roleId)
         {
             User.ChangeRole(roleId);
 
             EventType = eEventType.UserRoleChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeAddress(Guid roleId)
+        public async Task ChangeAddress(Guid roleId)
         {
             User.ChangeAddress(roleId);
 
             EventType = eEventType.UserAddressChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeIsActiveStatus(bool isActive)
+        public async Task ChangeIsActiveStatus(bool isActive)
         {
             User.ChangeIsActiveStatus(isActive);
 
             EventType = eEventType.UserIsActiveStatusChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeIsEmailVerifiedStatus(bool isEmailVerified)
+        public async Task ChangeIsEmailVerifiedStatus(bool isEmailVerified)
         {
             User.ChangeIsEmailVerifiedStatus(isEmailVerified);
 
             EventType = eEventType.UserIsEmailVerifiedStatusChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeIsPhoneNumberVerifiedStatus(bool isPhoneNumberVerified)
+        public async Task ChangeIsPhoneNumberVerifiedStatus(bool isPhoneNumberVerified)
         {
             User.ChangeIsPhoneNumberVerifiedStatus(isPhoneNumberVerified);
 
             EventType = eEventType.UserIsPhoneNumberVerifiedStatusChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void ChangeIsSubscribedToNotificationsStatus(bool isSubscribedToNotifications)
+        public async Task ChangeIsSubscribedToNotificationsStatus(bool isSubscribedToNotifications)
         {
             User.ChangeIsSubscribedToNotificationsStatus(isSubscribedToNotifications);
 
             EventType = eEventType.UserIsSubscribedToNotificationsStatusChanged;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        public void DeleteUser()
+        public async Task DeleteUser()
         {
             EventType = eEventType.UserDeleted;
-            RaiseDomainEvent();
+            await RaiseDomainEvent();
         }
 
-        private void RaiseDomainEvent()
+        private async Task RaiseDomainEvent()
         {
-            var domainEvent = new UserEvent(User.Id, User.Email, User.PhoneNumber, User.Password, User.RoleId, User.IsActive, User.IsEmailVerified, User.IsPhoneNumberVerified, User.IsSubscribedToNotifications, EventType);
-            RaiseDomainEvent(domainEvent);
+            var domainEvent = new UserEvent(User.Id, User.FirstName, User.LastName, User.Email, User.PhoneNumber, User.Password, User.RoleId, User.IsActive, User.IsEmailVerified, User.IsPhoneNumberVerified, User.IsSubscribedToNotifications, EventType);
+            await RaiseDomainEvent(domainEvent);
         }
 
         public new void ClearDomainEvents()

@@ -11,17 +11,6 @@ namespace ECommerce.Domain.Entities
 
         public virtual ICollection<User> Users { get; set; }
 
-        public Role()
-        {
-        }
-
-        public Role(string name)
-        {
-            Id = Guid.NewGuid();
-            Name = name;
-            Users = new List<User>();
-        }
-
         public void CreateRole(string name)
         {
             Id = Guid.NewGuid();

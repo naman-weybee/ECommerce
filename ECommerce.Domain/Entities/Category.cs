@@ -22,20 +22,6 @@ namespace ECommerce.Domain.Entities
 
         public virtual ICollection<Category> SubCategories { get; set; }
 
-        public Category()
-        {
-        }
-
-        public Category(string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
-        {
-            Id = Guid.NewGuid();
-            Name = name;
-            Description = description;
-            ParentCategoryId = parentCategoryId;
-            Products = products ?? new List<Product>();
-            SubCategories = categories ?? new List<Category>();
-        }
-
         public void CreateCategory(string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
         {
             Id = Guid.NewGuid();
