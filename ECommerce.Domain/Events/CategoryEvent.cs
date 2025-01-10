@@ -10,7 +10,7 @@ namespace ECommerce.Domain.Events
 
         public Guid? ParentCategoryId { get; set; }
 
-        public CategoryEvent(Guid categoryId, string name, Guid? parentCategoryId, eEventType eEventType)
+        public CategoryEvent(Guid categoryId, string name, Guid? parentCategoryId, eEventType eventType)
         {
             if (categoryId == Guid.Empty)
                 throw new ArgumentException("CategoryId cannot be empty.", nameof(categoryId));
@@ -18,7 +18,7 @@ namespace ECommerce.Domain.Events
             CategoryId = categoryId;
             Name = name;
             ParentCategoryId = parentCategoryId;
-            EventType = eEventType;
+            EventType = eventType;
         }
     }
 }

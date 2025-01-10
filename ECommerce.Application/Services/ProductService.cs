@@ -2,7 +2,7 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
-using ECommerce.Domain.DomainInterfaces;
+using ECommerce.Domain.DomainServices;
 using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;

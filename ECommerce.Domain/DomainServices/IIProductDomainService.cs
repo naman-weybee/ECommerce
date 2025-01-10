@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Domain.DomainInterfaces
+﻿namespace ECommerce.Domain.DomainServices
 {
     public interface IIProductDomainService
     {

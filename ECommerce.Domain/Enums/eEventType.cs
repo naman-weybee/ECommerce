@@ -4,9 +4,8 @@
     {
         Unknown = 0,
 
-        OrderCreated,        //Order Events
+        OrderPlaced,        //Order Events
         OrderUpdated,
-        OrderPlaced,
         OrderShipped,
         OrderDelivered,
         OrderCanceled,

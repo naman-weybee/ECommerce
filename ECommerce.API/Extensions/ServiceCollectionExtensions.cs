@@ -6,7 +6,6 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Application.Validators;
 using ECommerce.Domain.Aggregates;
-using ECommerce.Domain.DomainInterfaces;
 using ECommerce.Domain.DomainServices;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Events;
@@ -35,26 +34,6 @@ namespace ECommerce.API.Extensions
             services.AddEventHandlerServices();
 
             services.AddLogging();
-
-            return services;
-        }
-
-        private static IServiceCollection AddEventHandlerServices(this IServiceCollection services)
-        {
-            services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssemblies(
-                    typeof(Application.EventHandlers.EventHandler<ProductEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CategoryEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<OrderItemEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CartItemEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<OrderEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<AddressEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly
-                );
-            });
 
             return services;
         }
@@ -164,6 +143,26 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
+
+            return services;
+        }
+
+        private static IServiceCollection AddEventHandlerServices(this IServiceCollection services)
+        {
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblies(
+                    typeof(Application.EventHandlers.EventHandler<ProductEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<CategoryEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<OrderItemEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<CartItemEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<OrderEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<AddressEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly
+                );
+            });
 
             return services;
         }

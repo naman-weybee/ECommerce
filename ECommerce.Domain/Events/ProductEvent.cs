@@ -14,7 +14,7 @@ namespace ECommerce.Domain.Events
 
         public int Stock { get; }
 
-        public ProductEvent(Guid productId, string name, string sku, decimal price, int stock, eEventType eEventType)
+        public ProductEvent(Guid productId, string name, string sku, decimal price, int stock, eEventType eventType)
         {
             if (productId == Guid.Empty)
                 throw new ArgumentException("ProductId cannot be empty.", nameof(productId));
@@ -24,7 +24,7 @@ namespace ECommerce.Domain.Events
             SKU = sku;
             Price = price;
             Stock = stock;
-            EventType = eEventType;
+            EventType = eventType;
         }
     }
 }

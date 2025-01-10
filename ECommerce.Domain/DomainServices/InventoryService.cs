@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.DomainInterfaces;
-using ECommerce.Domain.Entities;
+﻿using ECommerce.Domain.Entities;
 
 namespace ECommerce.Domain.DomainServices
 {

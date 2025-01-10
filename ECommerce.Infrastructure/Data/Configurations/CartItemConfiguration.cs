@@ -17,11 +17,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .Property(p => p.UnitPrice)
             .HasConversion(new MoneyConverter());
-
-            builder
-            .HasIndex(c => new { c.UserId, c.ProductId })
-            .HasDatabaseName("IX_CartItem_UserId_ProductId")
-            .IsUnique();
         }
     }
 }

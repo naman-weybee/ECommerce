@@ -23,7 +23,7 @@ namespace ECommerce.Domain.Aggregates
         {
             Order.CreateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
-            EventType = eEventType.OrderCreated;
+            EventType = eEventType.OrderPlaced;
             RaiseDomainEvent();
         }
 
