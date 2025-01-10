@@ -3,9 +3,9 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -13,13 +13,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<RoleAggregate, Role> _repository;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
-        public RoleService(IRepository<RoleAggregate, Role> repository, IMapper mapper, IMediator mediator)
+        public RoleService(IRepository<RoleAggregate, Role> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
         public async Task<List<RoleDTO>> GetAllRolesAsync(RequestParams requestParams)
@@ -39,8 +39,8 @@ namespace ECommerce.Application.Services
         public async Task CreateRoleAsync(RoleCreateDTO dto)
         {
             var item = _mapper.Map<Role>(dto);
-            var aggregate = new RoleAggregate(item, _mediator);
-            await aggregate.CreateRole(item);
+            var aggregate = new RoleAggregate(item, _eventCollector);
+            aggregate.CreateRole(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -48,8 +48,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateRoleAsync(RoleUpdateDTO dto)
         {
             var item = _mapper.Map<Role>(dto);
-            var aggregate = new RoleAggregate(item, _mediator);
-            await aggregate.UpdateRole(item);
+            var aggregate = new RoleAggregate(item, _eventCollector);
+            aggregate.UpdateRole(item);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -57,8 +57,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteRoleAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new RoleAggregate(item, _mediator);
-            await aggregate.DeleteRole();
+            var aggregate = new RoleAggregate(item, _eventCollector);
+            aggregate.DeleteRole();
 
             await _repository.DeleteAsync(item);
         }

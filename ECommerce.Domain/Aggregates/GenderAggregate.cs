@@ -1,54 +1,49 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
-using MediatR;
+using ECommerce.Infrastructure.Services;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class GenderAggregate : AggregateRoot<Gender>
     {
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
         public Gender Gender { get; set; }
 
-        public GenderAggregate(Gender entity, IMediator mediator)
-            : base(entity, mediator)
+        public GenderAggregate(Gender entity, IDomainEventCollector eventCollector)
+            : base(entity, eventCollector)
         {
             Gender = entity;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
-        public async Task CreateGender(Gender gender)
+        public void CreateGender(Gender gender)
         {
             Gender.CreateGender(gender.Name);
 
             EventType = eEventType.GenderCreated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task UpdateGender(Gender gender)
+        public void UpdateGender(Gender gender)
         {
             Gender.UpdateGender(gender.Id, gender.Name);
 
             EventType = eEventType.GenderUpdated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task DeleteGender()
+        public void DeleteGender()
         {
             EventType = eEventType.GenderDeleted;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        private async Task RaiseDomainEvent()
+        private void RaiseDomainEvent()
         {
             var domainEvent = new GenderEvent(Gender.Id, Gender.Name, EventType);
-            await RaiseDomainEvent(domainEvent);
-        }
-
-        public new void ClearDomainEvents()
-        {
-            base.ClearDomainEvents();
+            RaiseDomainEvent(domainEvent);
         }
     }
 }

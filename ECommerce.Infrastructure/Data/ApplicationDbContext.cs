@@ -1,5 +1,6 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Data.Configurations;
+using ECommerce.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Data;
@@ -9,14 +10,17 @@ namespace ECommerce.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        private readonly IDomainEventCollector _eventCollector;
+
         public ApplicationDbContext()
         : base()
         {
         }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDomainEventCollector eventCollector)
         : base(options)
         {
+            _eventCollector = eventCollector;
         }
 
         public DbSet<Product> Products { get; set; }
@@ -37,7 +41,7 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var markedAsDeleted = ChangeTracker.Entries()
                 .Where(x => x.State == EntityState.Deleted);
@@ -52,7 +56,15 @@ namespace ECommerce.Infrastructure.Data
                 }
             }
 
-            return Task.FromResult(base.SaveChanges());
+            var result = await base.SaveChangesAsync(cancellationToken);
+            await PublishDomainEventsAsync();
+
+            return result;
+        }
+
+        private async Task PublishDomainEventsAsync()
+        {
+            await _eventCollector.PublishAsync();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -3,9 +3,9 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -13,13 +13,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<CartItemAggregate, CartItem> _repository;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
-        public CartItemService(IRepository<CartItemAggregate, CartItem> repository, IMapper mapper, IMediator mediator)
+        public CartItemService(IRepository<CartItemAggregate, CartItem> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
         public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams)
@@ -46,8 +46,8 @@ namespace ECommerce.Application.Services
         public async Task CreateCartItemAsync(CartItemCreateDTO dto)
         {
             var item = _mapper.Map<CartItem>(dto);
-            var aggregate = new CartItemAggregate(item, _mediator);
-            await aggregate.CreateCartItem(item);
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.CreateCartItem(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -55,8 +55,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateCartItemAsync(CartItemUpdateDTO dto)
         {
             var item = _mapper.Map<CartItem>(dto);
-            var aggregate = new CartItemAggregate(item, _mediator);
-            await aggregate.UpdateCartItem(item);
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.UpdateCartItem(item);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -64,8 +64,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
         {
             var item = _mapper.Map<CartItem>(dto);
-            var aggregate = new CartItemAggregate(item, _mediator);
-            await aggregate.UpdateQuantity(dto.Quantity);
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.UpdateQuantity(dto.Quantity);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -73,8 +73,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto)
         {
             var item = _mapper.Map<CartItem>(dto);
-            var aggregate = new CartItemAggregate(item, _mediator);
-            await aggregate.UpdateUnitPrice(dto.UnitPrice);
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.UpdateUnitPrice(dto.UnitPrice);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -82,8 +82,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteCartItemAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new CartItemAggregate(item, _mediator);
-            await aggregate.DeleteCartItem();
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.DeleteCartItem();
 
             await _repository.DeleteAsync(item);
         }

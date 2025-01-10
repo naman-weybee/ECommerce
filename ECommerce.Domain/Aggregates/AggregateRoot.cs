@@ -1,4 +1,5 @@
 ﻿using ECommerce.Domain.Enums;
+using ECommerce.Infrastructure.Services;
 using MediatR;
 
 namespace ECommerce.Domain.Aggregates
@@ -6,37 +7,21 @@ namespace ECommerce.Domain.Aggregates
     public class AggregateRoot<TEntity>
         where TEntity : class
     {
+        private readonly IDomainEventCollector _eventCollector;
+
         public eEventType EventType { get; set; } = eEventType.Unknown;
-
-        public readonly List<INotification> _domainEvents = new();
-
-        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
         public TEntity Entity { get; set; }
 
-        private readonly IMediator _mediator;
-
-        public AggregateRoot(TEntity entity)
+        public AggregateRoot(TEntity entity, IDomainEventCollector eventCollector)
         {
             Entity = entity;
+            _eventCollector = eventCollector;
         }
 
-        public AggregateRoot(TEntity entity, IMediator mediator)
+        public void RaiseDomainEvent(INotification domainEvent)
         {
-            Entity = entity;
-            _mediator = mediator;
-        }
-
-        public async Task RaiseDomainEvent(INotification domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-
-            await _mediator.Publish(domainEvent);
-        }
-
-        public void ClearDomainEvents()
-        {
-            _domainEvents.Clear();
+            _eventCollector.AddDomainEvent(domainEvent);
         }
     }
 }

@@ -1,41 +1,41 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
-using MediatR;
+using ECommerce.Infrastructure.Services;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class OrderAggregate : AggregateRoot<Order>
     {
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
         public Order Order { get; set; }
 
-        public OrderAggregate(Order entity, IMediator mediator)
-             : base(entity, mediator)
+        public OrderAggregate(Order entity, IDomainEventCollector eventCollector)
+             : base(entity, eventCollector)
         {
             Order = entity;
             Order.OrderItems ??= new List<OrderItem>();
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
-        public async Task CreateOrder(Order order)
+        public void CreateOrder(Order order)
         {
             Order.CreateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderCreated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task UpdateOrder(Order order)
+        public void UpdateOrder(Order order)
         {
             Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderUpdated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task AddOrderItem(OrderItem item)
+        public void AddOrderItem(OrderItem item)
         {
             ValidateOrderForModification();
 
@@ -48,10 +48,10 @@ namespace ECommerce.Domain.Aggregates
             Order.AddOrderItem(item);
 
             EventType = eEventType.OrderItemAddedInOrder;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task RemoveOrderItem(Guid orderItemId)
+        public void RemoveOrderItem(Guid orderItemId)
         {
             ValidateOrderForModification();
 
@@ -61,7 +61,7 @@ namespace ECommerce.Domain.Aggregates
             Order.RemoveOrderItem(item);
 
             EventType = eEventType.OrderItemRemovedFromOrder;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
         public void UpdateOrderStatus(eOrderStatus newStatus)
@@ -87,20 +87,22 @@ namespace ECommerce.Domain.Aggregates
                     OrderCanceledEvent();
                     break;
             }
+
+            RaiseDomainEvent();
         }
 
-        public async Task UpdatePaymentMethod(string newPaymentMethod)
+        public void UpdatePaymentMethod(string newPaymentMethod)
         {
             ValidateOrderForModification();
             Order.UpdatePaymentMethod(newPaymentMethod);
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task UpdateShippingAddress(Guid addressId)
+        public void UpdateShippingAddress(Guid addressId)
         {
             ValidateOrderForModification();
             Order.UpdateShippingAddress(addressId);
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
         private void ValidateOrderForModification()
@@ -114,6 +116,7 @@ namespace ECommerce.Domain.Aggregates
             if (Order.OrderStatus != eOrderStatus.Pending)
                 throw new InvalidOperationException("Order can only be Placed if it is Pending.");
 
+            EventType = eEventType.OrderPlaced;
             Order.UpdateOrderStatus(eOrderStatus.Placed);
         }
 
@@ -122,6 +125,7 @@ namespace ECommerce.Domain.Aggregates
             if (Order.OrderStatus != eOrderStatus.Placed)
                 throw new InvalidOperationException("Order can only be Shipped if it is Placed.");
 
+            EventType = eEventType.OrderShipped;
             Order.UpdateOrderStatus(eOrderStatus.Shipped);
         }
 
@@ -130,6 +134,7 @@ namespace ECommerce.Domain.Aggregates
             if (Order.OrderStatus != eOrderStatus.Shipped)
                 throw new InvalidOperationException("Order can only be Delivered if it is Shipped.");
 
+            EventType = eEventType.OrderDelivered;
             Order.UpdateOrderStatus(eOrderStatus.Delivered);
         }
 
@@ -138,24 +143,20 @@ namespace ECommerce.Domain.Aggregates
             if (Order.OrderStatus == eOrderStatus.Delivered || Order.OrderStatus == eOrderStatus.Canceled)
                 throw new InvalidOperationException("Canceled status is not allowed for Delivered or already Canceled orders.");
 
+            EventType = eEventType.OrderCanceled;
             Order.UpdateOrderStatus(eOrderStatus.Canceled);
         }
 
-        public async Task DeleteOrder()
+        public void DeleteOrder()
         {
             EventType = eEventType.OrderDeleted;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        private async Task RaiseDomainEvent()
+        private void RaiseDomainEvent()
         {
             var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.TotalAmount.Amount, EventType);
-            await RaiseDomainEvent(domainEvent);
-        }
-
-        public new void ClearDomainEvents()
-        {
-            base.ClearDomainEvents();
+            RaiseDomainEvent(domainEvent);
         }
     }
 }

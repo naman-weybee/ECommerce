@@ -3,9 +3,9 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using MediatR;
 
 namespace ECommerce.Application.Services
 {
@@ -13,13 +13,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<GenderAggregate, Gender> _repository;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
-        public GenderService(IRepository<GenderAggregate, Gender> repository, IMapper mapper, IMediator mediator)
+        public GenderService(IRepository<GenderAggregate, Gender> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
         public async Task<List<GenderDTO>> GetAllGendersAsync(RequestParams requestParams)
@@ -39,8 +39,8 @@ namespace ECommerce.Application.Services
         public async Task CreateGenderAsync(GenderCreateDTO dto)
         {
             var item = _mapper.Map<Gender>(dto);
-            var aggregate = new GenderAggregate(item, _mediator);
-            await aggregate.CreateGender(item);
+            var aggregate = new GenderAggregate(item, _eventCollector);
+            aggregate.CreateGender(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -48,8 +48,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateGenderAsync(GenderUpdateDTO dto)
         {
             var item = _mapper.Map<Gender>(dto);
-            var aggregate = new GenderAggregate(item, _mediator);
-            await aggregate.UpdateGender(item);
+            var aggregate = new GenderAggregate(item, _eventCollector);
+            aggregate.UpdateGender(item);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -57,8 +57,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteGenderAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new GenderAggregate(item, _mediator);
-            await aggregate.DeleteGender();
+            var aggregate = new GenderAggregate(item, _eventCollector);
+            aggregate.DeleteGender();
 
             await _repository.DeleteAsync(item);
         }

@@ -1,54 +1,49 @@
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
-using MediatR;
+using ECommerce.Infrastructure.Services;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class AddressAggregate : AggregateRoot<Address>
     {
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
         public Address Address { get; set; }
 
-        public AddressAggregate(Address entity, IMediator mediator)
-            : base(entity, mediator)
+        public AddressAggregate(Address entity, IDomainEventCollector eventCollector)
+            : base(entity, eventCollector)
         {
             Address = entity;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
-        public async Task CreateAddress(Address address)
+        public void CreateAddress(Address address)
         {
             Address.CreateAddress(address.Street, address.City, address.State, address.PostalCode, address.Country);
 
             EventType = eEventType.AddressCreated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task UpdateAddress(Address address)
+        public void UpdateAddress(Address address)
         {
             Address.UpdateAddress(address.Id, address.Street, address.City, address.State, address.PostalCode, address.Country);
 
             EventType = eEventType.AddressUpdated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task DeleteAddress()
+        public void DeleteAddress()
         {
             EventType = eEventType.AddressDeleted;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        private async Task RaiseDomainEvent()
+        private void RaiseDomainEvent()
         {
             var domainEvent = new AddressEvent(Address.Id, Address.Street, Address.City, Address.State, Address.PostalCode, Address.Country, EventType);
-            await RaiseDomainEvent(domainEvent);
-        }
-
-        public new void ClearDomainEvents()
-        {
-            base.ClearDomainEvents();
+            RaiseDomainEvent(domainEvent);
         }
     }
 }

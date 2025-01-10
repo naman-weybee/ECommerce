@@ -3,9 +3,9 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
@@ -14,13 +14,13 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<CategoryAggregate, Category> _repository;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
-        public CategoryService(IRepository<CategoryAggregate, Category> repository, IMapper mapper, IMediator mediator)
+        public CategoryService(IRepository<CategoryAggregate, Category> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams requestParams)
@@ -46,8 +46,8 @@ namespace ECommerce.Application.Services
         public async Task CreateCategoryAsync(CategoryCreateDTO dto)
         {
             var item = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(item, _mediator);
-            await aggregate.CreateCategory(item);
+            var aggregate = new CategoryAggregate(item, _eventCollector);
+            aggregate.CreateCategory(item);
 
             await _repository.InsertAsync(aggregate);
         }
@@ -55,8 +55,8 @@ namespace ECommerce.Application.Services
         public async Task UpdateCategoryAsync(CategoryUpdateDTO dto)
         {
             var item = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(item, _mediator);
-            await aggregate.UpdateCategory(aggregate.Category);
+            var aggregate = new CategoryAggregate(item, _eventCollector);
+            aggregate.UpdateCategory(aggregate.Category);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -64,10 +64,10 @@ namespace ECommerce.Application.Services
         public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new CategoryAggregate(item, _mediator);
+            var aggregate = new CategoryAggregate(item, _eventCollector);
 
             var subCategory = _mapper.Map<Category>(dto);
-            await aggregate.AddSubCategory(subCategory);
+            aggregate.AddSubCategory(subCategory);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -78,8 +78,8 @@ namespace ECommerce.Application.Services
             if (item.ParentCategoryId == null)
                 throw new Exception("Provided Category is not Sub Caegory, Its Parent Category.");
 
-            var aggregate = new CategoryAggregate(item, _mediator);
-            await aggregate.RemoveSubCategory();
+            var aggregate = new CategoryAggregate(item, _eventCollector);
+            aggregate.RemoveSubCategory();
 
             await _repository.DeleteAsync(item);
         }
@@ -87,8 +87,8 @@ namespace ECommerce.Application.Services
         public async Task DeleteCategoryAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
-            var aggregate = new CategoryAggregate(item, _mediator);
-            await aggregate.DeleteCategory();
+            var aggregate = new CategoryAggregate(item, _eventCollector);
+            aggregate.DeleteCategory();
 
             await _repository.DeleteAsync(item);
         }

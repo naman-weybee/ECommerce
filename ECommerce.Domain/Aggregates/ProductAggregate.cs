@@ -2,51 +2,51 @@
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects;
-using MediatR;
+using ECommerce.Infrastructure.Services;
 
 namespace ECommerce.Domain.Aggregates
 {
     public class ProductAggregate : AggregateRoot<Product>
     {
-        private readonly IMediator _mediator;
+        private readonly IDomainEventCollector _eventCollector;
 
         public Product Product { get; set; }
 
-        public ProductAggregate(Product entity, IMediator mediator)
-            : base(entity, mediator)
+        public ProductAggregate(Product entity, IDomainEventCollector eventCollector)
+            : base(entity, eventCollector)
         {
             Product = entity;
-            _mediator = mediator;
+            _eventCollector = eventCollector;
         }
 
-        public async Task CreateProduct(Product product)
+        public void CreateProduct(Product product)
         {
             Product.CreateProduct(product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
 
             EventType = eEventType.ProductCreated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task UpdateProduct(Product product)
+        public void UpdateProduct(Product product)
         {
             Product.UpdateProduct(product.Id, product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
 
             EventType = eEventType.ProductUpdated;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
 
             if (Product.Stock == 0)
-                await ProductStockDepletedEvent();
+                ProductStockDepletedEvent();
         }
 
-        public async Task IncreaseStock(int quantity)
+        public void IncreaseStock(int quantity)
         {
             Product.IncreaseStock(quantity);
 
             EventType = eEventType.ProductStockIncreased;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task DecreaseStock(int quantity)
+        public void DecreaseStock(int quantity)
         {
             if (quantity > Product.Stock)
                 throw new InvalidOperationException("Not enough stock available.");
@@ -54,13 +54,13 @@ namespace ECommerce.Domain.Aggregates
             Product.DecreaseStock(quantity);
 
             EventType = eEventType.ProductStockDecreased;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
 
             if (Product.Stock == 0)
-                await ProductStockDepletedEvent();
+                ProductStockDepletedEvent();
         }
 
-        public async Task ChangePrice(Money newPrice)
+        public void ChangePrice(Money newPrice)
         {
             if (newPrice <= 0)
                 throw new ArgumentException("New price must be greater than zero.");
@@ -68,30 +68,25 @@ namespace ECommerce.Domain.Aggregates
             Product.ChangePrice(newPrice);
 
             EventType = eEventType.ProductPriceChanged;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        public async Task DeleteProduct()
+        public void DeleteProduct()
         {
             EventType = eEventType.ProductDeleted;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        private async Task ProductStockDepletedEvent()
+        private void ProductStockDepletedEvent()
         {
             EventType = eEventType.ProductStockDepleted;
-            await RaiseDomainEvent();
+            RaiseDomainEvent();
         }
 
-        private async Task RaiseDomainEvent()
+        private void RaiseDomainEvent()
         {
             var domainEvent = new ProductEvent(Product.Id, Product.Name, Product.SKU, Product.Price.Amount, Product.Stock, EventType);
-            await RaiseDomainEvent(domainEvent);
-        }
-
-        public new void ClearDomainEvents()
-        {
-            base.ClearDomainEvents();
+            RaiseDomainEvent(domainEvent);
         }
     }
 }

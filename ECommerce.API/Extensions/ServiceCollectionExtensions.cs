@@ -13,6 +13,7 @@ using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects.JsonConverters;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Repositories;
+using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
 using FluentValidation;
@@ -89,6 +90,8 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
             services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
+
+            services.AddScoped<IDomainEventCollector, DomainEventCollector>();
 
             services.AddControllers(options =>
             {
