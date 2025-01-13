@@ -30,5 +30,7 @@ namespace ECommerce.Application.DTOs
         public bool IsPhoneNumberVerified { get; set; }
 
         public bool IsSubscribedToNotifications { get; set; }
+
+        public RoleDTO Role { get; set; }
     }
 }

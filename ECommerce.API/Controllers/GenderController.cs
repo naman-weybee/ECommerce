@@ -2,11 +2,13 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    public class GenderController : ControllerBase
+    [Authorize]
+    public class GenderController : Controller
     {
         private readonly IGenderService _service;
 
@@ -77,6 +79,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteGender(Guid id)
         {
             var response = new ResponseStructure();

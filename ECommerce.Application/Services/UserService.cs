@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -24,14 +25,20 @@ namespace ECommerce.Application.Services
 
         public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams requestParams)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var query = _repository.GetDbSet();
+            query = query.Include(u => u.Role);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<UserDTO>>(items);
         }
 
         public async Task<UserDTO> GetUserByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var query = _repository.GetDbSet();
+            query = query.Include(u => u.Role);
+
+            var item = await _repository.GetByIdAsync(id, query);
 
             return _mapper.Map<UserDTO>(item);
         }
@@ -61,6 +68,16 @@ namespace ECommerce.Application.Services
             aggregate.DeleteUser();
 
             await _repository.DeleteAsync(item);
+        }
+
+        public async Task<UserDTO> GetUserByEmailAndPasswordAsync(string email, string password)
+        {
+            var query = _repository.GetDbSet();
+            query = query.Include(u => u.Role);
+
+            var item = await _repository.GetUserByEmailAndPasswordAsync(email, password, query);
+
+            return _mapper.Map<UserDTO>(item);
         }
     }
 }

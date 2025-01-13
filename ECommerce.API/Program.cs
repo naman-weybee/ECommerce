@@ -29,6 +29,8 @@ namespace ECommerce.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllers();

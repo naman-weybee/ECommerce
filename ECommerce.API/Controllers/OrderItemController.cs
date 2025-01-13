@@ -2,11 +2,13 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    public class OrderItemController : ControllerBase
+    [Authorize]
+    public class OrderItemController : Controller
     {
         private readonly IOrderItemService _service;
 
@@ -53,6 +55,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
         {
             var response = new ResponseStructure();
@@ -65,6 +68,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrderItem([FromBody] OrderItemUpdateDTO dto)
         {
             var response = new ResponseStructure();
@@ -77,6 +81,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateQuantity")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateQuantity([FromBody] OrderItemQuantityUpdateDTO dto)
         {
             var response = new ResponseStructure();
@@ -89,6 +94,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateUnitPrice")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] OrderItemUnitPriceUpdateDTO dto)
         {
             var response = new ResponseStructure();
@@ -101,6 +107,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrderItem(Guid id)
         {
             var response = new ResponseStructure();

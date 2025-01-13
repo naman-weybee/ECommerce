@@ -14,5 +14,7 @@ namespace ECommerce.Application.Interfaces
         Task UpdateUserAsync(UserUpdateDTO dto);
 
         Task DeleteUserAsync(Guid id);
+
+        Task<UserDTO> GetUserByEmailAndPasswordAsync(string email, string password);
     }
 }

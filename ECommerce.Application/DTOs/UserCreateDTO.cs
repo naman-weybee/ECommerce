@@ -22,13 +22,5 @@ namespace ECommerce.Application.DTOs
         public DateTime? DateOfBirth { get; set; }
 
         public Guid GenderId { get; set; }
-
-        public bool IsActive { get; set; } = true;
-
-        public bool IsEmailVerified { get; set; }
-
-        public bool IsPhoneNumberVerified { get; set; }
-
-        public bool IsSubscribedToNotifications { get; set; } = true;
     }
 }

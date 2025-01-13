@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
+﻿using ECommerce.Domain.Enums;
 using ECommerce.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 

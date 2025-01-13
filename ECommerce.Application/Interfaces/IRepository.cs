@@ -12,8 +12,6 @@ namespace ECommerce.Shared.Repositories
 
         Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null);
 
-        Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue, IQueryable<TEntity>? query = null);
-
         Task InsertAsync(TAggregate aggregate);
 
         Task UpdateAsync(TAggregate aggregate);
@@ -25,5 +23,13 @@ namespace ECommerce.Shared.Repositories
         Task SaveAsync(TEntity entity);
 
         IQueryable<TEntity> GetDbSet();
+
+        //Extra Services
+
+        Task<bool> IsUserExistByEmailAsync(string email);
+
+        Task<TEntity> GetUserByEmailAndPasswordAsync(string email, string password, IQueryable<TEntity>? query = null);
+
+        Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue);
     }
 }

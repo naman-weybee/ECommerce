@@ -17,9 +17,12 @@ using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace ECommerce.API.Extensions
 {
@@ -49,6 +52,10 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IGenderService, GenderService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IMD5Service, MD5Service>();
 
             services.AddScoped<IPaginationService, PaginationService>();
 
@@ -90,6 +97,21 @@ namespace ECommerce.API.Extensions
 
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+                        ValidAudience = configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                    };
+                });
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
@@ -143,6 +165,7 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserLoginDTOValidator>();
 
             return services;
         }

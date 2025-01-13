@@ -54,21 +54,6 @@ namespace ECommerce.Infrastructure.Repositories
             throw new InvalidOperationException($"Data for Id = {id} is not available.");
         }
 
-        public virtual async Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue, IQueryable<TEntity>? query = null)
-        {
-            var property = (typeof(TEntity).GetProperty(columnName))
-                ?? throw new InvalidOperationException("Given property does not exist in the entity.");
-
-            query ??= _context.Set<TEntity>().AsQueryable();
-
-            var entities = await query.Where(e => EF.Property<Guid>(e, columnName) == columnValue).ToListAsync();
-
-            if (!entities.Any() || entities.Count == 0)
-                throw new InvalidOperationException($"No data found for columnValue = {columnValue}.");
-
-            return entities;
-        }
-
         public virtual async Task InsertAsync(TAggregate aggregate)
         {
             var entity = aggregate.Entity;
@@ -124,6 +109,39 @@ namespace ECommerce.Infrastructure.Repositories
         public virtual IQueryable<TEntity> GetDbSet()
         {
             return DbSet = _context.Set<TEntity>();
+        }
+
+        //Extra Services
+        public virtual async Task<bool> IsUserExistByEmailAsync(string email)
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            return await query.AnyAsync(e => EF.Property<string>(e, "Email") == email);
+        }
+
+        public virtual async Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue)
+        {
+            var property = (typeof(TEntity).GetProperty(columnName))
+                ?? throw new InvalidOperationException("Given property does not exist in the entity.");
+
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            var entities = await query.Where(e => EF.Property<Guid>(e, columnName) == columnValue).ToListAsync();
+
+            if (!entities.Any() || entities.Count == 0)
+                throw new InvalidOperationException($"No data found for columnValue = {columnValue}.");
+
+            return entities;
+        }
+
+        public async Task<TEntity> GetUserByEmailAndPasswordAsync(string email, string password, IQueryable<TEntity>? query = null)
+        {
+            query ??= _context.Set<TEntity>().AsQueryable();
+
+            var entity = await query.SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Email").Equals(email) && EF.Property<Guid>(e, "Password").Equals(password));
+
+            return entity
+                ?? throw new InvalidOperationException($"User with Email = {email} is not registerd.");
         }
     }
 }

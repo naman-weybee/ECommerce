@@ -2,10 +2,12 @@
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductService _service;
@@ -53,6 +55,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
         {
             var response = new ResponseStructure();
@@ -65,6 +68,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
         {
             var response = new ResponseStructure();
@@ -77,6 +81,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("IncreaseStock")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
@@ -89,6 +94,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("DecreaseStock")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO dto)
         {
             var response = new ResponseStructure();
@@ -101,6 +107,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("PriceChange")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO dto)
         {
             var response = new ResponseStructure();
@@ -113,6 +120,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             var response = new ResponseStructure();
