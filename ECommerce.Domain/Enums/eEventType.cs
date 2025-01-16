@@ -65,6 +65,12 @@
 
         RoleCreated,     //Role Events
         RoleUpdated,
-        RoleDeleted
+        RoleDeleted,
+
+        RefreshTokenCreated,     //Refresh Token Events
+        RefreshTokenUpdated,
+        RefreshTokenDeleted,
+        RefreshTokenRevoked,
+        RefreshTokenRegenerated
     }
 }

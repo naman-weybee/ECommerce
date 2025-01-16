@@ -54,7 +54,8 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAccessTokenService, AccessTokenService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<IMD5Service, MD5Service>();
 
             services.AddScoped<IPaginationService, PaginationService>();
@@ -76,6 +77,7 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
             services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
+            services.AddScoped<IRepository<RefreshTokenAggregate, RefreshToken>, Repository<RefreshTokenAggregate, RefreshToken>>();
 
             services.AddScoped<IDomainEventCollector, DomainEventCollector>();
 
@@ -166,6 +168,14 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserLoginDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RevokeRefreshTokenDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserTokenDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RefreshTokenCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RefreshTokenUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<AccessTokenCreateDTOValidator>();
 
             return services;
         }

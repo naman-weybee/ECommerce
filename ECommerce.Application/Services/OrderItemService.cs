@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -39,7 +40,9 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderItemDTO>> GetOrderItemByOrderIdAsync(Guid orderId)
         {
-            var items = await _repository.GetAllByPropertyAsync("OrderId", orderId);
+            var query = _repository.GetDbSet();
+
+            var items = await query.Where(x => x.OrderId == orderId).ToListAsync();
 
             return _mapper.Map<List<OrderItemDTO>>(items);
         }

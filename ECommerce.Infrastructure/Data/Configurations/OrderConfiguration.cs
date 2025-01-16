@@ -33,7 +33,7 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .OnDelete(DeleteBehavior.Restrict);
 
             builder
-            .HasOne(o => o.ShippingAddress)
+            .HasOne(o => o.Address)
             .WithMany()
             .HasForeignKey(o => o.AddressId)
             .OnDelete(DeleteBehavior.Restrict);

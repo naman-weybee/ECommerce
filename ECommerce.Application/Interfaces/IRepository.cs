@@ -8,9 +8,9 @@ namespace ECommerce.Shared.Repositories
         where TAggregate : AggregateRoot<TEntity>
         where TEntity : class
     {
-        Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity>? query = null);
-
         Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null);
+
+        Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity>? query = null);
 
         Task InsertAsync(TAggregate aggregate);
 
@@ -18,18 +18,8 @@ namespace ECommerce.Shared.Repositories
 
         Task DeleteAsync(TEntity entity);
 
-        Task DeleteByUserIdAsync(Guid userId);
-
         Task SaveAsync(TEntity entity);
 
         IQueryable<TEntity> GetDbSet();
-
-        //Extra Services
-
-        Task<bool> IsUserExistByEmailAsync(string email);
-
-        Task<TEntity> GetUserByEmailAndPasswordAsync(string email, string password, IQueryable<TEntity>? query = null);
-
-        Task<List<TEntity>> GetAllByPropertyAsync(string columnName, Guid columnValue);
     }
 }

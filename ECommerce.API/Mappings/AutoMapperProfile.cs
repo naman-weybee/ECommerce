@@ -37,6 +37,9 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<Role, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
             ConfigureMappings<RoleAggregate, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
+
+            ConfigureMappings<RefreshToken, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
+            ConfigureMappings<RefreshTokenAggregate, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()

@@ -7,22 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class UserController : Controller
+    [Authorize]
+    public class RefreshTokenController : Controller
     {
-        private readonly IUserService _service;
+        private readonly IRefreshTokenService _service;
 
-        public UserController(IUserService service)
+        public RefreshTokenController(IRefreshTokenService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllUsersAsync(requestParams);
+            var data = await _service.GetAllRefreshTokensAsync(requestParams);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -40,11 +40,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetRefreshTokenById(Guid id)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetUserByIdAsync(id);
+            var data = await _service.GetRefreshTokenByIdAsync(id);
             if (data != null)
             {
                 response.data = data;
@@ -55,11 +55,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> CreateRefreshToken([FromBody] RefreshTokenCreateDTO dto)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.CreateUserAsync(dto);
+            var data = await _service.CreateRefreshTokenAsync(dto);
             if (data != null)
             {
                 response.data = data;
@@ -70,24 +70,24 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
+        public async Task<IActionResult> UpdateRefreshToken([FromBody] RefreshTokenUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.UpdateUserAsync(dto);
-            response.data = new { Message = "User Modified Successfully." };
+            await _service.UpdateRefreshTokenAsync(dto);
+            response.data = new { Message = "Refresh Token Modified Successfully." };
             response.success = true;
 
             return StatusCode(200, response);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteRefreshToken(Guid id)
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteUserAsync(id);
-            response.data = new { Message = $"User with Id = {id} is Deleted Successfully." };
+            await _service.DeleteRefreshTokenAsync(id);
+            response.data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

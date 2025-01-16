@@ -7,16 +7,16 @@ using System.Text;
 
 namespace ECommerce.Application.Services
 {
-    public class TokenService : ITokenService
+    public class AccessTokenService : IAccessTokenService
     {
         private readonly IConfiguration _configuration;
 
-        public TokenService(IConfiguration configuration)
+        public AccessTokenService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<string> GenerateTokenAsync(User user)
+        public async Task<string> CreateAccessTokenAsync(User user)
         {
             var claims = new[]
             {
@@ -24,14 +24,14 @@ namespace ECommerce.Application.Services
                 new Claim(ClaimTypes.Role, user.Role.Name)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

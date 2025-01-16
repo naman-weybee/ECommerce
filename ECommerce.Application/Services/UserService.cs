@@ -43,13 +43,15 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDTO>(item);
         }
 
-        public async Task CreateUserAsync(UserCreateDTO dto)
+        public async Task<UserDTO> CreateUserAsync(UserCreateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
             var aggregate = new UserAggregate(item, _eventCollector);
             aggregate.CreateUser(item);
 
             await _repository.InsertAsync(aggregate);
+
+            return await GetUserByIdAsync(aggregate.User.Id);
         }
 
         public async Task UpdateUserAsync(UserUpdateDTO dto)
@@ -68,16 +70,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteUser();
 
             await _repository.DeleteAsync(item);
-        }
-
-        public async Task<UserDTO> GetUserByEmailAndPasswordAsync(string email, string password)
-        {
-            var query = _repository.GetDbSet();
-            query = query.Include(u => u.Role);
-
-            var item = await _repository.GetUserByEmailAndPasswordAsync(email, password, query);
-
-            return _mapper.Map<UserDTO>(item);
         }
     }
 }

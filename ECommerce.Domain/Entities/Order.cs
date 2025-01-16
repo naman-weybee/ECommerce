@@ -28,7 +28,7 @@ namespace ECommerce.Domain.Entities
 
         public string PaymentMethod { get; set; }
 
-        public virtual Address ShippingAddress { get; set; }
+        public virtual Address Address { get; set; }
 
         public virtual User User { get; set; }
 

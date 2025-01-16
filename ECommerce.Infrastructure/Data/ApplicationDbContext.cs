@@ -41,6 +41,8 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var markedAsDeleted = ChangeTracker.Entries()
@@ -88,7 +90,8 @@ namespace ECommerce.Infrastructure.Data
             .ApplyConfiguration(new AddressConfiguration())
             .ApplyConfiguration(new GenderConfiguration())
             .ApplyConfiguration(new RoleConfiguration())
-            .ApplyConfiguration(new UserConfiguration());
+            .ApplyConfiguration(new UserConfiguration())
+            .ApplyConfiguration(new RefreshTokenConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
