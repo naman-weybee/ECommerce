@@ -7,6 +7,7 @@ using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
 
 namespace ECommerce.Application.Services
 {
@@ -46,10 +47,14 @@ namespace ECommerce.Application.Services
         public async Task<UserDTO> CreateUserAsync(UserCreateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
+            item.EmailVerificationToken = Guid.NewGuid().ToString();
+
             var aggregate = new UserAggregate(item, _eventCollector);
             aggregate.CreateUser(item);
 
             await _repository.InsertAsync(aggregate);
+
+            await SendVerificationEmail("harshraval@weybee.in", item.EmailVerificationToken);
 
             return await GetUserByIdAsync(aggregate.User.Id);
         }
@@ -70,6 +75,40 @@ namespace ECommerce.Application.Services
             aggregate.DeleteUser();
 
             await _repository.DeleteAsync(item);
+        }
+
+        public async Task VerifyEmailAsync(string token)
+        {
+            var query = _repository.GetDbSet();
+
+            var user = await query.SingleOrDefaultAsync(x => x.EmailVerificationToken == token)
+                ?? throw new InvalidOperationException("Invalid token.");
+
+            user.EmailVerificationToken = null;
+            user.IsEmailVerified = true;
+
+            var aggregate = new UserAggregate(user, _eventCollector);
+            aggregate.VerifyEmail();
+
+            await _repository.UpdateAsync(aggregate);
+        }
+
+        private async Task SendVerificationEmail(string email, string token)
+        {
+            var verificationLink = $"https://localhost:44344/api/v1/User/verify-email?token={Uri.EscapeDataString(token)}";
+
+            var subject = "Verify Your Email";
+            var body = $"Please click the link to verify your email: {verificationLink}";
+
+            using var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new System.Net.NetworkCredential("erenyeageraottitan1@gmail.com", "hzga iobj kxwv znqs"),
+                EnableSsl = true
+            };
+
+            using var message = new MailMessage("erenyeageraottitan1@gmail.com", email, subject, body);
+            await smtpClient.SendMailAsync(message);
         }
     }
 }

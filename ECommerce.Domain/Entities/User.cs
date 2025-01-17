@@ -40,13 +40,15 @@ namespace ECommerce.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
+        public string? EmailVerificationToken { get; set; }
+
         public bool IsEmailVerified { get; set; }
 
         public bool IsPhoneNumberVerified { get; set; }
 
         public bool IsSubscribedToNotifications { get; set; }
 
-        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, string emailVerificationToken, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -60,6 +62,7 @@ namespace ECommerce.Domain.Entities
             AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
+            EmailVerificationToken = emailVerificationToken;
             IsPhoneNumberVerified = isPhoneNumberVerified;
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
@@ -120,9 +123,11 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        public void ChangeIsEmailVerifiedStatus(bool isEmailVerified)
+        public void VerifyEmail()
         {
-            IsEmailVerified = isEmailVerified;
+            EmailVerificationToken = null;
+            IsEmailVerified = true;
+
             StatusUpdated();
         }
 

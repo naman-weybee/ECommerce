@@ -51,7 +51,7 @@
         UserRoleChanged,
         UserAddressChanged,
         UserIsActiveStatusChanged,
-        UserIsEmailVerifiedStatusChanged,
+        UserEmailVarified,
         UserIsPhoneNumberVerifiedStatusChanged,
         UserIsSubscribedToNotificationsStatusChanged,
 

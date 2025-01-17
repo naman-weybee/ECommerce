@@ -13,6 +13,8 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateUserAsync(UserUpdateDTO dto);
 
+        Task VerifyEmailAsync(string token);
+
         Task DeleteUserAsync(Guid id);
     }
 }
