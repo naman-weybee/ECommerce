@@ -58,8 +58,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            DbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Added;
+            DbSet.Add(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -67,8 +66,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            DbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            DbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -87,7 +85,7 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task SaveAsync(TEntity entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
+            DbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
