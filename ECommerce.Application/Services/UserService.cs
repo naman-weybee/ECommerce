@@ -4,6 +4,7 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
+using ECommerce.Shared.Constants;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,7 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDTO>(item);
         }
 
-        public async Task<UserDTO> CreateUserAsync(UserCreateDTO dto)
+        public async Task CreateUserAsync(UserCreateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
             item.EmailVerificationToken = Guid.NewGuid().ToString();
@@ -54,9 +55,7 @@ namespace ECommerce.Application.Services
 
             await _repository.InsertAsync(aggregate);
 
-            await SendVerificationEmail("harshraval@weybee.in", item.EmailVerificationToken);
-
-            return await GetUserByIdAsync(aggregate.User.Id);
+            await SendVerificationEmail(item.Email, item.EmailVerificationToken);
         }
 
         public async Task UpdateUserAsync(UserUpdateDTO dto)
@@ -83,7 +82,7 @@ namespace ECommerce.Application.Services
 
             var user = await query.SingleOrDefaultAsync(x => x.EmailVerificationToken == token)
                 ?? throw new InvalidOperationException("Invalid token.");
-
+            
             user.EmailVerificationToken = null;
             user.IsEmailVerified = true;
 
@@ -93,9 +92,9 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
-        private async Task SendVerificationEmail(string email, string token)
+        private static async Task SendVerificationEmail(string email, string token)
         {
-            var verificationLink = $"https://localhost:44344/api/v1/User/verify-email?token={Uri.EscapeDataString(token)}";
+            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/User/verify-email?token={Uri.EscapeDataString(token)}";
 
             var subject = "Verify Your Email";
             var body = $"Please click the link to verify your email: {verificationLink}";
@@ -103,11 +102,11 @@ namespace ECommerce.Application.Services
             using var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                Credentials = new System.Net.NetworkCredential("erenyeageraottitan1@gmail.com", "hzga iobj kxwv znqs"),
+                Credentials = new System.Net.NetworkCredential(Constants.Email, Constants.Password),
                 EnableSsl = true
             };
 
-            using var message = new MailMessage("erenyeageraottitan1@gmail.com", email, subject, body);
+            using var message = new MailMessage(Constants.Email, email, subject, body);
             await smtpClient.SendMailAsync(message);
         }
     }

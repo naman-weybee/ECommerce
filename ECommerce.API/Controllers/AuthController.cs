@@ -19,12 +19,9 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var data = await _service.RegisterAsync(dto);
-            if (data != null)
-            {
-                response.data = data;
-                response.success = true;
-            }
+            await _service.RegisterAsync(dto);
+            response.data = new { Message = "Verification email sent." };
+            response.success = true;
 
             return StatusCode(201, response);
         }

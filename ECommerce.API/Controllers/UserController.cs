@@ -59,12 +59,9 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var data = await _service.CreateUserAsync(dto);
-            if (data != null)
-            {
-                response.data = data;
-                response.success = true;
-            }
+            await _service.CreateUserAsync(dto);
+            response.data = new { Message = "User Created Successfully." };
+            response.success = true;
 
             return StatusCode(201, response);
         }

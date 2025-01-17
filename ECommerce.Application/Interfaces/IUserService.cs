@@ -9,7 +9,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<UserDTO> GetUserByIdAsync(Guid id);
 
-        Task<UserDTO> CreateUserAsync(UserCreateDTO dto);
+        Task CreateUserAsync(UserCreateDTO dto);
 
         Task UpdateUserAsync(UserUpdateDTO dto);
 

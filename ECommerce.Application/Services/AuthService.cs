@@ -29,7 +29,7 @@ namespace ECommerce.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<UserTokenDTO> RegisterAsync(UserCreateDTO dto)
+        public async Task RegisterAsync(UserCreateDTO dto)
         {
             var query = _userRepository.GetDbSet();
 
@@ -40,19 +40,17 @@ namespace ECommerce.Application.Services
 
             dto.Password = _md5Service.ComputeMD5Hash(dto.Password);
 
-            var user = await _userService.CreateUserAsync(dto);
-
-            return await GenerateUserTokenAsync(user);
+            await _userService.CreateUserAsync(dto);
         }
 
         public async Task<UserTokenDTO> LoginAsync(UserLoginDTO dto)
         {
             var query = _userRepository.GetDbSet();
 
-            var isEmailExist = await query.AnyAsync(x => x.Email == dto.Email);
+            var isEmailExist = await query.AnyAsync(x => x.Email == dto.Email && x.IsEmailVerified);
 
             if (!isEmailExist)
-                throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
+                throw new InvalidOperationException($"User with Email = {dto.Email} is not registered or verified.");
 
             dto.Password = _md5Service.ComputeMD5Hash(dto.Password);
 
