@@ -38,6 +38,8 @@ namespace ECommerce.API.Extensions
 
             services.AddLogging();
 
+            services.AddHttpContextAccessor();
+
             return services;
         }
 
@@ -168,12 +170,13 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserLoginDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RevokeRefreshTokenDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserTokenDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserClaimsDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<RefreshTokenCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<RefreshTokenUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<RevokeRefreshTokenDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<AccessTokenCreateDTOValidator>();
 

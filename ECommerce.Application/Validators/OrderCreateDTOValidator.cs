@@ -10,9 +10,6 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required.");
 
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("User Id is required.");
-
             RuleFor(x => x.TotalAmount)
                 .NotNull().WithMessage("Total amount is required.");
 

@@ -57,7 +57,7 @@ namespace ECommerce.Application.Services
         public async Task CreateOrderAsync(OrderCreateFromCartDTO dto)
         {
             // Get User
-            var user = await GetUserById(dto.UserId);
+            var user = await _userService.GetUserByIdAsync(dto.UserId);
 
             // Get Cart Items
             var cartItems = await GetUserCartItems(user.Id);
@@ -120,12 +120,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteOrder();
 
             await _repository.DeleteAsync(item);
-        }
-
-        private async Task<UserDTO> GetUserById(Guid userId)
-        {
-            return await _userService.GetUserByIdAsync(userId)
-                 ?? throw new InvalidOperationException("User not found.");
         }
 
         private async Task<List<CartItemDTO>> GetUserCartItems(Guid userId)

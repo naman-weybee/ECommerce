@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -55,9 +56,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRefreshToken([FromBody] RefreshTokenCreateDTO dto)
+        public async Task<IActionResult> CreateRefreshToken()
         {
             var response = new ResponseStructure();
+
+            var dto = new RefreshTokenCreateDTO() { UserId = HTTPHelper.GetUserId() };
 
             var data = await _service.CreateRefreshTokenAsync(dto);
             if (data != null)
@@ -73,6 +76,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> UpdateRefreshToken([FromBody] RefreshTokenUpdateDTO dto)
         {
             var response = new ResponseStructure();
+
+            dto.UserId = HTTPHelper.GetUserId();
 
             await _service.UpdateRefreshTokenAsync(dto);
             response.data = new { Message = "Refresh Token Modified Successfully." };

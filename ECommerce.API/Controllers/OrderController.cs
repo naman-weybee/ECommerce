@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.API.Helper;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
@@ -60,6 +61,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = HTTPHelper.GetUserId();
+
             await _service.CreateOrderAsync(dto);
             response.data = new { Message = "New Order Added Successfully." };
             response.success = true;
@@ -86,6 +89,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderUpdateStatusDTO dto)
         {
             var response = new ResponseStructure();
+
+            dto.UserId = HTTPHelper.GetUserId();
 
             await _service.UpdateOrderStatusAsync(dto);
             response.data = new { Message = "Order Status Modified Successfully." };

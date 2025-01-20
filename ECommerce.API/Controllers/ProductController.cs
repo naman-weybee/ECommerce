@@ -12,7 +12,7 @@ namespace ECommerce.API.Controllers
     {
         private readonly IProductService _service;
 
-        public ProductController(IProductService service, ILogger<ProductController> logger)
+        public ProductController(IProductService service)
         {
             _service = service;
         }

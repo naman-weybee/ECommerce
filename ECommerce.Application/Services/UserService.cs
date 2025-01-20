@@ -82,7 +82,7 @@ namespace ECommerce.Application.Services
 
             var user = await query.SingleOrDefaultAsync(x => x.EmailVerificationToken == token)
                 ?? throw new InvalidOperationException("Invalid token.");
-            
+
             user.EmailVerificationToken = null;
             user.IsEmailVerified = true;
 

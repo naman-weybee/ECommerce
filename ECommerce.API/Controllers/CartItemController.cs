@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -60,6 +61,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = HTTPHelper.GetUserId();
+
             await _service.CreateCartItemAsync(dto);
             response.data = new { Message = "New Cart Item Added Successfully." };
             response.success = true;
@@ -80,9 +83,9 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpPut("UpdateQuantity/{id}")]
+        [HttpPut("UpdateQuantity")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateQuantity(Guid id, [FromBody] CartItemQuantityUpdateDTO dto)
+        public async Task<IActionResult> UpdateQuantity([FromBody] CartItemQuantityUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
@@ -93,9 +96,9 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpPut("UpdateUnitPrice/{id}")]
+        [HttpPut("UpdateUnitPrice")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateUnitPrice(Guid id, [FromBody] CartItemUnitPriceUpdateDTO dto)
+        public async Task<IActionResult> UpdateUnitPrice([FromBody] CartItemUnitPriceUpdateDTO dto)
         {
             var response = new ResponseStructure();
 

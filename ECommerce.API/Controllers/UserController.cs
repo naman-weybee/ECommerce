@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -39,12 +40,14 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        [HttpGet("GetCurrentUser")]
+        public async Task<IActionResult> GetUserById()
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetUserByIdAsync(id);
+            var userId = HTTPHelper.GetUserId();
+
+            var data = await _service.GetUserByIdAsync(userId);
             if (data != null)
             {
                 response.data = data;
@@ -71,6 +74,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.Id = HTTPHelper.GetUserId();
+
             await _service.UpdateUserAsync(dto);
             response.data = new { Message = "User Modified Successfully." };
             response.success = true;
@@ -78,13 +83,15 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        [HttpDelete("DeleteCurrentUser")]
+        public async Task<IActionResult> DeleteUser()
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteUserAsync(id);
-            response.data = new { Message = $"User with Id = {id} is Deleted Successfully." };
+            var userId = HTTPHelper.GetUserId();
+
+            await _service.DeleteUserAsync(userId);
+            response.data = new { Message = $"User with Id = {userId} is Deleted Successfully." };
             response.success = true;
 
             return StatusCode(200, response);
@@ -97,7 +104,7 @@ namespace ECommerce.API.Controllers
             var response = new ResponseStructure();
 
             await _service.VerifyEmailAsync(token);
-            response.data = new { Message = $"User verified Successfully." };
+            response.data = new { Message = "User verified Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

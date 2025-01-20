@@ -1,4 +1,5 @@
 using ECommerce.API.Extensions;
+using ECommerce.API.Helper;
 
 namespace ECommerce.API
 {
@@ -34,6 +35,8 @@ namespace ECommerce.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            HTTPHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
 
             app.Run();
         }
