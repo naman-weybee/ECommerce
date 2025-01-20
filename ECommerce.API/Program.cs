@@ -1,5 +1,6 @@
 using ECommerce.API.Extensions;
 using ECommerce.API.Helper;
+using ECommerce.API.Middlewares;
 
 namespace ECommerce.API
 {
@@ -37,6 +38,8 @@ namespace ECommerce.API
             app.MapControllers();
 
             HTTPHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.Run();
         }
