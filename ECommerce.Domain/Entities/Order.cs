@@ -110,7 +110,7 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        public void UpdateShippingAddress(Guid addressId)
+        public void UpdateOrderAddress(Guid addressId)
         {
             AddressId = addressId;
             StatusUpdated();

@@ -20,16 +20,18 @@ namespace ECommerce.Application.Services
         private readonly ICartItemService _cartItemService;
         private readonly IOrderItemService _orderItemService;
         private readonly IInventoryService _inventoryService;
+        private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _userService = userService;
             _cartItemService = cartItemService;
             _orderItemService = orderItemService;
             _inventoryService = inventoryService;
+            _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -56,30 +58,45 @@ namespace ECommerce.Application.Services
 
         public async Task CreateOrderAsync(OrderCreateFromCartDTO dto)
         {
-            // Get User
-            var user = await _userService.GetUserByIdAsync(dto.UserId);
+            // Begin Transaction
+            await _transactionManagerService.BeginTransactionAsync();
 
-            // Get Cart Items
-            var cartItems = await GetUserCartItems(user.Id);
+            try
+            {
+                // Get User
+                var user = await _userService.GetUserByIdAsync(dto.UserId);
 
-            // Check Product Stock Availability
-            await CheckProductStockAvailability(cartItems);
+                // Get Cart Items
+                var cartItems = await GetUserCartItems(user.Id);
 
-            // Calculate Total Amount
-            var totalAmount = cartItems.Sum(c => c.Quantity * c.UnitPrice.Amount);
+                // Check Product Stock Availability
+                await CheckProductStockAvailability(cartItems);
 
-            // Create Order
-            var orderId = Guid.NewGuid();
-            await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, user.AddressId);
+                // Calculate Total Amount
+                var totalAmount = cartItems.Sum(c => c.Quantity * c.UnitPrice.Amount);
 
-            // Create Order Items
-            await CreateOrderItemsFromCartItems(orderId, cartItems);
+                // Create Order
+                var orderId = Guid.NewGuid();
+                await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, user.AddressId);
 
-            // Update Prodct Stock - Domain Service
-            await UpdateProductStock(cartItems, false);
+                // Create Order Items
+                await CreateOrderItemsFromCartItems(orderId, cartItems);
 
-            //Clear Cart
-            await ClearCart(user.Id);
+                // Update Prodct Stock - Domain Service
+                await UpdateProductStock(cartItems, false);
+
+                //Clear Cart
+                await ClearCart(user.Id);
+
+                // Commit transaction
+                await _transactionManagerService.CommitTransactionAsync();
+            }
+            catch (Exception)
+            {
+                // Rollback transaction on error
+                await _transactionManagerService.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task UpdateOrderAsync(OrderUpdateDTO dto)
@@ -145,7 +162,7 @@ namespace ECommerce.Application.Services
                 UserId = userId,
                 TotalAmount = new Money(totalAmount),
                 PaymentMethod = paymentMethod,
-                ShippingAddressId = addressId
+                AddressId = addressId
             };
 
             var order = _mapper.Map<Order>(orderDto);

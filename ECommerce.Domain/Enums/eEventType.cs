@@ -11,7 +11,7 @@
         OrderCanceled,
         OrderStatusUpdated,
         OrderPaymentMethodUpdated,
-        OrderShippingAddressUpdated,
+        OrderAddressUpdated,
         OrderDeleted,
         OrderItemAddedInOrder,
         OrderItemRemovedFromOrder,

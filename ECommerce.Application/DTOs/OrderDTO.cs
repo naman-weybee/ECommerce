@@ -28,7 +28,7 @@ namespace ECommerce.Application.DTOs
 
         public string PaymentMethod { get; set; }
 
-        public Guid ShippingAddressId { get; set; }
+        public Guid AddressId { get; set; }
 
         public virtual ICollection<OrderItemDTO> OrderItems { get; set; }
     }

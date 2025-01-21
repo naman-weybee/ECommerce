@@ -98,10 +98,10 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateShippingAddress(Guid addressId)
+        public void UpdateOrderAddress(Guid addressId)
         {
             ValidateOrderForModification();
-            Order.UpdateShippingAddress(addressId);
+            Order.UpdateOrderAddress(addressId);
             RaiseDomainEvent();
         }
 

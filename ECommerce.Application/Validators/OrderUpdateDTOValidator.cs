@@ -23,8 +23,8 @@ namespace ECommerce.API.Validators
                 .NotEmpty().WithMessage("Payment method is required.")
                 .Length(3, 50).WithMessage("Payment method should be between 3 and 50 characters.");
 
-            RuleFor(x => x.ShippingAddressId)
-                .NotEmpty().WithMessage("Shipping address ID is required.");
+            RuleFor(x => x.AddressId)
+                .NotEmpty().WithMessage("Order Address ID is required.");
         }
     }
 }
