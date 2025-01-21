@@ -46,6 +46,16 @@ namespace ECommerce.Application.Services
             return _mapper.Map<List<OrderDTO>>(items);
         }
 
+        public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId)
+        {
+            var query = _repository.GetDbSet();
+            query = query.Include(c => c.OrderItems).Where(u => u.UserId == userId);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<OrderDTO>>(items);
+        }
+
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id)
         {
             var query = _repository.GetDbSet();

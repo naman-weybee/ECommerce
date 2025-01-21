@@ -41,6 +41,30 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
+        [HttpGet("GetAllRecentOrders")]
+        public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams)
+        {
+            var response = new ResponseStructure();
+
+            var userId = HTTPHelper.GetUserId();
+
+            var data = await _service.GetAllRecentOrdersAsync(requestParams, userId);
+            if (data != null)
+            {
+                response.data = new ResponseMetadata<object>()
+                {
+                    page_number = requestParams.pageNumber,
+                    page_size = requestParams.pageSize,
+                    records = data,
+                    total_records_count = requestParams.recordCount
+                };
+
+                response.success = true;
+            }
+
+            return StatusCode(200, response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {

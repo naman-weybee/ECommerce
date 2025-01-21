@@ -7,6 +7,8 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams dto);
 
+        Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId);
+
         Task<OrderDTO> GetOrderByIdAsync(Guid id);
 
         Task CreateOrderAsync(OrderCreateFromCartDTO dto);
