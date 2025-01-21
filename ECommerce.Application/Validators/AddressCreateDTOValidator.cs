@@ -7,25 +7,39 @@ namespace ECommerce.API.Validators
     {
         public AddressCreateDTOValidator()
         {
-            RuleFor(x => x.Street)
-                .NotEmpty().WithMessage("Street is required.")
-                .MaximumLength(200).WithMessage("Street cannot exceed 200 characters.");
+            RuleFor(x => x.UserId)
+                .NotEmpty().WithMessage("UserId is required");
 
-            RuleFor(x => x.City)
-                .NotEmpty().WithMessage("City is required.")
-                .MaximumLength(100).WithMessage("City cannot exceed 100 characters.");
+            RuleFor(x => x.FirstName)
+                .NotEmpty().WithMessage("First Name is required")
+                .MaximumLength(100).WithMessage("First Name cannot exceed 50 characters.");
+            
+            RuleFor(x => x.LastName)
+                .NotEmpty().WithMessage("Last Name is required")
+                .MaximumLength(100).WithMessage("Last Name cannot exceed 50 characters.");
 
-            RuleFor(x => x.State)
-                .NotEmpty().WithMessage("State is required.")
-                .MaximumLength(100).WithMessage("State cannot exceed 100 characters.");
+            RuleFor(x => x.CountryId)
+                .NotEmpty().WithMessage("CountryId is required");
+
+            RuleFor(x => x.StateId)
+                .NotEmpty().WithMessage("StateId is required");
+
+            RuleFor(x => x.CityId)
+                .NotEmpty().WithMessage("CityId is required");
 
             RuleFor(x => x.PostalCode)
-                .NotEmpty().WithMessage("Postal Code is required.")
+                .NotEmpty().WithMessage("PostalCode is required")
                 .MaximumLength(20).WithMessage("Postal Code cannot exceed 20 characters.");
 
-            RuleFor(x => x.Country)
-                .NotEmpty().WithMessage("Country is required.")
-                .MaximumLength(100).WithMessage("Country cannot exceed 100 characters.");
+            RuleFor(x => x.AdderessType)
+                .IsInEnum().WithMessage("Adderess Type is required");
+
+            RuleFor(x => x.AddressLine)
+                .NotEmpty().WithMessage("Address Line is required")
+                .MaximumLength(500).WithMessage("Address Line cannot exceed 20 characters.");
+
+            RuleFor(x => x.PhoneNumber)
+                .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Please provide a valid phone number.");
         }
     }
 }

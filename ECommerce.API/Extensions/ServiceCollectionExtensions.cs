@@ -51,6 +51,9 @@ namespace ECommerce.API.Extensions
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<IStateService, StateService>();
+            services.AddScoped<ICityService, CityService>();
             services.AddScoped<IGenderService, GenderService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IUserService, UserService>();
@@ -76,6 +79,9 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<CartItemAggregate, CartItem>, Repository<CartItemAggregate, CartItem>>();
             services.AddScoped<IRepository<OrderAggregate, Order>, Repository<OrderAggregate, Order>>();
             services.AddScoped<IRepository<AddressAggregate, Address>, Repository<AddressAggregate, Address>>();
+            services.AddScoped<IRepository<CountryAggregate, Country>, Repository<CountryAggregate, Country>>();
+            services.AddScoped<IRepository<StateAggregate, State>, Repository<StateAggregate, State>>();
+            services.AddScoped<IRepository<CityAggregate, City>, Repository<CityAggregate, City>>();
             services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
             services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
@@ -160,6 +166,18 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<AddressUpdateDTOValidator>();
 
+            services.AddValidatorsFromAssemblyContaining<CountryDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CountryCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CountryUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<StateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<StateCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<StateUpdateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<CityDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CityCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<CityUpdateDTOValidator>();
+
             services.AddValidatorsFromAssemblyContaining<GenderDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<GenderCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<GenderUpdateDTOValidator>();
@@ -196,6 +214,9 @@ namespace ECommerce.API.Extensions
                     typeof(Application.EventHandlers.EventHandler<CartItemEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<OrderEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<AddressEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<CountryEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<StateEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<CityEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly

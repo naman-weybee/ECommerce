@@ -14,9 +14,27 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .IsUnique();
 
             builder
-            .HasIndex(a => new { a.Street, a.City, a.State, a.PostalCode, a.Country })
-            .HasDatabaseName("IX_Address_Street_City_State_PostalCode_Country")
+            .HasIndex(a => new { a.CountryId, a.StateId, a.CityId, a.PostalCode })
+            .HasDatabaseName("IX_Address_CountryId_StateId_CityId_PostalCode")
             .IsUnique();
+
+            builder
+            .HasOne(o => o.Country)
+            .WithMany()
+            .HasForeignKey(o => o.CountryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+            .HasOne(o => o.State)
+            .WithMany()
+            .HasForeignKey(o => o.StateId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+            .HasOne(o => o.City)
+            .WithMany()
+            .HasForeignKey(o => o.CityId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

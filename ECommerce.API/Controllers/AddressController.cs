@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -22,7 +23,9 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllAddressesAsync(requestParams);
+            var userId = HTTPHelper.GetUserId();
+
+            var data = await _service.GetAllAddressesAsync(requestParams, userId);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -44,7 +47,9 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAddressByIdAsync(id);
+            var userId = HTTPHelper.GetUserId();
+
+            var data = await _service.GetAddressByIdAsync(id, userId);
             if (data != null)
             {
                 response.data = data;
@@ -59,6 +64,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = HTTPHelper.GetUserId();
+
             await _service.CreateAddressAsync(dto);
             response.data = new { Message = "New Address Added Successfully." };
             response.success = true;
@@ -71,8 +78,24 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = HTTPHelper.GetUserId();
+
             await _service.UpdateAddressAsync(dto);
             response.data = new { Message = "Address Modified Successfully." };
+            response.success = true;
+
+            return StatusCode(200, response);
+        }
+
+        [HttpPut("UpdateAddressType")]
+        public async Task<IActionResult> UpdateAddressType([FromBody] AddressTypeUpdateDTO dto)
+        {
+            var response = new ResponseStructure();
+
+            dto.UserId = HTTPHelper.GetUserId();
+
+            await _service.UpdateAddressTypeAsync(dto);
+            response.data = new { Message = "Address Type Updated Successfully." };
             response.success = true;
 
             return StatusCode(200, response);
@@ -83,7 +106,9 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteAddressAsync(id);
+            var userId = HTTPHelper.GetUserId();
+
+            await _service.DeleteAddressAsync(id, userId);
             response.data = new { Message = $"Address with Id = {id} is Deleted Successfully." };
             response.success = true;
 

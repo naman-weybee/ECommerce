@@ -87,7 +87,7 @@ namespace ECommerce.Application.Services
 
                 // Create Order
                 var orderId = Guid.NewGuid();
-                await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, user.AddressId);
+                await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, dto.AddressId);
 
                 // Create Order Items
                 await CreateOrderItemsFromCartItems(orderId, cartItems);
@@ -166,6 +166,13 @@ namespace ECommerce.Application.Services
 
         private async Task CreateOrderFromCartItems(Guid orderId, Guid userId, string paymentMethod, decimal totalAmount, Guid addressId)
         {
+            var query = _repository.GetDbSet();
+
+            var isAddressExist = await query.AnyAsync(x => x.UserId == userId && x.AddressId == addressId);
+
+            if (!isAddressExist)
+                throw new InvalidOperationException($"Address with Id = {addressId} for User Id = {userId} is not exist.");
+
             var orderDto = new OrderCreateDTO
             {
                 Id = orderId,

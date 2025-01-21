@@ -34,9 +34,6 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.RoleId)
                 .NotEmpty().WithMessage("RoleId is required.");
 
-            RuleFor(x => x.AddressId)
-                .NotEmpty().WithMessage("AddressId is required.");
-
             RuleFor(x => x.DateOfBirth)
                 .LessThan(DateTime.Now).WithMessage("Date of birth must be in the past.");
 

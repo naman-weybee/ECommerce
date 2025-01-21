@@ -20,7 +20,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateUser(User user)
         {
-            User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.EmailVerificationToken!, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.EmailVerificationToken!, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserCreated;
             RaiseDomainEvent();
@@ -28,7 +28,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateUser(User user)
         {
-            User.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.AddressId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            User.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserUpdated;
             RaiseDomainEvent();
@@ -63,14 +63,6 @@ namespace ECommerce.Domain.Aggregates
             User.ChangeRole(roleId);
 
             EventType = eEventType.UserRoleChanged;
-            RaiseDomainEvent();
-        }
-
-        public void ChangeAddress(Guid roleId)
-        {
-            User.ChangeAddress(roleId);
-
-            EventType = eEventType.UserAddressChanged;
             RaiseDomainEvent();
         }
 

@@ -6,27 +6,42 @@ namespace ECommerce.Domain.Events
     {
         public Guid AddressId { get; }
 
-        public string Street { get; set; }
+        public Guid UserId { get; set; }
 
-        public string City { get; set; }
+        public string FirstName { get; set; }
 
-        public string State { get; set; }
+        public string LastName { get; set; }
+
+        public Guid CountryId { get; set; }
+
+        public Guid StateId { get; set; }
+
+        public Guid CityId { get; set; }
 
         public string PostalCode { get; set; }
 
-        public string Country { get; set; }
+        public eAddressType AdderessType { get; set; }
 
-        public AddressEvent(Guid addressId, string street, string city, string state, string postalCode, string country, eEventType eventType)
+        public string AddressLine { get; set; }
+
+        public string PhoneNumber { get; set; }
+
+        public AddressEvent(Guid addressId, Guid userId, string firstName, string lastName, Guid countryId, Guid stateId, Guid cityId, string postalCode, eAddressType adderessType, string addressLine, string phoneNumber, eEventType eventType)
         {
             if (addressId == Guid.Empty)
-                throw new ArgumentException("AddressId cannot be empty.", nameof(addressId));
+                throw new ArgumentException("Address Id cannot be empty.", nameof(addressId));
 
             AddressId = addressId;
-            Street = street;
-            City = city;
-            State = state;
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastName;
+            CountryId = countryId;
+            StateId = stateId;
+            CityId = cityId;
             PostalCode = postalCode;
-            Country = country;
+            AdderessType = adderessType;
+            AddressLine = addressLine;
+            PhoneNumber = phoneNumber;
             EventType = eventType;
         }
     }

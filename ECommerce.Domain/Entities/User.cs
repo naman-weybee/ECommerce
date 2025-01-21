@@ -33,11 +33,6 @@ namespace ECommerce.Domain.Entities
 
         public virtual Gender Gender { get; set; }
 
-        [ForeignKey("Address")]
-        public Guid AddressId { get; set; }
-
-        public virtual Address Address { get; set; }
-
         public bool IsActive { get; set; } = true;
 
         public string? EmailVerificationToken { get; set; }
@@ -48,7 +43,7 @@ namespace ECommerce.Domain.Entities
 
         public bool IsSubscribedToNotifications { get; set; }
 
-        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, string emailVerificationToken, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, string emailVerificationToken, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -59,7 +54,6 @@ namespace ECommerce.Domain.Entities
             RoleId = roleId;
             DateOfBirth = dateOfBirth;
             GenderId = genderId;
-            AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             EmailVerificationToken = emailVerificationToken;
@@ -67,7 +61,7 @@ namespace ECommerce.Domain.Entities
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
 
-        public void UpdateUser(Guid id, string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, Guid addressId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void UpdateUser(Guid id, string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = id;
             FirstName = firstName;
@@ -78,7 +72,6 @@ namespace ECommerce.Domain.Entities
             RoleId = roleId;
             DateOfBirth = dateOfBirth;
             GenderId = genderId;
-            AddressId = addressId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
             IsPhoneNumberVerified = isPhoneNumberVerified;
@@ -108,12 +101,6 @@ namespace ECommerce.Domain.Entities
         public void ChangeRole(Guid roleId)
         {
             RoleId = roleId;
-            StatusUpdated();
-        }
-
-        public void ChangeAddress(Guid addressId)
-        {
-            AddressId = addressId;
             StatusUpdated();
         }
 

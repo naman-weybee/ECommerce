@@ -71,6 +71,22 @@
         RefreshTokenUpdated,
         RefreshTokenDeleted,
         RefreshTokenRevoked,
-        RefreshTokenRegenerated
+        RefreshTokenRegenerated,
+
+        CountryCreated,     //Country Events
+        CountryUpdated,
+        CountryDeleted,
+
+        StateCreated,       //State Events
+        StateUpdated,
+        StateDeleted,
+
+        CityCreated,        //City Events
+        CityUpdated,
+        CityDeleted,
+
+        SetAsDefaultAddress,    //Address Type Events
+        SetAsBillingAddress,
+        SetAsShippingAddress,
     }
 }

@@ -1,4 +1,6 @@
+using ECommerce.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ECommerce.Domain.Entities
 {
@@ -6,42 +8,78 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
-        [StringLength(200)]
-        public string Street { get; set; }
+        [StringLength(100)]
+        public string FirstName { get; set; }
 
         [StringLength(100)]
-        public string City { get; set; }
+        public string LastName { get; set; }
 
-        [StringLength(100)]
-        public string State { get; set; }
+        [ForeignKey("User")]
+        public Guid UserId { get; set; }
+
+        [ForeignKey("Country")]
+        public Guid CountryId { get; set; }
+
+        [ForeignKey("State")]
+        public Guid StateId { get; set; }
+
+        [ForeignKey("City")]
+        public Guid CityId { get; set; }
 
         [StringLength(20)]
         public string PostalCode { get; set; }
 
-        [StringLength(100)]
-        public string Country { get; set; }
+        public eAddressType AdderessType { get; set; }
 
-        public void CreateAddress(string street, string city, string state, string postalCode, string country)
+        [StringLength(500)]
+        public string AddressLine { get; set; }
+
+        [Phone]
+        public string PhoneNumber { get; set; }
+
+        public virtual User User { get; set; }
+
+        public virtual Country Country { get; set; }
+
+        public virtual State State { get; set; }
+
+        public virtual City City { get; set; }
+
+        public void CreateAddress(Guid userId, string firstName, string lastName, Guid countryId, Guid stateId, Guid cityId, string postalCode, eAddressType adderessType, string addressLine, string phoneNumber)
         {
             Id = Guid.NewGuid();
-            Street = street;
-            City = city;
-            State = state;
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastName;
+            CountryId = countryId;
+            StateId = stateId;
+            CityId = cityId;
             PostalCode = postalCode;
-            Country = country;
-            CreatedDate = DateTime.UtcNow;
-            UpdatedDate = DateTime.UtcNow;
+            AdderessType = adderessType;
+            AddressLine = addressLine;
+            PhoneNumber = phoneNumber;
         }
 
-        public void UpdateAddress(Guid id, string street, string city, string state, string postalCode, string country)
+        public void UpdateAddress(Guid id, Guid userId, string firstName, string lastName, Guid countryId, Guid stateId, Guid cityId, string postalCode, eAddressType adderessType, string addressLine, string phoneNumber)
         {
             Id = id;
-            Street = street;
-            City = city;
-            State = state;
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastName;
+            CountryId = countryId;
+            StateId = stateId;
+            CityId = cityId;
             PostalCode = postalCode;
-            Country = country;
-            UpdatedDate = DateTime.UtcNow;
+            AdderessType = adderessType;
+            AddressLine = addressLine;
+            PhoneNumber = phoneNumber;
+
+            StatusUpdated();
+        }
+
+        public void UpdateAddressType(eAddressType newAddressType)
+        {
+            AdderessType = newAddressType;
 
             StatusUpdated();
         }

@@ -29,6 +29,12 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<Address> Address { get; set; }
 
+        public DbSet<Country> Countries { get; set; }
+
+        public DbSet<State> States { get; set; }
+
+        public DbSet<City> Cities { get; set; }
+
         public DbSet<OrderItem> OrderItems { get; set; }
 
         public DbSet<CartItem> CartItems { get; set; }
@@ -88,6 +94,9 @@ namespace ECommerce.Infrastructure.Data
             .ApplyConfiguration(new CartItemConfiguration())
             .ApplyConfiguration(new OrderConfiguration())
             .ApplyConfiguration(new AddressConfiguration())
+            .ApplyConfiguration(new CountryConfiguration())
+            .ApplyConfiguration(new StateConfiguration())
+            .ApplyConfiguration(new CityConfiguration())
             .ApplyConfiguration(new GenderConfiguration())
             .ApplyConfiguration(new RoleConfiguration())
             .ApplyConfiguration(new UserConfiguration())

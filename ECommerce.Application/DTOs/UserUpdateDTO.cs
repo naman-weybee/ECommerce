@@ -18,8 +18,6 @@ namespace ECommerce.Application.DTOs
 
         public Guid RoleId { get; set; }
 
-        public Guid AddressId { get; set; }
-
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateOfBirth { get; set; }
 
