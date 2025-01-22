@@ -5,9 +5,9 @@ namespace ECommerce.Application.Interfaces
 {
     public interface ICartItemService
     {
-        Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams);
+        Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams, Guid userId = default);
 
-        Task<CartItemDTO> GetCartItemByIdAsync(Guid id);
+        Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId);
 
         Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId);
 

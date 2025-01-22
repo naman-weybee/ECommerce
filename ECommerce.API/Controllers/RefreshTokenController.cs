@@ -9,21 +9,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class RefreshTokenController : Controller
+    public class RefreshTokenController : BaseController
     {
         private readonly IRefreshTokenService _service;
 
-        public RefreshTokenController(IRefreshTokenService service)
+        public RefreshTokenController(IRefreshTokenService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllRefreshTokensAsync(requestParams);
+            var isAdmin = User.IsInRole("Admin");
+
+            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+
+            var data = await _service.GetAllRefreshTokensAsync(requestParams, userId);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -60,7 +65,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var dto = new RefreshTokenCreateDTO() { UserId = HTTPHelper.GetUserId() };
+            var dto = new RefreshTokenCreateDTO() { UserId = _userId };
 
             var data = await _service.CreateRefreshTokenAsync(dto);
             if (data != null)
@@ -77,7 +82,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            dto.UserId = HTTPHelper.GetUserId();
+            dto.UserId = _userId;
 
             await _service.UpdateRefreshTokenAsync(dto);
             response.data = new { Message = "Refresh Token Modified Successfully." };
@@ -91,7 +96,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteRefreshTokenAsync(id);
+            await _service.DeleteRefreshTokenAsync(id, _userId);
             response.data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };
             response.success = true;
 

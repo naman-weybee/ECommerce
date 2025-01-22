@@ -5,11 +5,11 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams dto);
+        Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams dto, Guid userId = default);
 
         Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId);
 
-        Task<OrderDTO> GetOrderByIdAsync(Guid id);
+        Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId);
 
         Task CreateOrderAsync(OrderCreateFromCartDTO dto);
 

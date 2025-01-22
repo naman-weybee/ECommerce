@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -8,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class CountryController : Controller
+    public class CountryController : BaseController
     {
         private readonly ICountryService _service;
 
-        public CountryController(ICountryService service)
+        public CountryController(ICountryService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }

@@ -5,7 +5,7 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IAddressService
     {
-        Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId);
+        Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId = default);
 
         Task<AddressDTO> GetAddressByIdAsync(Guid id, Guid userId);
 

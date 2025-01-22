@@ -1,5 +1,6 @@
 ﻿using ECommerce.API.Conventions;
 using ECommerce.API.Filters;
+using ECommerce.API.Helper;
 using ECommerce.API.Mappings;
 using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
@@ -30,6 +31,8 @@ namespace ECommerce.API.Extensions
     {
         public static IServiceCollection AddAPIServices(this IServiceCollection services)
         {
+            services.AddScoped<IHTTPHelper, HTTPHelper>();
+
             services.AddScoped<ExecutionFilter>();
 
             services.AddAutoMapper(typeof(AutoMapperProfile));

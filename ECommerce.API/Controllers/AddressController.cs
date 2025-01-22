@@ -9,21 +9,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class AddressController : Controller
+    public class AddressController : BaseController
     {
         private readonly IAddressService _service;
 
-        public AddressController(IAddressService service)
+        public AddressController(IAddressService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
             var response = new ResponseStructure();
 
-            var userId = HTTPHelper.GetUserId();
+            var isAdmin = User.IsInRole("Admin");
+
+            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllAddressesAsync(requestParams, userId);
             if (data != null)
@@ -47,9 +50,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var userId = HTTPHelper.GetUserId();
-
-            var data = await _service.GetAddressByIdAsync(id, userId);
+            var data = await _service.GetAddressByIdAsync(id, _userId);
             if (data != null)
             {
                 response.data = data;
@@ -64,7 +65,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            dto.UserId = HTTPHelper.GetUserId();
+            dto.UserId = _userId;
 
             await _service.CreateAddressAsync(dto);
             response.data = new { Message = "New Address Added Successfully." };
@@ -78,7 +79,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            dto.UserId = HTTPHelper.GetUserId();
+            dto.UserId = _userId;
 
             await _service.UpdateAddressAsync(dto);
             response.data = new { Message = "Address Modified Successfully." };
@@ -92,7 +93,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            dto.UserId = HTTPHelper.GetUserId();
+            dto.UserId = _userId;
 
             await _service.UpdateAddressTypeAsync(dto);
             response.data = new { Message = "Address Type Updated Successfully." };
@@ -106,9 +107,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var userId = HTTPHelper.GetUserId();
-
-            await _service.DeleteAddressAsync(id, userId);
+            await _service.DeleteAddressAsync(id, _userId);
             response.data = new { Message = $"Address with Id = {id} is Deleted Successfully." };
             response.success = true;
 

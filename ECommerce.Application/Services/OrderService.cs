@@ -36,30 +36,34 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams)
+        public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams, Guid userId = default)
         {
             var query = _repository.GetDbSet();
-            query = query.Include(c => c.OrderItems);
+
+            if (userId != default)
+                query = query.Where(x => x.UserId == userId);
 
             var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
         }
 
-        public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId)
+        public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId = default)
+        {
+            var query = _repository.GetDbSet();
+
+            if (userId != default)
+                query = query.Include(c => c.OrderItems).Where(x => x.UserId == userId);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<OrderDTO>>(items);
+        }
+
+        public async Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId)
         {
             var query = _repository.GetDbSet();
             query = query.Include(c => c.OrderItems).Where(u => u.UserId == userId);
-
-            var items = await _repository.GetAllAsync(requestParams, query);
-
-            return _mapper.Map<List<OrderDTO>>(items);
-        }
-
-        public async Task<OrderDTO> GetOrderByIdAsync(Guid id)
-        {
-            var query = _repository.GetDbSet();
-            query = query.Include(c => c.OrderItems);
 
             var item = await _repository.GetByIdAsync(id, query);
 

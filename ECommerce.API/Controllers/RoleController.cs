@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -8,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         private readonly IRoleService _service;
 
-        public RoleController(IRoleService service)
+        public RoleController(IRoleService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }

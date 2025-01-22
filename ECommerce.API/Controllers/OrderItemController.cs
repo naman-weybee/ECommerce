@@ -1,3 +1,4 @@
+using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -8,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class OrderItemController : Controller
+    public class OrderItemController : BaseController
     {
         private readonly IOrderItemService _service;
 
-        public OrderItemController(IOrderItemService service)
+        public OrderItemController(IOrderItemService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }

@@ -23,16 +23,24 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams)
+        public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams, Guid userId = default)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var query = _repository.GetDbSet();
+
+            if (userId != default)
+                query = query.Where(x => x.UserId == userId);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<CartItemDTO>>(items);
         }
 
-        public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id)
+        public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var query = _repository.GetDbSet();
+            query = query.Where(x => x.UserId == userId);
+
+            var item = await _repository.GetByIdAsync(id, query);
 
             return _mapper.Map<CartItemDTO>(item);
         }

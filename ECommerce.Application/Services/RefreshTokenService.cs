@@ -23,9 +23,15 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensAsync(RequestParams requestParams)
+        public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensAsync(RequestParams requestParams, Guid userId = default)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var query = _repository.GetDbSet();
+
+            if (userId != default)
+                query = query.Where(x => x.UserId == userId);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
+
             return _mapper.Map<List<RefreshTokenDTO>>(items);
         }
 
@@ -55,9 +61,12 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
-        public async Task DeleteRefreshTokenAsync(Guid id)
+        public async Task DeleteRefreshTokenAsync(Guid id, Guid userId)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var query = _repository.GetDbSet();
+            query = query.Where(x => x.UserId == userId);
+
+            var item = await _repository.GetByIdAsync(id, query);
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.DeleteRefreshToken();
 

@@ -3,16 +3,16 @@ using System.Security.Claims;
 
 namespace ECommerce.API.Helper
 {
-    public static class HTTPHelper
+    public class HTTPHelper : IHTTPHelper
     {
-        private static IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public static void Configure(IHttpContextAccessor httpContextAccessor)
+        public HTTPHelper(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public static UserClaimsDTO GetClaims()
+        public UserClaimsDTO GetClaims()
         {
             var httpContext = _httpContextAccessor?.HttpContext;
 
@@ -27,7 +27,7 @@ namespace ECommerce.API.Helper
             };
         }
 
-        public static Guid GetUserId()
+        public Guid GetUserId()
         {
             var httpContext = _httpContextAccessor?.HttpContext;
 

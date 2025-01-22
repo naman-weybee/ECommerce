@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.API.Helper;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
@@ -8,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _service;
 
-        public CategoryController(ICategoryService service)
+        public CategoryController(ICategoryService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }

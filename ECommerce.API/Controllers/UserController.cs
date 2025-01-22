@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserService _service;
 
-        public UserController(IUserService service)
+        public UserController(IUserService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }
@@ -45,9 +46,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var userId = HTTPHelper.GetUserId();
-
-            var data = await _service.GetUserByIdAsync(userId);
+            var data = await _service.GetUserByIdAsync(_userId);
             if (data != null)
             {
                 response.data = data;
@@ -74,7 +73,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            dto.Id = HTTPHelper.GetUserId();
+            dto.Id = _userId;
 
             await _service.UpdateUserAsync(dto);
             response.data = new { Message = "User Modified Successfully." };
@@ -88,10 +87,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var userId = HTTPHelper.GetUserId();
-
-            await _service.DeleteUserAsync(userId);
-            response.data = new { Message = $"User with Id = {userId} is Deleted Successfully." };
+            await _service.DeleteUserAsync(_userId);
+            response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

@@ -9,21 +9,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [Authorize]
-    public class CartItemController : Controller
+    public class CartItemController : BaseController
     {
         private readonly ICartItemService _service;
 
-        public CartItemController(ICartItemService service)
+        public CartItemController(ICartItemService service, IHTTPHelper httpHelper)
+            : base(httpHelper)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllCartItemsAsync(requestParams);
+            var isAdmin = User.IsInRole("Admin");
+
+            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+
+            var data = await _service.GetAllCartItemsAsync(requestParams, userId);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -45,7 +50,7 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetCartItemByIdAsync(id);
+            var data = await _service.GetCartItemByIdAsync(id, _userId);
             if (data != null)
             {
                 response.data = data;
@@ -56,12 +61,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCartItem([FromBody] CartItemCreateDTO dto)
         {
             var response = new ResponseStructure();
 
-            dto.UserId = HTTPHelper.GetUserId();
+            dto.UserId = _userId;
 
             await _service.CreateCartItemAsync(dto);
             response.data = new { Message = "New Cart Item Added Successfully." };

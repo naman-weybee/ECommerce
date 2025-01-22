@@ -40,6 +40,15 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<RefreshToken, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
             ConfigureMappings<RefreshTokenAggregate, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
+
+            ConfigureMappings<Country, CountryDTO, CountryCreateDTO, CountryUpdateDTO>();
+            ConfigureMappings<CountryAggregate, CountryDTO, CountryCreateDTO, CountryUpdateDTO>();
+
+            ConfigureMappings<State, StateDTO, StateCreateDTO, StateUpdateDTO>();
+            ConfigureMappings<StateAggregate, StateDTO, StateCreateDTO, StateUpdateDTO>();
+
+            ConfigureMappings<City, CityDTO, CityCreateDTO, CityUpdateDTO>();
+            ConfigureMappings<CityAggregate, CityDTO, CityCreateDTO, CityUpdateDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()

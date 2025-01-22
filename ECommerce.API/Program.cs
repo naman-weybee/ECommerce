@@ -37,8 +37,6 @@ namespace ECommerce.API
 
             app.MapControllers();
 
-            HTTPHelper.Configure(app.Services.GetRequiredService<IHttpContextAccessor>());
-
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.Run();

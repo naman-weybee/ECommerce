@@ -26,10 +26,12 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId)
+        public async Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId = default)
         {
             var query = _repository.GetDbSet();
-            query = query.Where(x => x.UserId == userId);
+
+            if (userId != default)
+                query = query.Where(x => x.UserId == userId);
 
             var items = await _repository.GetAllAsync(requestParams, query);
 
