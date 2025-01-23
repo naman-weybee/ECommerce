@@ -97,5 +97,10 @@ namespace ECommerce.Application.Services
                 RefreshToken = refreshToken.Token
             };
         }
+
+        public async Task VerifyEmailAsync(string token)
+        {
+            await _userService.VerifyEmailAsync(token);
+        }
     }
 }

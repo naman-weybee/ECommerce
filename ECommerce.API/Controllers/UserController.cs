@@ -93,18 +93,5 @@ namespace ECommerce.API.Controllers
 
             return StatusCode(200, response);
         }
-
-        [AllowAnonymous]
-        [HttpGet("verify-email")]
-        public async Task<IActionResult> VerifyEmail(string token)
-        {
-            var response = new ResponseStructure();
-
-            await _service.VerifyEmailAsync(token);
-            response.data = new { Message = "User verified Successfully." };
-            response.success = true;
-
-            return StatusCode(200, response);
-        }
     }
 }

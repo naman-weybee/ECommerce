@@ -8,6 +8,7 @@ using ECommerce.Shared.Constants;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Net.Mail;
 
 namespace ECommerce.Application.Services
@@ -94,7 +95,7 @@ namespace ECommerce.Application.Services
 
         private static async Task SendVerificationEmail(string email, string token)
         {
-            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/User/verify-email?token={Uri.EscapeDataString(token)}";
+            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/Auth/verify-email?token={Uri.EscapeDataString(token)}";
 
             var subject = "Verify Your Email";
             var body = $"Please click the link to verify your email: {verificationLink}";
@@ -102,7 +103,7 @@ namespace ECommerce.Application.Services
             using var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                Credentials = new System.Net.NetworkCredential(Constants.Email, Constants.Password),
+                Credentials = new NetworkCredential(Constants.Email, Constants.Password),
                 EnableSsl = true
             };
 
