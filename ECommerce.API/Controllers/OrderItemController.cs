@@ -75,6 +75,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = _userId;
+
             await _service.UpdateOrderItemAsync(dto);
             response.data = new { Message = "Order Item Modified Successfully." };
             response.success = true;
@@ -88,6 +90,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = _userId;
+
             await _service.UpdateQuantityAsync(dto);
             response.data = new { Message = "Quantity Modified Successfully." };
             response.success = true;
@@ -100,6 +104,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> UpdateUnitPrice([FromBody] OrderItemUnitPriceUpdateDTO dto)
         {
             var response = new ResponseStructure();
+
+            dto.UserId = _userId;
 
             await _service.UpdateUnitPriceAsync(dto);
             response.data = new { Message = "Unit Price Modified Successfully." };

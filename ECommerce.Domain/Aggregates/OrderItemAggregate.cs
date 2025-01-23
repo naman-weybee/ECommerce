@@ -35,12 +35,12 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateQuantity(int newQuantity)
+        public void UpdateQuantity(int newQuantity, Money newProductPrice)
         {
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
 
-            OrderItem.UpdateQuantity(newQuantity);
+            OrderItem.UpdateQuantity(newQuantity, newProductPrice);
 
             EventType = eEventType.OrderItemQuantityUpdated;
             RaiseDomainEvent();

@@ -116,7 +116,7 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        private void UpdateTotalAmount()
+        public void UpdateTotalAmount()
         {
             TotalAmount = OrderItems.Aggregate(new Money(0), (total, item) => total.Add(item.UnitPrice));
         }

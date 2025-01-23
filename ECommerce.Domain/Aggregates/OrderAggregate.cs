@@ -95,6 +95,8 @@ namespace ECommerce.Domain.Aggregates
         {
             ValidateOrderForModification();
             Order.UpdatePaymentMethod(newPaymentMethod);
+
+            EventType = eEventType.OrderPaymentMethodUpdated;
             RaiseDomainEvent();
         }
 
@@ -102,6 +104,18 @@ namespace ECommerce.Domain.Aggregates
         {
             ValidateOrderForModification();
             Order.UpdateOrderAddress(addressId);
+
+            EventType = eEventType.OrderAddressUpdated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateTotalAmount()
+        {
+            ValidateOrderForModification();
+
+            Order.UpdateTotalAmount();
+
+            EventType = eEventType.OrderTotalAmountUpdated;
             RaiseDomainEvent();
         }
 

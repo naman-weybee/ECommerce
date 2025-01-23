@@ -10,6 +10,9 @@ namespace ECommerce.Application.Validators
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Id is required");
 
+            RuleFor(x => x.UserId)
+                .NotEmpty().WithMessage("User Id is required");
+
             RuleFor(x => x.UnitPrice)
                 .NotNull().WithMessage("Unit price is required.");
         }

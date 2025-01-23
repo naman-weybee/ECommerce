@@ -12,6 +12,7 @@
         OrderStatusUpdated,
         OrderPaymentMethodUpdated,
         OrderAddressUpdated,
+        OrderTotalAmountUpdated,
         OrderDeleted,
         OrderItemAddedInOrder,
         OrderItemRemovedFromOrder,

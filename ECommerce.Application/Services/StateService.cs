@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -24,7 +25,9 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var query = _repository.GetDbSet().Include(x => x.Cities);
+
+            var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<StateDTO>>(items);
         }

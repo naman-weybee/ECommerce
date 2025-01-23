@@ -40,8 +40,8 @@ namespace ECommerce.Application.Services
 
         public async Task<AddressDTO> GetAddressByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Where(x => x.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
 

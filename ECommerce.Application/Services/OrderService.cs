@@ -172,9 +172,8 @@ namespace ECommerce.Application.Services
 
         private async Task CreateOrderFromCartItems(Guid orderId, Guid userId, string paymentMethod, decimal totalAmount, Guid addressId)
         {
-            var query = _addressRepository.GetDbSet();
-
-            var isAddressExist = await query.AnyAsync(x => x.Id == addressId && x.UserId == userId);
+            var isAddressExist = await _addressRepository.GetDbSet()
+                .AnyAsync(x => x.Id == addressId && x.UserId == userId);
 
             if (!isAddressExist)
                 throw new InvalidOperationException($"Address with Id = {addressId} for User Id = {userId} is not exist.");

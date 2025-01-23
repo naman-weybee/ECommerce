@@ -83,7 +83,7 @@ namespace ECommerce.Application.Services
             var cartItem = await GetCartItemByIdAsync(dto.Id, dto.UserId);
             var product = await _productService.GetProductByIdAsync(cartItem.ProductId);
 
-            var item = _mapper.Map<CartItem>(dto);
+            var item = _mapper.Map<CartItem>(cartItem);
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
