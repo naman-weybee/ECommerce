@@ -19,28 +19,28 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateCartItem(CartItem cartItem)
+        public void CreateCartItem(CartItem cartItem, Money productPrice)
         {
-            CartItem.CreateCartItem(cartItem.UserId, cartItem.ProductId, cartItem.Quantity, cartItem.UnitPrice);
+            CartItem.CreateCartItem(cartItem.UserId, cartItem.ProductId, cartItem.Quantity, productPrice);
 
             EventType = eEventType.CartItemCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateCartItem(CartItem cartItem)
+        public void UpdateCartItem(CartItem cartItem, Money productPrice)
         {
-            CartItem.UpdateCartItem(cartItem.Id, cartItem.UserId, cartItem.ProductId, cartItem.Quantity, cartItem.UnitPrice);
+            CartItem.UpdateCartItem(cartItem.Id, cartItem.UserId, cartItem.ProductId, cartItem.Quantity, productPrice);
 
             EventType = eEventType.CartItemUpdated;
             RaiseDomainEvent();
         }
 
-        public void UpdateQuantity(int newQuantity)
+        public void UpdateQuantity(int newQuantity, Money productPrice)
         {
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
 
-            CartItem.UpdateQuantity(newQuantity);
+            CartItem.UpdateQuantity(newQuantity, productPrice);
 
             EventType = eEventType.OrderItemQuantityUpdated;
             RaiseDomainEvent();

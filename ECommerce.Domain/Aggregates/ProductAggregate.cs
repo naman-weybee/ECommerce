@@ -21,7 +21,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateProduct(Product product)
         {
-            Product.CreateProduct(product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
+            Product.CreateProduct(product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.SKU, product.Description, product.Brand);
 
             EventType = eEventType.ProductCreated;
             RaiseDomainEvent();
@@ -29,7 +29,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateProduct(Product product)
         {
-            Product.UpdateProduct(product.Id, product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.Description, product.SKU, product.Brand);
+            Product.UpdateProduct(product.Id, product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.SKU, product.Description, product.Brand);
 
             EventType = eEventType.ProductUpdated;
             RaiseDomainEvent();

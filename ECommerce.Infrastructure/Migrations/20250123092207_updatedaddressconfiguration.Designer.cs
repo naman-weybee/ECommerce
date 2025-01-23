@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250123092207_updatedaddressconfiguration")]
+    partial class updatedaddressconfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +96,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("FirstName", "LastName", "UserId", "CountryId", "StateId", "CityId", "PostalCode", "AdderessType", "PhoneNumber")
+                    b.HasIndex("FirstName", "LastName", "CountryId", "StateId", "CityId", "PostalCode", "PhoneNumber")
                         .IsUnique()
-                        .HasDatabaseName("IX_Address_FirstName_LastName_UserId_CountryId_StateId_CityId_PostalCode_AdderessType_PhoneNumber");
+                        .HasDatabaseName("IX_Address_FirstName_LastName_CountryId_StateId_CityId_PostalCode_PhoneNumber");
 
                     b.ToTable("Address");
                 });

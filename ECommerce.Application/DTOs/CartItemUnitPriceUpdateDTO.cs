@@ -6,6 +6,8 @@ namespace ECommerce.Application.DTOs
     {
         public Guid Id { get; set; }
 
+        public Guid UserId { get; set; }
+
         public Money UnitPrice { get; set; }
     }
 }

@@ -14,8 +14,8 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .IsUnique();
 
             builder
-            .HasIndex(a => new { a.CountryId, a.StateId, a.CityId, a.PostalCode })
-            .HasDatabaseName("IX_Address_CountryId_StateId_CityId_PostalCode")
+            .HasIndex(a => new { a.FirstName, a.LastName, a.UserId, a.CountryId, a.StateId, a.CityId, a.PostalCode, a.AdderessType, a.PhoneNumber })
+            .HasDatabaseName("IX_Address_FirstName_LastName_UserId_CountryId_StateId_CityId_PostalCode_AdderessType_PhoneNumber")
             .IsUnique();
 
             builder

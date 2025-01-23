@@ -19,7 +19,7 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto);
 
-        Task DeleteCartItemAsync(Guid id);
+        Task DeleteCartItemAsync(Guid id, Guid uerId);
 
         Task ClearCartItemsAsync(Guid uerId);
     }

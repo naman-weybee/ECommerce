@@ -75,10 +75,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCartItem([FromBody] CartItemUpdateDTO dto)
         {
             var response = new ResponseStructure();
+
+            dto.UserId = _userId;
 
             await _service.UpdateCartItemAsync(dto);
             response.data = new { Message = "Cart Item Modified Successfully." };
@@ -88,10 +89,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateQuantity")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateQuantity([FromBody] CartItemQuantityUpdateDTO dto)
         {
             var response = new ResponseStructure();
+
+            dto.UserId = _userId;
 
             await _service.UpdateQuantityAsync(dto);
             response.data = new { Message = "Quantity Modified Successfully." };
@@ -106,6 +108,8 @@ namespace ECommerce.API.Controllers
         {
             var response = new ResponseStructure();
 
+            dto.UserId = _userId;
+
             await _service.UpdateUnitPriceAsync(dto);
             response.data = new { Message = "Unit Price Modified Successfully." };
             response.success = true;
@@ -114,12 +118,11 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteCartItemAsync(id);
+            await _service.DeleteCartItemAsync(id, _userId);
             response.data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
             response.success = true;
 

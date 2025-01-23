@@ -16,6 +16,7 @@ namespace ECommerce.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IRepository<OrderAggregate, Order> _repository;
+        private readonly IRepository<AddressAggregate, Address> _addressRepository;
         private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
         private readonly IOrderItemService _orderItemService;
@@ -24,9 +25,10 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderService(IRepository<OrderAggregate, Order> repository, IRepository<AddressAggregate, Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _addressRepository = addressRepository;
             _userService = userService;
             _cartItemService = cartItemService;
             _orderItemService = orderItemService;
@@ -170,9 +172,9 @@ namespace ECommerce.Application.Services
 
         private async Task CreateOrderFromCartItems(Guid orderId, Guid userId, string paymentMethod, decimal totalAmount, Guid addressId)
         {
-            var query = _repository.GetDbSet();
+            var query = _addressRepository.GetDbSet();
 
-            var isAddressExist = await query.AnyAsync(x => x.UserId == userId && x.AddressId == addressId);
+            var isAddressExist = await query.AnyAsync(x => x.Id == addressId && x.UserId == userId);
 
             if (!isAddressExist)
                 throw new InvalidOperationException($"Address with Id = {addressId} for User Id = {userId} is not exist.");

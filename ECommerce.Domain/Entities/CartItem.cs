@@ -21,29 +21,31 @@ namespace ECommerce.Domain.Entities
 
         public virtual Product Product { get; set; }
 
-        public void CreateCartItem(Guid userId, Guid productId, int quantity, Money unitPrice)
+        public void CreateCartItem(Guid userId, Guid productId, int quantity, Money productPrice)
         {
             Id = Guid.NewGuid();
             UserId = userId;
             ProductId = productId;
             Quantity = quantity;
-            UnitPrice = unitPrice;
+            UnitPrice = new Money(quantity * productPrice.Amount);
         }
 
-        public void UpdateCartItem(Guid id, Guid userId, Guid productId, int quantity, Money unitPrice)
+        public void UpdateCartItem(Guid id, Guid userId, Guid productId, int quantity, Money productPrice)
         {
             Id = id;
             UserId = userId;
             ProductId = productId;
             Quantity = quantity;
-            UnitPrice = unitPrice;
+            UnitPrice = new Money(quantity * productPrice.Amount);
 
             StatusUpdated();
         }
 
-        public void UpdateQuantity(int newQuantity)
+        public void UpdateQuantity(int newQuantity, Money productPrice)
         {
             Quantity = newQuantity;
+            UnitPrice = new Money(newQuantity * productPrice.Amount);
+
             StatusUpdated();
         }
 

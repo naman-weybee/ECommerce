@@ -13,12 +13,14 @@ namespace ECommerce.Application.Services
     public class CartItemService : ICartItemService
     {
         private readonly IRepository<CartItemAggregate, CartItem> _repository;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CartItemService(IRepository<CartItemAggregate, CartItem> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CartItemService(IRepository<CartItemAggregate, CartItem> repository, IProductService productService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _productService = productService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -56,27 +58,34 @@ namespace ECommerce.Application.Services
 
         public async Task CreateCartItemAsync(CartItemCreateDTO dto)
         {
+            var product = await _productService.GetProductByIdAsync(dto.ProductId);
+
             var item = _mapper.Map<CartItem>(dto);
             var aggregate = new CartItemAggregate(item, _eventCollector);
-            aggregate.CreateCartItem(item);
+            aggregate.CreateCartItem(item, product.Price);
 
             await _repository.InsertAsync(aggregate);
         }
 
         public async Task UpdateCartItemAsync(CartItemUpdateDTO dto)
         {
+            var product = await _productService.GetProductByIdAsync(dto.ProductId);
+
             var item = _mapper.Map<CartItem>(dto);
             var aggregate = new CartItemAggregate(item, _eventCollector);
-            aggregate.UpdateCartItem(item);
+            aggregate.UpdateCartItem(item, product.Price);
 
             await _repository.UpdateAsync(aggregate);
         }
 
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
         {
+            var cartItem = await GetCartItemByIdAsync(dto.Id, dto.UserId);
+            var product = await _productService.GetProductByIdAsync(cartItem.ProductId);
+
             var item = _mapper.Map<CartItem>(dto);
             var aggregate = new CartItemAggregate(item, _eventCollector);
-            aggregate.UpdateQuantity(dto.Quantity);
+            aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
             await _repository.UpdateAsync(aggregate);
         }
@@ -90,9 +99,12 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate);
         }
 
-        public async Task DeleteCartItemAsync(Guid id)
+        public async Task DeleteCartItemAsync(Guid id, Guid userId)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var query = _repository.GetDbSet();
+            query = query.Where(x => x.Id == id && x.UserId == userId);
+
+            var item = await _repository.GetByIdAsync(id, query);
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.DeleteCartItem();
 
@@ -102,12 +114,11 @@ namespace ECommerce.Application.Services
         public async Task ClearCartItemsAsync(Guid userId)
         {
             var query = _repository.GetDbSet();
-
             var items = await query.Where(x => x.UserId == userId).ToListAsync();
 
             foreach (var item in items)
             {
-                await DeleteCartItemAsync(item.Id);
+                await DeleteCartItemAsync(item.Id, userId);
             }
         }
     }
