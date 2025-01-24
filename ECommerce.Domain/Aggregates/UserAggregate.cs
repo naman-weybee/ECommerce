@@ -74,9 +74,9 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void VerifyEmail()
+        public void EmailVerified()
         {
-            User.VerifyEmail();
+            User.EmailVerified();
 
             EventType = eEventType.UserEmailVarified;
             RaiseDomainEvent();

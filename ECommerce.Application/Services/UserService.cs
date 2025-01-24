@@ -8,20 +8,20 @@ using ECommerce.Shared.Constants;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
-using System.Net.Mail;
 
 namespace ECommerce.Application.Services
 {
     public class UserService : IUserService
     {
         private readonly IRepository<UserAggregate, User> _repository;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public UserService(IRepository<UserAggregate, User> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public UserService(IRepository<UserAggregate, User> repository, IEmailService emailService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _emailService = emailService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -57,7 +57,7 @@ namespace ECommerce.Application.Services
 
             await _repository.InsertAsync(aggregate);
 
-            await SendVerificationEmail(item.Email, item.EmailVerificationToken);
+            await SendVerificationEmail(item);
         }
 
         public async Task UpdateUserAsync(UserUpdateDTO dto)
@@ -89,27 +89,32 @@ namespace ECommerce.Application.Services
             user.IsEmailVerified = true;
 
             var aggregate = new UserAggregate(user, _eventCollector);
-            aggregate.VerifyEmail();
+            aggregate.EmailVerified();
 
             await _repository.UpdateAsync(aggregate);
         }
 
-        private static async Task SendVerificationEmail(string email, string token)
+        private async Task SendVerificationEmail(User user)
         {
-            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/Auth/verify-email?token={Uri.EscapeDataString(token)}";
+            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/Auth/verify-email?token={Uri.EscapeDataString(user.EmailVerificationToken!)}";
 
-            var subject = "Verify Your Email";
-            var body = $"Please click the link to verify your email: {verificationLink}";
-
-            using var smtpClient = new SmtpClient("smtp.gmail.com")
+            var dto = new EmailSendDTO()
             {
-                Port = 587,
-                Credentials = new NetworkCredential(Constants.Email, Constants.Password),
-                EnableSsl = true
+                ReceiverEmail = user.Email,
+                Subject = "Email Verification Required",
+                Body = $@"
+                        <p>Dear <b>{user.FirstName} {user.LastName}</b>,</p>
+                        <p>Thank you for registering with us. To complete your registration, please verify your email address by clicking the link below:</p>
+                        <p><a href='{verificationLink}' target='_blank'>Verify Email Address</a></p>
+                        <p>If you did not request this verification, please ignore this email.</p>
+                        <br/>
+                        <p>Best regards,</p>
+                        <p>ECommerce Pvt Ltd.</p>",
+                IsHtml = true,
+                Link = verificationLink
             };
 
-            using var message = new MailMessage(Constants.Email, email, subject, body);
-            await smtpClient.SendMailAsync(message);
+            await _emailService.SendEmailAsync(dto);
         }
     }
 }

@@ -110,7 +110,7 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        public void VerifyEmail()
+        public void EmailVerified()
         {
             EmailVerificationToken = null;
             IsEmailVerified = true;

@@ -68,6 +68,8 @@ namespace ECommerce.API.Extensions
 
             services.AddScoped<IPaginationService, PaginationService>();
 
+            services.AddScoped<IEmailService, EmailService>();
+
             return services;
         }
 
@@ -202,6 +204,8 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<RevokeRefreshTokenDTOValidator>();
 
             services.AddValidatorsFromAssemblyContaining<AccessTokenCreateDTOValidator>();
+
+            services.AddValidatorsFromAssemblyContaining<EmailSendDTOValidator>();
 
             return services;
         }
