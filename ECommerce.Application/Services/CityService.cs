@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -27,6 +28,17 @@ namespace ECommerce.Application.Services
             var items = await _repository.GetAllAsync(requestParams);
 
             return _mapper.Map<List<CityDTO>>(items);
+        }
+
+        public async Task<List<StateDTO>> GetAllCitiesByStateIdAsync(Guid stateId)
+        {
+            var items = await _repository.GetDbSet()
+                .Where(x => x.StateId == stateId).ToListAsync();
+
+            if (items.Count == 0)
+                throw new InvalidOperationException($"No City Found for State Id = {stateId}");
+
+            return _mapper.Map<List<StateDTO>>(items);
         }
 
         public async Task<CityDTO> GetCityByIdAsync(Guid id)

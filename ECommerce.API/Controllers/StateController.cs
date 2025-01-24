@@ -41,6 +41,28 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
+        [HttpGet("GetAllStatesByCountryId/{countryId}")]
+        public async Task<IActionResult> GetAllStatesByCountryId(Guid countryId)
+        {
+            var response = new ResponseStructure();
+
+            var data = await _service.GetAllStatesByCountryIdAsync(countryId);
+            if (data != null)
+            {
+                response.data = new ResponseMetadata<object>()
+                {
+                    page_number = 1,
+                    page_size = data.Count,
+                    records = data,
+                    total_records_count = 1
+                };
+
+                response.success = true;
+            }
+
+            return StatusCode(200, response);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStateById(Guid id)
         {

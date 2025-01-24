@@ -7,6 +7,8 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<CityDTO>> GetAllCitiesAsync(RequestParams requestParams);
 
+        Task<List<StateDTO>> GetAllCitiesByStateIdAsync(Guid stateId);
+
         Task<CityDTO> GetCityByIdAsync(Guid id);
 
         Task CreateCityAsync(CityCreateDTO dto);

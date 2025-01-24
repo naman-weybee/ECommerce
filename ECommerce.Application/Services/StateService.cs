@@ -25,9 +25,21 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet().Include(x => x.Cities);
+            var query = _repository.GetDbSet()
+                .Include(x => x.Cities);
 
             var items = await _repository.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<StateDTO>>(items);
+        }
+
+        public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID)
+        {
+            var items = await _repository.GetDbSet()
+                .Include(x => x.Cities).Where(x => x.CountryId == countryID).ToListAsync();
+
+            if (items.Count == 0)
+                throw new InvalidOperationException($"No State Found for Country Id = {countryID}");
 
             return _mapper.Map<List<StateDTO>>(items);
         }

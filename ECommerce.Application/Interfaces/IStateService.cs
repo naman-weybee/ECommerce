@@ -7,6 +7,8 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams);
 
+        Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID);
+
         Task<StateDTO> GetStateByIdAsync(Guid id);
 
         Task CreateStateAsync(StateCreateDTO dto);
