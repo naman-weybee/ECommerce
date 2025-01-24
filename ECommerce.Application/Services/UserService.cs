@@ -28,8 +28,8 @@ namespace ECommerce.Application.Services
 
         public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet();
-            query = query.Include(u => u.Role);
+            var query = _repository.GetDbSet()
+                .Include(u => u.Role);
 
             var items = await _repository.GetAllAsync(requestParams, query);
 
@@ -38,8 +38,8 @@ namespace ECommerce.Application.Services
 
         public async Task<UserDTO> GetUserByIdAsync(Guid id)
         {
-            var query = _repository.GetDbSet();
-            query = query.Include(u => u.Role);
+            var query = _repository.GetDbSet()
+                .Include(u => u.Role);
 
             var item = await _repository.GetByIdAsync(id, query);
 
@@ -49,6 +49,7 @@ namespace ECommerce.Application.Services
         public async Task CreateUserAsync(UserCreateDTO dto)
         {
             var item = _mapper.Map<User>(dto);
+
             item.EmailVerificationToken = Guid.NewGuid().ToString();
 
             var aggregate = new UserAggregate(item, _eventCollector);

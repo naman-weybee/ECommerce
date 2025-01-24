@@ -108,8 +108,8 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteAddressAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Where(x => x.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
             var aggregate = new AddressAggregate(item, _eventCollector);

@@ -26,18 +26,21 @@ namespace ECommerce.Application.Services
         public async Task<List<ProductDTO>> GetAllProductsAsync(RequestParams requestParams)
         {
             var items = await _repository.GetAllAsync(requestParams);
+
             return _mapper.Map<List<ProductDTO>>(items);
         }
 
         public async Task<ProductDTO> GetProductByIdAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
+
             return _mapper.Map<ProductDTO>(item);
         }
 
         public async Task<int> GetProductStockByIdAsync(Guid id)
         {
             var item = await GetProductByIdAsync(id);
+
             return item.Stock;
         }
 

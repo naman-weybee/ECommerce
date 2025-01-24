@@ -69,11 +69,10 @@ namespace ECommerce.Application.Services
 
         public async Task<UserTokenDTO> ReCreateAccessTokenAsync(AccessTokenCreateDTO dto)
         {
-            var query = _refreshTokenRepository.GetDbSet();
+            var refreshToken = await _refreshTokenRepository.GetDbSet()
+                .Where(x => x.Token == dto.RefreshToken).FirstOrDefaultAsync();
 
-            var refreshToken = await query.Where(x => x.Token == dto.RefreshToken).FirstOrDefaultAsync();
-
-            if (refreshToken == null || refreshToken.IsRevoked || refreshToken.ExpiredDate <= DateTime.UtcNow)
+            if (refreshToken?.IsRevoked != false || refreshToken.ExpiredDate <= DateTime.UtcNow)
                 throw new InvalidOperationException("Token Expired.");
 
             var user = await _userService.GetUserByIdAsync(refreshToken.UserId);

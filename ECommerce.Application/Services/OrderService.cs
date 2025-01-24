@@ -64,8 +64,8 @@ namespace ECommerce.Application.Services
 
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Include(c => c.OrderItems).Where(u => u.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Include(c => c.OrderItems).Where(u => u.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
 
@@ -126,8 +126,8 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
         {
-            var query = _repository.GetDbSet();
-            query = query.Include(c => c.OrderItems);
+            var query = _repository.GetDbSet()
+                .Include(c => c.OrderItems);
 
             var order = await _repository.GetByIdAsync(dto.Id, query);
             var aggregate = new OrderAggregate(order, _eventCollector);
@@ -212,9 +212,10 @@ namespace ECommerce.Application.Services
 
         private async Task<List<OrderItemDTO>> GetOrderItems(OrderUpdateStatusDTO dto)
         {
-            var orderItems = await _orderItemService.GetOrderItemByOrderIdAsync(dto.Id);
+            var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(dto.Id);
             if (!orderItems.Any() || orderItems.Count == 0)
                 throw new InvalidOperationException("Order is empty!");
+
             return orderItems;
         }
 

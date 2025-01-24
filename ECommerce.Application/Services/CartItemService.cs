@@ -39,8 +39,8 @@ namespace ECommerce.Application.Services
 
         public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Where(x => x.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
 
@@ -49,9 +49,8 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId)
         {
-            var query = _repository.GetDbSet();
-
-            var items = await query.Where(x => x.UserId == userId).ToListAsync();
+            var items = await _repository.GetDbSet()
+                .Where(x => x.UserId == userId).ToListAsync();
 
             return _mapper.Map<List<CartItemDTO>>(items);
         }
@@ -101,8 +100,8 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteCartItemAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Where(x => x.Id == id && x.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Where(x => x.Id == id && x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
             var aggregate = new CartItemAggregate(item, _eventCollector);
@@ -113,8 +112,8 @@ namespace ECommerce.Application.Services
 
         public async Task ClearCartItemsAsync(Guid userId)
         {
-            var query = _repository.GetDbSet();
-            var items = await query.Where(x => x.UserId == userId).ToListAsync();
+            var items = await _repository.GetDbSet()
+                .Where(x => x.UserId == userId).ToListAsync();
 
             foreach (var item in items)
             {

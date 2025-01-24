@@ -38,6 +38,7 @@ namespace ECommerce.Application.Services
         public async Task<RefreshTokenDTO> GetRefreshTokenByIdAsync(Guid id)
         {
             var item = await _repository.GetByIdAsync(id);
+
             return _mapper.Map<RefreshTokenDTO>(item);
         }
 
@@ -63,8 +64,8 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteRefreshTokenAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet();
-            query = query.Where(x => x.UserId == userId);
+            var query = _repository.GetDbSet()
+                .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
@@ -75,9 +76,8 @@ namespace ECommerce.Application.Services
 
         public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenDTO dto)
         {
-            var query = _repository.GetDbSet();
-
-            var entity = await query.SingleOrDefaultAsync(x => x.Token == dto.RefreshToken);
+            var entity = await _repository.GetDbSet()
+                .SingleOrDefaultAsync(x => x.Token == dto.RefreshToken);
 
             var refreshToken = _mapper.Map<RefreshToken>(entity);
             var aggregate = new RefreshTokenAggregate(refreshToken, _eventCollector);

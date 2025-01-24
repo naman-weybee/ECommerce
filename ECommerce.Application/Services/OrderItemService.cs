@@ -32,8 +32,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet();
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _repository.GetAllAsync(requestParams);
 
             return _mapper.Map<List<OrderItemDTO>>(items);
         }
@@ -45,11 +44,10 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OrderItemDTO>(item);
         }
 
-        public async Task<List<OrderItemDTO>> GetOrderItemByOrderIdAsync(Guid orderId)
+        public async Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(Guid orderId)
         {
-            var query = _repository.GetDbSet();
-
-            var items = await query.Where(x => x.OrderId == orderId).ToListAsync();
+            var items = await _repository.GetDbSet()
+                .Where(x => x.OrderId == orderId).ToListAsync();
 
             return _mapper.Map<List<OrderItemDTO>>(items);
         }
@@ -99,7 +97,7 @@ namespace ECommerce.Application.Services
 
                 await _repository.UpdateAsync(aggregate);
 
-                //Recalculate Total Amount of Order and Update
+                //Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
 
                 // Commit transaction
