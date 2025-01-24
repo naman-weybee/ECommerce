@@ -8,10 +8,12 @@ namespace ECommerce.Application.DTOs
 
         public Guid UserId { get; set; }
 
-        public Money TotalAmount { get; set; }
+        public Guid BillingAddressId { get; set; }
+
+        public Guid ShippingAddressId { get; set; }
 
         public string PaymentMethod { get; set; }
 
-        public Guid AddressId { get; set; }
+        public Money TotalAmount { get; set; }
     }
 }

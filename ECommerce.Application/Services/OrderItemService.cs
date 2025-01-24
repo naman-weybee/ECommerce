@@ -2,6 +2,7 @@ using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
+using ECommerce.Domain.DomainServices.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.ValueObjects;
 using ECommerce.Infrastructure.Services;
@@ -16,15 +17,17 @@ namespace ECommerce.Application.Services
         private readonly IRepository<OrderItemAggregate, OrderItem> _repository;
         private readonly IRepository<OrderAggregate, Order> _orderRepository;
         private readonly IProductService _productService;
+        private readonly IInventoryService _inventoryService;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderItemService(IRepository<OrderItemAggregate, OrderItem> repository, IRepository<OrderAggregate, Order> orderRepository, IProductService productService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderItemService(IRepository<OrderItemAggregate, OrderItem> repository, IRepository<OrderAggregate, Order> orderRepository, IProductService productService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _orderRepository = orderRepository;
             _productService = productService;
+            _inventoryService = inventoryService;
             _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
@@ -86,16 +89,22 @@ namespace ECommerce.Application.Services
             try
             {
                 var orderItem = await GetOrderItemByIdAsync(dto.Id);
-                var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
 
+                // Check Product Stock Availability
+                await ValidateProductStockAsync(orderItem.ProductId, orderItem.Quantity, dto.Quantity);
+
+                var item = _mapper.Map<OrderItem>(orderItem);
+                var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
                 var order = await _orderRepository.GetDbSet()
                     .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
 
-                var item = _mapper.Map<OrderItem>(orderItem);
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
                 aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
                 await _repository.UpdateAsync(aggregate);
+
+                //Update Product Stock
+                await UpdateOrderItemProductStockAsync(product.Id, orderItem.Quantity, dto.Quantity);
 
                 //Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
@@ -138,6 +147,24 @@ namespace ECommerce.Application.Services
             aggregate.UpdateTotalAmount();
 
             await _orderRepository.UpdateAsync(aggregate);
+        }
+
+        private async Task ValidateProductStockAsync(Guid productId, int oldQuantity, int newQuantity)
+        {
+            if (oldQuantity == newQuantity)
+                throw new InvalidOperationException("You've entered exact same quantity as it was, please add diff quantity to update.");
+
+            if (oldQuantity < newQuantity)
+                await _inventoryService.ValidatProductStockAsync(productId, newQuantity - oldQuantity);
+        }
+
+        private async Task UpdateOrderItemProductStockAsync(Guid productId, int oldQuantity, int newQuantity)
+        {
+            if (oldQuantity > newQuantity)
+                await _inventoryService.ProductStockChangeAsync(productId, oldQuantity - newQuantity, true);
+
+            if (oldQuantity < newQuantity)
+                await _inventoryService.ProductStockChangeAsync(productId, newQuantity - oldQuantity, false);
         }
     }
 }

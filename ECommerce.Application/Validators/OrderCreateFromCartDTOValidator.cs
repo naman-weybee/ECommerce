@@ -10,8 +10,11 @@ namespace ECommerce.Application.Validators
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("User id is required.");
 
-            RuleFor(x => x.AddressId)
-                .NotEmpty().WithMessage("Address id is required.");
+            RuleFor(x => x.BillingAddressId)
+                .NotEmpty().WithMessage("Order Billing Address Id is required.");
+
+            RuleFor(x => x.ShippingAddressId)
+                .NotEmpty().WithMessage("Order Shipping Address Id is required.");
 
             RuleFor(x => x.PaymentMethod)
                 .NotEmpty().WithMessage("Payment method is required.")

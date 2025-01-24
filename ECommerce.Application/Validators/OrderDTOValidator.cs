@@ -13,6 +13,12 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("User ID is required.");
 
+            RuleFor(x => x.BillingAddressId)
+                .NotEmpty().WithMessage("Order Billing Address Id is required.");
+
+            RuleFor(x => x.ShippingAddressId)
+                .NotEmpty().WithMessage("Order Shipping Address Id is required.");
+
             RuleFor(x => x.OrderStatus)
                 .IsInEnum().WithMessage("Invalid order status.");
 
@@ -29,15 +35,12 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.OrderCanceledDate)
                 .LessThanOrEqualTo(DateTime.Now).WithMessage("Order canceled date cannot be in the future.");
 
-            RuleFor(x => x.TotalAmount)
-                .NotNull().WithMessage("Total amount is required.");
-
             RuleFor(x => x.PaymentMethod)
                 .NotEmpty().WithMessage("Payment method is required.")
                 .Length(3, 50).WithMessage("Payment method should be between 3 and 50 characters.");
 
-            RuleFor(x => x.AddressId)
-                .NotEmpty().WithMessage("Order Address ID is required.");
+            RuleFor(x => x.TotalAmount)
+                .NotNull().WithMessage("Total amount is required.");
 
             RuleFor(x => x.OrderItems)
                 .NotEmpty().WithMessage("Order items are required.")

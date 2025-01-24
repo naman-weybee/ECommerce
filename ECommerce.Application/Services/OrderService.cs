@@ -2,7 +2,7 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
-using ECommerce.Domain.DomainServices;
+using ECommerce.Domain.DomainServices.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.ValueObjects;
@@ -45,6 +45,7 @@ namespace ECommerce.Application.Services
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
 
+            query = query.Include(x => x.OrderItems);
             var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
@@ -55,8 +56,9 @@ namespace ECommerce.Application.Services
             var query = _repository.GetDbSet();
 
             if (userId != default)
-                query = query.Include(c => c.OrderItems).Where(x => x.UserId == userId);
+                query = query.Where(x => x.UserId == userId);
 
+            query = query.Include(x => x.OrderItems);
             var items = await _repository.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
@@ -65,7 +67,7 @@ namespace ECommerce.Application.Services
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId)
         {
             var query = _repository.GetDbSet()
-                .Include(c => c.OrderItems).Where(u => u.UserId == userId);
+                .Where(u => u.UserId == userId).Include(c => c.OrderItems);
 
             var item = await _repository.GetByIdAsync(id, query);
 
@@ -93,7 +95,7 @@ namespace ECommerce.Application.Services
 
                 // Create Order
                 var orderId = Guid.NewGuid();
-                await CreateOrderFromCartItems(orderId, user.Id, dto.PaymentMethod, totalAmount, dto.AddressId);
+                await CreateOrderFromCartItems(user.Id, orderId, dto.BillingAddressId, dto.ShippingAddressId, dto.PaymentMethod, totalAmount);
 
                 // Create Order Items
                 await CreateOrderItemsFromCartItems(orderId, cartItems);
@@ -166,25 +168,26 @@ namespace ECommerce.Application.Services
 
         private async Task CheckProductStockAvailability(List<CartItemDTO> cartItems)
         {
-            var cartItemEntities = _mapper.Map<List<CartItem>>(cartItems);
-            await _inventoryService.ValidateCartItemsAsync(cartItemEntities);
+            var items = _mapper.Map<List<CartItem>>(cartItems);
+
+            foreach (var item in items)
+                await _inventoryService.ValidatProductStockAsync(item.ProductId, item.Quantity);
         }
 
-        private async Task CreateOrderFromCartItems(Guid orderId, Guid userId, string paymentMethod, decimal totalAmount, Guid addressId)
+        private async Task CreateOrderFromCartItems(Guid userId, Guid orderId, Guid billingAddressId, Guid shippingAddressId, string paymentMethod, decimal totalAmount)
         {
-            var isAddressExist = await _addressRepository.GetDbSet()
-                .AnyAsync(x => x.Id == addressId && x.UserId == userId);
-
-            if (!isAddressExist)
-                throw new InvalidOperationException($"Address with Id = {addressId} for User Id = {userId} is not exist.");
+            //Check for Address Existance
+            await CheckForAddressExistance(userId, billingAddressId, eAddressType.Billing);
+            await CheckForAddressExistance(userId, shippingAddressId, eAddressType.Shipping);
 
             var orderDto = new OrderCreateDTO
             {
                 Id = orderId,
                 UserId = userId,
-                TotalAmount = new Money(totalAmount),
+                BillingAddressId = billingAddressId,
+                ShippingAddressId = shippingAddressId,
                 PaymentMethod = paymentMethod,
-                AddressId = addressId
+                TotalAmount = new Money(totalAmount)
             };
 
             var order = _mapper.Map<Order>(orderDto);
@@ -192,6 +195,15 @@ namespace ECommerce.Application.Services
             aggregate.CreateOrder(order);
 
             await _repository.InsertAsync(aggregate);
+        }
+
+        private async Task CheckForAddressExistance(Guid userId, Guid addressId, eAddressType addressType)
+        {
+            var isAddressExist = await _addressRepository.GetDbSet()
+                .AnyAsync(x => x.Id == addressId && x.UserId == userId && x.AdderessType == addressType);
+
+            if (!isAddressExist)
+                throw new InvalidOperationException($"{addressType} Address with Id = {addressId} for User Id = {userId} is not exist.");
         }
 
         private async Task CreateOrderItemsFromCartItems(Guid orderId, List<CartItemDTO> cartItems)
@@ -222,13 +234,13 @@ namespace ECommerce.Application.Services
         private async Task UpdateProductStock(List<CartItemDTO> cartItems, bool isIncrease)
         {
             foreach (var cartItem in cartItems)
-                await _inventoryService.StockChange(cartItem.ProductId, cartItem.Quantity, isIncrease);
+                await _inventoryService.ProductStockChangeAsync(cartItem.ProductId, cartItem.Quantity, isIncrease);
         }
 
         private async Task UpdateProductStock(List<OrderItemDTO> orderItems, bool isIncrease)
         {
             foreach (var orderItem in orderItems)
-                await _inventoryService.StockChange(orderItem.ProductId, orderItem.Quantity, isIncrease);
+                await _inventoryService.ProductStockChangeAsync(orderItem.ProductId, orderItem.Quantity, isIncrease);
         }
 
         private async Task ClearCart(Guid userId)

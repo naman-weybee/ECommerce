@@ -21,7 +21,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateOrder(Order order)
         {
-            Order.CreateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
+            Order.CreateOrder(order.Id, order.UserId, order.BillingAddressId, order.ShippingAddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderPlaced;
             RaiseDomainEvent();
@@ -29,7 +29,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateOrder(Order order)
         {
-            Order.UpdateOrder(order.Id, order.UserId, order.AddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
+            Order.UpdateOrder(order.Id, order.UserId, order.BillingAddressId, order.ShippingAddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
 
             EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
@@ -100,12 +100,21 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateOrderAddress(Guid addressId)
+        public void UpdateOrderBillingAddress(Guid billingAddressId)
         {
             ValidateOrderForModification();
-            Order.UpdateOrderAddress(addressId);
+            Order.UpdateOrderBillingAddress(billingAddressId);
 
-            EventType = eEventType.OrderAddressUpdated;
+            EventType = eEventType.OrderBillingAddressUpdated;
+            RaiseDomainEvent();
+        }
+
+        public void UpdateOrderShippingAddress(Guid shippingAddressId)
+        {
+            ValidateOrderForModification();
+            Order.UpdateOrderShippingAddress(shippingAddressId);
+
+            EventType = eEventType.OrderShippingAddressUpdated;
             RaiseDomainEvent();
         }
 
@@ -169,7 +178,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.TotalAmount.Amount, EventType);
+            var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.BillingAddressId, Order.ShippingAddressId, Order.TotalAmount.Amount, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

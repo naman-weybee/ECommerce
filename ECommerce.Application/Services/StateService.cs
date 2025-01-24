@@ -36,7 +36,7 @@ namespace ECommerce.Application.Services
         public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID)
         {
             var items = await _repository.GetDbSet()
-                .Include(x => x.Cities).Where(x => x.CountryId == countryID).ToListAsync();
+                .Where(x => x.CountryId == countryID).Include(x => x.Cities).ToListAsync();
 
             if (items.Count == 0)
                 throw new InvalidOperationException($"No State Found for Country Id = {countryID}");

@@ -54,7 +54,7 @@ namespace ECommerce.Application.Services
 
             dto.Password = _md5Service.ComputeMD5Hash(dto.Password);
 
-            var item = await query.Include(u => u.Role).Where(x => x.Email == dto.Email && x.Password == dto.Password).FirstOrDefaultAsync()
+            var item = await query.Where(x => x.Email == dto.Email && x.Password == dto.Password).Include(u => u.Role).FirstOrDefaultAsync()
                 ?? throw new InvalidOperationException("Invalid Credentials.");
 
             var user = _mapper.Map<UserDTO>(item);

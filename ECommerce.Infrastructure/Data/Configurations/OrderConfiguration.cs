@@ -19,12 +19,16 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .HasDatabaseName("IX_Order_UserId");
 
             builder
-            .Property(p => p.TotalAmount)
-            .HasConversion(new MoneyConverter());
+            .HasIndex(o => o.BillingAddressId)
+            .HasDatabaseName("IX_Order_BillingAddressId");
 
             builder
-            .HasIndex(o => o.AddressId)
-            .HasDatabaseName("IX_Order_AddressId");
+            .HasIndex(o => o.ShippingAddressId)
+            .HasDatabaseName("IX_Order_ShippingAddressId");
+
+            builder
+            .Property(p => p.TotalAmount)
+            .HasConversion(new MoneyConverter());
 
             builder
             .HasOne(o => o.User)
@@ -33,9 +37,15 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .OnDelete(DeleteBehavior.Restrict);
 
             builder
-            .HasOne(o => o.Address)
+            .HasOne(o => o.BillingAddress)
             .WithMany()
-            .HasForeignKey(o => o.AddressId)
+            .HasForeignKey(o => o.BillingAddressId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+            .HasOne(o => o.ShippingAddress)
+            .WithMany()
+            .HasForeignKey(o => o.ShippingAddressId)
             .OnDelete(DeleteBehavior.Restrict);
         }
     }

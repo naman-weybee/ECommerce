@@ -13,7 +13,7 @@ namespace ECommerce.API.Validators
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required")
                 .MaximumLength(100).WithMessage("First Name cannot exceed 50 characters.");
-            
+
             RuleFor(x => x.LastName)
                 .NotEmpty().WithMessage("Last Name is required")
                 .MaximumLength(100).WithMessage("Last Name cannot exceed 50 characters.");

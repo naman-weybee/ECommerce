@@ -1,5 +1,4 @@
 using ECommerce.API.Extensions;
-using ECommerce.API.Helper;
 using ECommerce.API.Middlewares;
 
 namespace ECommerce.API

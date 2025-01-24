@@ -11,8 +11,11 @@ namespace ECommerce.Domain.Entities
         [ForeignKey("User")]
         public Guid UserId { get; set; }
 
-        [ForeignKey("Address")]
-        public Guid AddressId { get; set; }
+        [ForeignKey("BillingAddress")]
+        public Guid BillingAddressId { get; set; }
+
+        [ForeignKey("ShippingAddress")]
+        public Guid ShippingAddressId { get; set; }
 
         public eOrderStatus OrderStatus { get; set; } = eOrderStatus.Placed;
 
@@ -28,28 +31,32 @@ namespace ECommerce.Domain.Entities
 
         public string PaymentMethod { get; set; }
 
-        public virtual Address Address { get; set; }
+        public virtual Address BillingAddress { get; set; }
+
+        public virtual Address ShippingAddress { get; set; }
 
         public virtual User User { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
-        public void CreateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
+        public void CreateOrder(Guid id, Guid userId, Guid billingAddressId, Guid shippingAddressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = id;
             UserId = userId;
-            AddressId = addressId;
+            BillingAddressId = billingAddressId;
+            ShippingAddressId = shippingAddressId;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
             OrderItems = orderItems ?? new List<OrderItem>();
         }
 
-        public void UpdateOrder(Guid id, Guid userId, Guid addressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
+        public void UpdateOrder(Guid id, Guid userId, Guid billingAddressId, Guid shippingAddressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
         {
             Id = id;
             UserId = userId;
-            AddressId = addressId;
+            BillingAddressId = billingAddressId;
+            ShippingAddressId = shippingAddressId;
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
@@ -110,9 +117,15 @@ namespace ECommerce.Domain.Entities
             StatusUpdated();
         }
 
-        public void UpdateOrderAddress(Guid addressId)
+        public void UpdateOrderBillingAddress(Guid billingAddressId)
         {
-            AddressId = addressId;
+            BillingAddressId = billingAddressId;
+            StatusUpdated();
+        }
+
+        public void UpdateOrderShippingAddress(Guid shippingAddressId)
+        {
+            ShippingAddressId = shippingAddressId;
             StatusUpdated();
         }
 
