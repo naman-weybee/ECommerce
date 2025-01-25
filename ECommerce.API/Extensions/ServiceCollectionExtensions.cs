@@ -5,6 +5,7 @@ using ECommerce.API.Mappings;
 using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
+using ECommerce.Application.Templates;
 using ECommerce.Application.Validators;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.DomainServices.Interfaces;
@@ -70,6 +71,7 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IPaginationService, PaginationService>();
 
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IEmailTemplates, EmailTemplates>();
 
             return services;
         }

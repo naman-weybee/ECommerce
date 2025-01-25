@@ -4,7 +4,7 @@
     {
         Unknown = 0,
 
-        OrderPlaced,        //Order Events
+        OrderPlaced,        // Order Events
         OrderUpdated,
         OrderShipped,
         OrderDelivered,
@@ -18,17 +18,17 @@
         OrderItemAddedInOrder,
         OrderItemRemovedFromOrder,
 
-        OrderItemCreated,     //Order Item Evenets
+        OrderItemCreated,     // Order Item Evenets
         OrderItemUpdated,
         OrderItemDeleted,
         OrderItemQuantityUpdated,
         OrderItemUnitPriceUpdated,
 
-        CartItemCreated,     //Cart Item Evenets
+        CartItemCreated,     // Cart Item Evenets
         CartItemUpdated,
         CartItemDeleted,
 
-        ProductCreated,     //Product Evenets
+        ProductCreated,     // Product Evenets
         ProductUpdated,
         ProductStockIncreased,
         ProductStockDecreased,
@@ -36,7 +36,7 @@
         ProductPriceChanged,
         ProductDeleted,
 
-        CategoryCreated,    //Category Evenets
+        CategoryCreated,    // Category Evenets
         CategoryUpdated,
         CategoryDeleted,
         ProductAddedInCategory,
@@ -44,7 +44,7 @@
         SubCategoryAddedInCategory,
         SubCategoryRemovedFromCategory,
 
-        UserCreated,        //User Events
+        UserCreated,        // User Events
         UserUpdated,
         UserDeleted,
         UserEmailChanged,
@@ -57,37 +57,37 @@
         UserIsPhoneNumberVerifiedStatusChanged,
         UserIsSubscribedToNotificationsStatusChanged,
 
-        AddressCreated,     //Address Events
+        AddressCreated,     // Address Events
         AddressUpdated,
         AddressDeleted,
 
-        GenderCreated,     //Gender Events
+        GenderCreated,     // Gender Events
         GenderUpdated,
         GenderDeleted,
 
-        RoleCreated,     //Role Events
+        RoleCreated,     // Role Events
         RoleUpdated,
         RoleDeleted,
 
-        RefreshTokenCreated,     //Refresh Token Events
+        RefreshTokenCreated,     // Refresh Token Events
         RefreshTokenUpdated,
         RefreshTokenDeleted,
         RefreshTokenRevoked,
         RefreshTokenRegenerated,
 
-        CountryCreated,     //Country Events
+        CountryCreated,     // Country Events
         CountryUpdated,
         CountryDeleted,
 
-        StateCreated,       //State Events
+        StateCreated,       // State Events
         StateUpdated,
         StateDeleted,
 
-        CityCreated,        //City Events
+        CityCreated,        // City Events
         CityUpdated,
         CityDeleted,
 
-        SetAsDefaultAddress,    //Address Type Events
+        SetAsDefaultAddress,    // Address Type Events
         SetAsBillingAddress,
         SetAsShippingAddress,
     }

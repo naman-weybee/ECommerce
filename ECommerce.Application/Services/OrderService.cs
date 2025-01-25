@@ -103,7 +103,7 @@ namespace ECommerce.Application.Services
                 // Update Prodct Stock - Domain Service
                 await UpdateProductStock(cartItems, false);
 
-                //Clear Cart
+                // Clear Cart
                 await ClearCart(user.Id);
 
                 // Commit transaction
@@ -176,7 +176,7 @@ namespace ECommerce.Application.Services
 
         private async Task CreateOrderFromCartItems(Guid userId, Guid orderId, Guid billingAddressId, Guid shippingAddressId, string paymentMethod, decimal totalAmount)
         {
-            //Check for Address Existance
+            // Check for Address Existance
             await CheckForAddressExistance(userId, billingAddressId, eAddressType.Billing);
             await CheckForAddressExistance(userId, shippingAddressId, eAddressType.Shipping);
 

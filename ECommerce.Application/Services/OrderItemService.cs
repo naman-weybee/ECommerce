@@ -103,10 +103,10 @@ namespace ECommerce.Application.Services
 
                 await _repository.UpdateAsync(aggregate);
 
-                //Update Product Stock
+                // Update Product Stock
                 await UpdateOrderItemProductStockAsync(product.Id, orderItem.Quantity, dto.Quantity);
 
-                //Update Total Amount of Order
+                // Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
 
                 // Commit transaction

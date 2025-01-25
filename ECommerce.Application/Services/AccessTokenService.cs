@@ -28,7 +28,7 @@ namespace ECommerce.Application.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            //Keep the token valid for 15 Minutes in Production
+            // Keep the token valid for 15 Minutes in Production
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
