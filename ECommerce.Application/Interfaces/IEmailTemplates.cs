@@ -1,9 +1,11 @@
-﻿using ECommerce.Domain.Entities;
+﻿using ECommerce.Domain.Enums;
 
 namespace ECommerce.Application.Interfaces
 {
     public interface IEmailTemplates
     {
-        Task SendVerificationEmailAsync(User user);
+        Task SendVerificationEmailAsync(Guid userId);
+
+        Task SendOrderEmailAsync(Guid orderId, Guid userId, eEventType eventType);
     }
 }

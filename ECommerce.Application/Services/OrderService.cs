@@ -21,11 +21,12 @@ namespace ECommerce.Application.Services
         private readonly ICartItemService _cartItemService;
         private readonly IOrderItemService _orderItemService;
         private readonly IInventoryService _inventoryService;
+        private readonly IEmailTemplates _emailTemplates;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, IRepository<AddressAggregate, Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderService(IRepository<OrderAggregate, Order> repository, IRepository<AddressAggregate, Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _addressRepository = addressRepository;
@@ -33,6 +34,7 @@ namespace ECommerce.Application.Services
             _cartItemService = cartItemService;
             _orderItemService = orderItemService;
             _inventoryService = inventoryService;
+            _emailTemplates = emailTemplates;
             _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
@@ -108,6 +110,9 @@ namespace ECommerce.Application.Services
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
+
+                // Send Email to User
+                await _emailTemplates.SendOrderEmailAsync(user.Id, orderId, eEventType.OrderPlaced);
             }
             catch (Exception)
             {
@@ -128,11 +133,10 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
         {
-            var query = _repository.GetDbSet()
-                .Include(c => c.OrderItems);
+            var order = await GetOrderByIdAsync(dto.Id, dto.UserId);
 
-            var order = await _repository.GetByIdAsync(dto.Id, query);
-            var aggregate = new OrderAggregate(order, _eventCollector);
+            var item = _mapper.Map<Order>(order);
+            var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrderStatus(dto.OrderStatus);
 
             // For Order Cancelation
@@ -146,6 +150,9 @@ namespace ECommerce.Application.Services
             }
 
             await _repository.UpdateAsync(aggregate);
+
+            // Send Email to User
+            await _emailTemplates.SendOrderEmailAsync(item.UserId, item.Id, aggregate.EventType);
         }
 
         public async Task DeleteOrderAsync(Guid id)

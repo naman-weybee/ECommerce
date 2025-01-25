@@ -115,7 +115,6 @@ namespace ECommerce.API.Controllers
 
         [HttpPut("UpdateOrderStatus")]
         [Authorize(Roles = "Admin")]
-        [Authorize(Roles = "Delivery Partner")]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderUpdateStatusDTO dto)
         {
             var response = new ResponseStructure();

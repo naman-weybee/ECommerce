@@ -14,13 +14,15 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<UserAggregate, User> _repository;
         private readonly IEmailTemplates _emailTemplates;
+        private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public UserService(IRepository<UserAggregate, User> repository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
+        public UserService(IRepository<UserAggregate, User> repository, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _emailTemplates = emailTemplates;
+            _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -47,16 +49,31 @@ namespace ECommerce.Application.Services
 
         public async Task CreateUserAsync(UserCreateDTO dto)
         {
-            var item = _mapper.Map<User>(dto);
+            // Begin Transaction
+            await _transactionManagerService.BeginTransactionAsync();
 
-            item.EmailVerificationToken = Guid.NewGuid().ToString();
+            try
+            {
+                var item = _mapper.Map<User>(dto);
+                item.EmailVerificationToken = Guid.NewGuid().ToString();
 
-            var aggregate = new UserAggregate(item, _eventCollector);
-            aggregate.CreateUser(item);
+                var aggregate = new UserAggregate(item, _eventCollector);
+                aggregate.CreateUser(item);
 
-            await _repository.InsertAsync(aggregate);
+                await _repository.InsertAsync(aggregate);
 
-            await _emailTemplates.SendVerificationEmailAsync(item);
+                // Commit transaction
+                await _transactionManagerService.CommitTransactionAsync();
+
+                // Send Email to User
+                await _emailTemplates.SendVerificationEmailAsync(aggregate.User.Id);
+            }
+            catch (Exception)
+            {
+                // Rollback transaction on error
+                await _transactionManagerService.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task UpdateUserAsync(UserUpdateDTO dto)

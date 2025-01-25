@@ -30,5 +30,7 @@ namespace ECommerce.Application.DTOs
         public bool IsSubscribedToNotifications { get; set; }
 
         public RoleDTO Role { get; set; }
+
+        public string? EmailVerificationToken { get; set; }
     }
 }
