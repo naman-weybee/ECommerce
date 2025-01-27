@@ -4,16 +4,18 @@ namespace ECommerce.Domain.Events
 {
     public class CartItemEvent : BaseEvent
     {
-        public Guid Id { get; }
+        public Guid CartItemId { get; }
+
         public Guid UserId { get; }
+
         public Guid ProductId { get; }
 
-        public CartItemEvent(Guid id, Guid userId, Guid productId, eEventType eventType)
+        public CartItemEvent(Guid cartItemId, Guid userId, Guid productId, eEventType eventType)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentException("Id cannot be empty.", nameof(id));
+            if (cartItemId == Guid.Empty)
+                throw new ArgumentException("Id cannot be empty.", nameof(cartItemId));
 
-            Id = id;
+            CartItemId = cartItemId;
             UserId = userId;
             ProductId = productId;
             EventType = eventType;

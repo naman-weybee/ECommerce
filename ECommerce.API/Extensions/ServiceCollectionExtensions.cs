@@ -71,6 +71,8 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IPaginationService, PaginationService>();
 
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IOTPService, OTPService>();
+
             services.AddScoped<IEmailTemplates, EmailTemplates>();
 
             return services;
@@ -94,6 +96,7 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
             services.AddScoped<IRepository<RefreshTokenAggregate, RefreshToken>, Repository<RefreshTokenAggregate, RefreshToken>>();
+            services.AddScoped<IRepository<OTPAggregate, OTP>, Repository<OTPAggregate, OTP>>();
 
             services.AddScoped<IDomainEventCollector, DomainEventCollector>();
 
@@ -210,6 +213,13 @@ namespace ECommerce.API.Extensions
 
             services.AddValidatorsFromAssemblyContaining<EmailSendDTOValidator>();
 
+            services.AddValidatorsFromAssemblyContaining<OTPDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OTPCreateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OTPUpdateDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OTPCreateFromEmailDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OTPVerifyDTOValidator>();
+            services.AddValidatorsFromAssemblyContaining<OTPTokenDTOValidator>();
+
             return services;
         }
 
@@ -229,7 +239,8 @@ namespace ECommerce.API.Extensions
                     typeof(Application.EventHandlers.EventHandler<CityEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly
+                    typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<OTPEvent>).Assembly
                 );
             });
 

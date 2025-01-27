@@ -4,16 +4,16 @@ namespace ECommerce.Domain.Events
 {
     public class RoleEvent : BaseEvent
     {
-        public Guid Id { get; }
+        public Guid RoleId { get; }
 
         public string Name { get; }
 
-        public RoleEvent(Guid id, string name, eEventType eventType)
+        public RoleEvent(Guid roleId, string name, eEventType eventType)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentException("Id cannot be empty.", nameof(id));
+            if (roleId == Guid.Empty)
+                throw new ArgumentException("Id cannot be empty.", nameof(roleId));
 
-            Id = id;
+            RoleId = roleId;
             Name = name;
             EventType = eventType;
         }

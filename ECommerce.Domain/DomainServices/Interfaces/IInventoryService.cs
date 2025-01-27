@@ -1,6 +1,4 @@
-﻿using ECommerce.Domain.Entities;
-
-namespace ECommerce.Domain.DomainServices.Interfaces
+﻿namespace ECommerce.Domain.DomainServices.Interfaces
 {
     public interface IInventoryService
     {

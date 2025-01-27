@@ -3,6 +3,7 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
@@ -13,16 +14,22 @@ namespace ECommerce.Application.Services
     public class UserService : IUserService
     {
         private readonly IRepository<UserAggregate, User> _repository;
+        private readonly IRepository<OTPAggregate, OTP> _otpRepository;
+        private readonly IOTPService _otpService;
         private readonly IEmailTemplates _emailTemplates;
         private readonly ITransactionManagerService _transactionManagerService;
+        private readonly IMD5Service _mD5Service;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public UserService(IRepository<UserAggregate, User> repository, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public UserService(IRepository<UserAggregate, User> repository, IRepository<OTPAggregate, OTP> otpRepository, IOTPService otpService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMD5Service mD5Service, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _otpRepository = otpRepository;
+            _otpService = otpService;
             _emailTemplates = emailTemplates;
             _transactionManagerService = transactionManagerService;
+            _mD5Service = mD5Service;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -55,7 +62,6 @@ namespace ECommerce.Application.Services
             try
             {
                 var item = _mapper.Map<User>(dto);
-                item.EmailVerificationToken = Guid.NewGuid().ToString();
 
                 var aggregate = new UserAggregate(item, _eventCollector);
                 aggregate.CreateUser(item);
@@ -83,6 +89,45 @@ namespace ECommerce.Application.Services
             aggregate.UpdateUser(item);
 
             await _repository.UpdateAsync(aggregate);
+        }
+
+        public async Task PasswordResetAsync(PasswordResetDTO dto)
+        {
+            // Begin Transaction
+            await _transactionManagerService.BeginTransactionAsync();
+
+            try
+            {
+                var otp = await _otpRepository.GetDbSet()
+                    .SingleOrDefaultAsync(x => x.Token == dto.Token && x.Type == eOTPType.PasswordReset && !x.IsUsed && x.TokenExpiredDate >= DateTime.UtcNow)
+                    ?? throw new InvalidOperationException("Invalid Token.");
+
+                var user = await _repository.GetDbSet()
+                    .SingleOrDefaultAsync(x => x.Id == otp.UserId)
+                    ?? throw new InvalidOperationException("User not found.");
+
+                var newPassword = _mD5Service.ComputeMD5Hash(dto.NewPassword);
+                if (user.Password == newPassword)
+                    throw new InvalidOperationException("New password cannot be the same as the old password.");
+
+                user.Password = newPassword;
+                var aggregate = new UserAggregate(user, _eventCollector);
+                aggregate.UpdateUser(user);
+
+                await _repository.UpdateAsync(aggregate);
+
+                // Mark OTP as used
+                await _otpService.SetOTPIsUsedAsync(otp.Id);
+
+                // Commit transaction
+                await _transactionManagerService.CommitTransactionAsync();
+            }
+            catch (Exception)
+            {
+                // Rollback transaction on error
+                await _transactionManagerService.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task DeleteUserAsync(Guid id)

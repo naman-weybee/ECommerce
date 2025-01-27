@@ -4,16 +4,16 @@ namespace ECommerce.Domain.Events
 {
     public class GenderEvent : BaseEvent
     {
-        public Guid Id { get; }
+        public Guid GenderId { get; }
 
         public string Name { get; }
 
-        public GenderEvent(Guid id, string name, eEventType eventType)
+        public GenderEvent(Guid genderId, string name, eEventType eventType)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentException("Id cannot be empty.", nameof(id));
+            if (genderId == Guid.Empty)
+                throw new ArgumentException("Id cannot be empty.", nameof(genderId));
 
-            Id = id;
+            GenderId = genderId;
             Name = name;
             EventType = eventType;
         }

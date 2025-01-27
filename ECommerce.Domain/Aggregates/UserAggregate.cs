@@ -20,7 +20,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateUser(User user)
         {
-            User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.EmailVerificationToken!, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
 
             EventType = eEventType.UserCreated;
             RaiseDomainEvent();

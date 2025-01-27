@@ -4,16 +4,16 @@ namespace ECommerce.Domain.Events
 {
     public class OrderItemEvent : BaseEvent
     {
-        public Guid Id { get; }
+        public Guid OrderItemId { get; }
 
         public Guid OrderId { get; }
 
         public Guid ProductId { get; }
 
-        public OrderItemEvent(Guid id, Guid orderId, Guid productId, eEventType eventType)
+        public OrderItemEvent(Guid orderItemId, Guid orderId, Guid productId, eEventType eventType)
         {
-            if (id == Guid.Empty)
-                throw new ArgumentException("Id cannot be empty.", nameof(id));
+            if (orderItemId == Guid.Empty)
+                throw new ArgumentException("Id cannot be empty.", nameof(orderItemId));
 
             if (orderId == Guid.Empty)
                 throw new ArgumentException("OrderId cannot be empty.", nameof(orderId));
@@ -21,7 +21,7 @@ namespace ECommerce.Domain.Events
             if (productId == Guid.Empty)
                 throw new ArgumentException("ProductId cannot be empty.", nameof(productId));
 
-            Id = id;
+            OrderItemId = orderItemId;
             OrderId = orderId;
             ProductId = productId;
             EventType = eventType;

@@ -90,5 +90,11 @@
         SetAsDefaultAddress,    // Address Type Events
         SetAsBillingAddress,
         SetAsShippingAddress,
+
+        OTPGenerated,       // OTP Events
+        OTPUpdated,
+        OTPVerified,
+        OTPUsed,
+        OTPDeleted,
     }
 }

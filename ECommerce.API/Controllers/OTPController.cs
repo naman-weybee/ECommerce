@@ -1,4 +1,3 @@
-using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
@@ -8,23 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class UserController : BaseController
+    public class OTPController : Controller
     {
-        private readonly IUserService _service;
+        private readonly IOTPService _service;
 
-        public UserController(IUserService service, IHTTPHelper httpHelper)
-            : base(httpHelper)
+        public OTPController(IOTPService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllOTPs([FromQuery] RequestParams requestParams)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetAllUsersAsync(requestParams);
+            var data = await _service.GetAllOTPAsync(requestParams);
             if (data != null)
             {
                 response.data = new ResponseMetadata<object>()
@@ -41,12 +38,12 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, response);
         }
 
-        [HttpGet("GetCurrentUser")]
-        public async Task<IActionResult> GetUserById()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOTPById(Guid id)
         {
             var response = new ResponseStructure();
 
-            var data = await _service.GetUserByIdAsync(_userId);
+            var data = await _service.GetOTPByIdAsync(id);
             if (data != null)
             {
                 response.data = data;
@@ -57,50 +54,53 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> CreateOTP([FromBody] OTPCreateFromEmailDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.CreateUserAsync(dto);
-            response.data = new { Message = "User Created Successfully." };
-            response.success = true;
-
-            return StatusCode(201, response);
-        }
-
-        [HttpPost("PasswordReset")]
-        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
-        {
-            var response = new ResponseStructure();
-
-            await _service.PasswordResetAsync(dto);
-            response.data = new { Message = "Password Reset Successfully." };
+            await _service.CreateOTPAsync(dto);
+            response.data = new { Message = "New OTP Generated Successfully." };
             response.success = true;
 
             return StatusCode(201, response);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateOTP([FromBody] OTPUpdateDTO dto)
         {
             var response = new ResponseStructure();
 
-            dto.Id = _userId;
-
-            await _service.UpdateUserAsync(dto);
-            response.data = new { Message = "User Modified Successfully." };
+            await _service.UpdateOTPAsync(dto);
+            response.data = new { Message = "OTP Modified Successfully." };
             response.success = true;
 
             return StatusCode(200, response);
         }
 
-        [HttpDelete("DeleteCurrentUser")]
-        public async Task<IActionResult> DeleteUser()
+        [HttpPut("VerifyOTP")]
+        public async Task<IActionResult> VerifyOTP([FromBody] OTPVerifyDTO dto)
         {
             var response = new ResponseStructure();
 
-            await _service.DeleteUserAsync(_userId);
-            response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
+            var data = await _service.VerifyOTPAsync(dto);
+            if (data != null)
+            {
+                response.data = data;
+                response.success = true;
+            }
+
+            return StatusCode(200, response);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteOTP(Guid id)
+        {
+            var response = new ResponseStructure();
+
+            await _service.DeleteOTPAsync(id);
+            response.data = new { Message = $"OTP with Id = {id} is Deleted Successfully." };
             response.success = true;
 
             return StatusCode(200, response);

@@ -4,13 +4,16 @@ namespace ECommerce.Domain.Events
 {
     public class CountryEvent : BaseEvent
     {
-        public Guid Id { get; }
+        public Guid CountryId { get; }
 
         public string Name { get; }
 
-        public CountryEvent(Guid id, string name, eEventType eventType)
+        public CountryEvent(Guid countryId, string name, eEventType eventType)
         {
-            Id = id;
+            if (countryId == Guid.Empty)
+                throw new ArgumentException("CountryId cannot be empty.", nameof(countryId));
+
+            CountryId = countryId;
             Name = name;
             EventType = eventType;
         }

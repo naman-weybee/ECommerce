@@ -15,13 +15,15 @@ namespace ECommerce.Application.Templates
         private readonly IEmailService _emailService;
         private readonly IRepository<UserAggregate, User> _userRepository;
         private readonly IRepository<OrderAggregate, Order> _orderRepository;
+        private readonly IRepository<OTPAggregate, OTP> _otpRepository;
         private readonly IMapper _mapper;
 
-        public EmailTemplates(IEmailService emailService, IRepository<UserAggregate, User> userRepository, IRepository<OrderAggregate, Order> orderRepository, IMapper mapper)
+        public EmailTemplates(IEmailService emailService, IRepository<UserAggregate, User> userRepository, IRepository<OrderAggregate, Order> orderRepository, IRepository<OTPAggregate, OTP> otpRepository, IMapper mapper)
         {
             _emailService = emailService;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
+            _otpRepository = otpRepository;
             _mapper = mapper;
         }
 
@@ -75,6 +77,22 @@ namespace ECommerce.Application.Templates
 
                 case eEventType.OrderCanceled:
                     await SendOrderCanceledEmailAsync(user, order);
+                    break;
+            }
+        }
+
+        public async Task SendOTPEmailAsync(Guid otpId, string email, eOTPType otpType)
+        {
+            // Get User
+            var user = await GetUserByEmailIdAsync(email);
+
+            // Get OTP
+            var otp = await GetUserByOTPIdAsync(otpId);
+
+            switch (otpType)
+            {
+                case eOTPType.PasswordReset:
+                    await SendPasswordResetEmailAsync(user, otp);
                     break;
             }
         }
@@ -135,7 +153,6 @@ namespace ECommerce.Application.Templates
                         <p>Order Date: <b>{order.OrderDeliveredDate:MMMM dd, yyyy HH:mm}</b></p>
                         <p>Total Amount: <b>{order.TotalAmount.Amount}</b></p>
                         <p>Your order number is <b>{order.Id}</b>.</p>
-                        <p>We hope you enjoy your purchase. If you have any questions or feedback, feel free to contact us at support@example.com.</p>
                         <br/>
                         <p>Thank you for choosing ECommerce Pvt Ltd!</p>
                         <br/>
@@ -159,7 +176,6 @@ namespace ECommerce.Application.Templates
                         <p>Order Date: <b>{order.OrderCanceledDate:MMMM dd, yyyy HH:mm}</b></p>
                         <p>Total Amount: <b>{order.TotalAmount.Amount}</b></p>
                         <p>Your order number was <b>{order.Id}</b>.</p>
-                        <p>If you have any questions regarding this cancellation, please reach out to us at support@example.com.</p>
                         <br/>
                         <p>We apologize for any inconvenience caused.</p>
                         <br/>
@@ -171,20 +187,56 @@ namespace ECommerce.Application.Templates
             await _emailService.SendEmailAsync(dto);
         }
 
+        private async Task SendPasswordResetEmailAsync(UserDTO user, OTPDTO otp)
+        {
+            var dto = new EmailSendDTO()
+            {
+                ReceiverEmail = user.Email,
+                Subject = "Your One-Time Password (OTP) For Reset Password",
+                Body = $@"
+                        <p>Dear <b>{user.FirstName} {user.LastName}</b>,</p>
+                        <p>Your One-Time Password (OTP) is: <b>{otp.Code}</b></p>
+                        <p>This OTP is valid until <b>{otp.OTPExpiredDate:MMMM dd, yyyy HH:mm}</b>.</p>
+                        <p>If you did not request this, please contact our support team immediately.</p>
+                        <br/>
+                        <p>Best regards,</p>
+                        <p>ECommerce Pvt Ltd.</p>",
+                IsHtml = true
+            };
+
+            await _emailService.SendEmailAsync(dto);
+        }
+
         private async Task<UserDTO> GetUserByIdAsync(Guid userId)
         {
-            var user = await _userRepository.GetDbSet()
+            var item = await _userRepository.GetDbSet()
                 .SingleOrDefaultAsync(x => x.Id == userId);
 
-            return _mapper.Map<UserDTO>(user);
+            return _mapper.Map<UserDTO>(item);
+        }
+
+        private async Task<UserDTO> GetUserByEmailIdAsync(string email)
+        {
+            var item = await _userRepository.GetDbSet()
+                .SingleOrDefaultAsync(x => x.Email == email);
+
+            return _mapper.Map<UserDTO>(item);
         }
 
         private async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
         {
-            var order = await _orderRepository.GetDbSet()
+            var item = await _orderRepository.GetDbSet()
                 .SingleOrDefaultAsync(x => x.Id == orderId);
 
-            return _mapper.Map<OrderDTO>(order);
+            return _mapper.Map<OrderDTO>(item);
+        }
+
+        private async Task<OTPDTO> GetUserByOTPIdAsync(Guid otpId)
+        {
+            var item = await _otpRepository.GetDbSet()
+                .SingleOrDefaultAsync(x => x.Id == otpId);
+
+            return _mapper.Map<OTPDTO>(item);
         }
     }
 }

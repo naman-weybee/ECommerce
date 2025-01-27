@@ -49,6 +49,9 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<City, CityDTO, CityCreateDTO, CityUpdateDTO>();
             ConfigureMappings<CityAggregate, CityDTO, CityCreateDTO, CityUpdateDTO>();
+
+            ConfigureMappings<OTP, OTPDTO, OTPCreateDTO, OTPUpdateDTO>();
+            ConfigureMappings<OTPAggregate, OTPDTO, OTPCreateDTO, OTPUpdateDTO>();
         }
 
         private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()

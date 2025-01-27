@@ -100,7 +100,8 @@ namespace ECommerce.Infrastructure.Data
             .ApplyConfiguration(new GenderConfiguration())
             .ApplyConfiguration(new RoleConfiguration())
             .ApplyConfiguration(new UserConfiguration())
-            .ApplyConfiguration(new RefreshTokenConfiguration());
+            .ApplyConfiguration(new RefreshTokenConfiguration())
+            .ApplyConfiguration(new OTPConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

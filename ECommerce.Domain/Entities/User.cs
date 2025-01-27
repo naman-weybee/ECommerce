@@ -43,7 +43,7 @@ namespace ECommerce.Domain.Entities
 
         public bool IsSubscribedToNotifications { get; set; }
 
-        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, string emailVerificationToken, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
+        public void CreateUser(string firstName, string lastName, string email, string password, string phoneNumber, Guid roleId, DateTime? dateOfBirth, Guid genderId, bool isActive, bool isEmailVerified, bool isPhoneNumberVerified, bool isSubscribedToNotifications)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -56,7 +56,7 @@ namespace ECommerce.Domain.Entities
             GenderId = genderId;
             IsActive = isActive;
             IsEmailVerified = isEmailVerified;
-            EmailVerificationToken = emailVerificationToken;
+            EmailVerificationToken = Guid.NewGuid().ToString();
             IsPhoneNumberVerified = isPhoneNumberVerified;
             IsSubscribedToNotifications = isSubscribedToNotifications;
         }
