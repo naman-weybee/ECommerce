@@ -17,10 +17,15 @@ namespace ECommerce.Application.Services
                 EnableSsl = true
             };
 
-            using var message = new MailMessage(Constants.Email, dto.ReceiverEmail, dto.Subject, dto.Body);
+            var senderAddress = new MailAddress(Constants.Email, "ECommerce Pvt Ltd");
+            var receiverAddress = new MailAddress(dto.ReceiverEmail);
 
-            if (dto.IsHtml)
-                message.IsBodyHtml = true;
+            using var message = new MailMessage(senderAddress, receiverAddress)
+            {
+                Subject = dto.Subject,
+                Body = dto.Body,
+                IsBodyHtml = dto.IsHtml
+            };
 
             await smtpClient.SendMailAsync(message);
         }
