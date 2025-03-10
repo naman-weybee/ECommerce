@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250310133008_Addeddynamicrole")]
+    partial class Addeddynamicrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -607,9 +610,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<bool>("HasDeletePermission")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("HasFullPermission")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("HasViewPermission")
                         .HasColumnType("bit");
 
@@ -626,20 +626,12 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntityName")
-                        .HasDatabaseName("IX_Role_EntityName");
-
                     b.HasIndex("Id")
                         .IsUnique()
-                        .HasDatabaseName("IX_Role_Id");
+                        .HasDatabaseName("IX_Gender_Id");
 
                     b.HasIndex("Name")
-                        .HasDatabaseName("IX_Role_Name");
-
-                    b.HasIndex("Name", "EntityName", "HasViewPermission", "HasCreateOrUpdatePermission", "DeletedDate", "HasFullPermission")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Role_Name_EntityName_HasViewPermission_HasCreateOrUpdatePermission_DeletedDate_HasFullPermission")
-                        .HasFilter("[DeletedDate] IS NOT NULL");
+                        .HasDatabaseName("IX_Gender_Name");
 
                     b.ToTable("Roles");
                 });

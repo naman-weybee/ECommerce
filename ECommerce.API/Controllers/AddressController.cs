@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class AddressController : BaseController
     {
         private readonly IAddressService _service;
@@ -22,10 +22,11 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var isAdmin = User.IsInRole("Admin");
-
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllAddressesAsync(requestParams, userId);
@@ -48,6 +49,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAddressById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAddressByIdAsync(id, _userId);
@@ -63,6 +66,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] AddressCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -77,6 +82,8 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -91,6 +98,8 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateAddressType")]
         public async Task<IActionResult> UpdateAddressType([FromBody] AddressTypeUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -105,6 +114,8 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Address).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteAddressAsync(id, _userId);

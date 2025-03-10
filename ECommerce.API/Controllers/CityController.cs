@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class CityController : BaseController
     {
         private readonly ICityService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCities([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllCitiesAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetAllCitiesByStateId/{stateId}")]
         public async Task<IActionResult> GetAllCitiesByStateId(Guid stateId)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllCitiesByStateIdAsync(stateId);
@@ -66,6 +70,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCityById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetCityByIdAsync(id);
@@ -79,9 +85,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCity([FromBody] CityCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateCityAsync(dto);
@@ -92,9 +99,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCity([FromBody] CityUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateCityAsync(dto);
@@ -105,9 +113,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCity(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteCityAsync(id);

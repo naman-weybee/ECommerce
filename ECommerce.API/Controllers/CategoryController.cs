@@ -1,14 +1,14 @@
 ﻿using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllCategoriesAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetCategoryByIdAsync(id);
@@ -57,9 +61,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateCategoryAsync(dto);
@@ -70,9 +75,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateCategoryAsync(dto);
@@ -83,9 +89,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("AddSubCategory/{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSubCategory(Guid id, [FromBody] CategoryCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.AddSubCategoryAsync(id, dto);
@@ -96,9 +103,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("RemoveSubCategory/{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveSubCategory(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.RemoveSubCategoryAsync(id);
@@ -109,9 +117,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteCategoryAsync(id);

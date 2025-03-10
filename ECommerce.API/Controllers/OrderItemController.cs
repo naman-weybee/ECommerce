@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class OrderItemController : BaseController
     {
         private readonly IOrderItemService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrderItems([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllOrderItemsAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderItemById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetOrderItemByIdAsync(id);
@@ -57,9 +61,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateOrderItemAsync(dto);
@@ -70,9 +75,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrderItem([FromBody] OrderItemUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -85,9 +91,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateQuantity")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateQuantity([FromBody] OrderItemQuantityUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -100,9 +107,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateUnitPrice")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] OrderItemUnitPriceUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -115,9 +123,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrderItem(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteOrderItemAsync(id);

@@ -5,25 +5,25 @@
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ModifiedOTPEntity : Migration
+    public partial class AddedNewColumninRole : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Type",
-                table: "OTP",
-                type: "int",
+            migrationBuilder.AddColumn<bool>(
+                name: "HasFullPermission",
+                table: "Roles",
+                type: "bit",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Type",
-                table: "OTP");
+                name: "HasFullPermission",
+                table: "Roles");
         }
     }
 }

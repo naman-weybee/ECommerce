@@ -1,4 +1,5 @@
 ﻿using ECommerce.Application.DTOs;
+using ECommerce.Domain.Enums;
 
 namespace ECommerce.API.Helper
 {
@@ -7,5 +8,7 @@ namespace ECommerce.API.Helper
         UserClaimsDTO GetClaims();
 
         Guid GetUserId();
+
+        Task ValidateUserAuthorization(string entityName, eUserPermission userPermission);
     }
 }

@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class CartItemController : BaseController
     {
         private readonly ICartItemService _service;
@@ -22,10 +22,11 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var isAdmin = User.IsInRole("Admin");
-
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllCartItemsAsync(requestParams, userId);
@@ -48,6 +49,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCartItemById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetCartItemByIdAsync(id, _userId);
@@ -63,6 +66,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCartItem([FromBody] CartItemCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -77,6 +82,8 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCartItem([FromBody] CartItemUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -91,6 +98,8 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateQuantity")]
         public async Task<IActionResult> UpdateQuantity([FromBody] CartItemQuantityUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -103,9 +112,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateUnitPrice")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] CartItemUnitPriceUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -120,6 +130,8 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteCartItemAsync(id, _userId);

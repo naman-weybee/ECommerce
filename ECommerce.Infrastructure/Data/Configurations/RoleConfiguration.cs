@@ -10,12 +10,21 @@ namespace ECommerce.Infrastructure.Data.Configurations
         {
             builder
             .HasIndex(r => r.Id)
-            .HasDatabaseName("IX_Gender_Id")
+            .HasDatabaseName("IX_Role_Id")
             .IsUnique();
 
             builder
             .HasIndex(r => r.Name)
-            .HasDatabaseName("IX_Gender_Name");
+            .HasDatabaseName("IX_Role_Name");
+
+            builder
+            .HasIndex(r => r.EntityName)
+            .HasDatabaseName("IX_Role_EntityName");
+
+            builder
+            .HasIndex(r => new { r.Name, r.EntityName, r.HasViewPermission, r.HasCreateOrUpdatePermission, r.DeletedDate, r.HasFullPermission })
+            .HasDatabaseName("IX_Role_Name_EntityName_HasViewPermission_HasCreateOrUpdatePermission_DeletedDate_HasFullPermission")
+            .IsUnique();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateRole(Role role)
         {
-            Role.CreateRole(role.Name);
+            Role.CreateRole(role.Name, role.EntityName, role.HasViewPermission, role.HasCreateOrUpdatePermission, role.HasDeletePermission, role.HasFullPermission);
 
             EventType = eEventType.RoleCreated;
             RaiseDomainEvent();
@@ -28,7 +28,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateRole(Role role)
         {
-            Role.UpdateRole(role.Id, role.Name);
+            Role.UpdateRole(role.Id, role.Name, role.EntityName, role.HasViewPermission, role.HasCreateOrUpdatePermission, role.HasDeletePermission, role.HasFullPermission);
 
             EventType = eEventType.RoleUpdated;
             RaiseDomainEvent();

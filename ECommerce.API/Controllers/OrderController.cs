@@ -1,14 +1,14 @@
 ﻿using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class OrderController : BaseController
     {
         private readonly IOrderService _service;
@@ -22,10 +22,11 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var isAdmin = User.IsInRole("Admin");
-
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllOrdersAsync(requestParams, userId);
@@ -48,10 +49,11 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetAllRecentOrders")]
         public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var isAdmin = User.IsInRole("Admin");
-
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllRecentOrdersAsync(requestParams, userId);
@@ -74,6 +76,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetOrderByIdAsync(id, _userId);
@@ -89,6 +93,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateFromCartDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -101,9 +107,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateOrderAsync(dto);
@@ -114,9 +121,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("UpdateOrderStatus")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderUpdateStatusDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -129,9 +137,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteOrderAsync(id);

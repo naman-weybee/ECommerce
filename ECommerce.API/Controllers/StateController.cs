@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class StateController : BaseController
     {
         private readonly IStateService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllStates([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllStatesAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetAllStatesByCountryId/{countryId}")]
         public async Task<IActionResult> GetAllStatesByCountryId(Guid countryId)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllStatesByCountryIdAsync(countryId);
@@ -66,6 +70,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStateById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetStateByIdAsync(id);
@@ -79,9 +85,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateState([FromBody] StateCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateStateAsync(dto);
@@ -92,9 +99,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateState([FromBody] StateUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateStateAsync(dto);
@@ -105,9 +113,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteState(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteStateAsync(id);

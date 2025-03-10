@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class RoleController : BaseController
     {
         private readonly IRoleService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRoles([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllRolesAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetRoleByIdAsync(id);
@@ -59,6 +63,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] RoleCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateRoleAsync(dto);
@@ -71,6 +77,8 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateRoleAsync(dto);
@@ -83,6 +91,8 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteRoleAsync(id);

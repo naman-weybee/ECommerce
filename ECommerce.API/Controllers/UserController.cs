@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class UserController : BaseController
     {
         private readonly IUserService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllUsersAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetCurrentUser")]
         public async Task<IActionResult> GetUserById()
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetUserByIdAsync(_userId);
@@ -59,6 +63,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateUserAsync(dto);
@@ -71,6 +77,8 @@ namespace ECommerce.API.Controllers
         [HttpPost("PasswordReset")]
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.PasswordResetAsync(dto);
@@ -83,6 +91,8 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.Id = _userId;
@@ -97,6 +107,8 @@ namespace ECommerce.API.Controllers
         [HttpDelete("DeleteCurrentUser")]
         public async Task<IActionResult> DeleteUser()
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteUserAsync(_userId);

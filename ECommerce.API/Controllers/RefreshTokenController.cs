@@ -1,14 +1,14 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class RefreshTokenController : BaseController
     {
         private readonly IRefreshTokenService _service;
@@ -22,10 +22,11 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var isAdmin = User.IsInRole("Admin");
-
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllRefreshTokensAsync(requestParams, userId);
@@ -48,6 +49,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRefreshTokenById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetRefreshTokenByIdAsync(id);
@@ -63,6 +66,8 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRefreshToken()
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             var dto = new RefreshTokenCreateDTO() { UserId = _userId };
@@ -80,6 +85,8 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRefreshToken([FromBody] RefreshTokenUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             dto.UserId = _userId;
@@ -94,6 +101,8 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRefreshToken(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteRefreshTokenAsync(id, _userId);

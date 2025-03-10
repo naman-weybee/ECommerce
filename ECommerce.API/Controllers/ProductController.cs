@@ -1,14 +1,14 @@
 ﻿using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
-    [Authorize]
     public class ProductController : BaseController
     {
         private readonly IProductService _service;
@@ -22,6 +22,8 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetAllProductsAsync(requestParams);
@@ -44,6 +46,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasViewPermission);
+
             var response = new ResponseStructure();
 
             var data = await _service.GetProductByIdAsync(id);
@@ -57,9 +61,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.CreateProductAsync(dto);
@@ -70,9 +75,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.UpdateProductAsync(dto);
@@ -83,9 +89,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("IncreaseStock")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, true);
@@ -96,9 +103,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("DecreaseStock")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, false);
@@ -109,9 +117,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPut("PriceChange")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO dto)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+
             var response = new ResponseStructure();
 
             await _service.ProductPriceChangeAsync(dto);
@@ -122,9 +131,10 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
+            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasDeletePermission);
+
             var response = new ResponseStructure();
 
             await _service.DeleteProductAsync(id);
