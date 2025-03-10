@@ -63,8 +63,6 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
-
             var response = new ResponseStructure();
 
             await _service.CreateUserAsync(dto);
@@ -77,8 +75,6 @@ namespace ECommerce.API.Controllers
         [HttpPost("PasswordReset")]
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
-
             var response = new ResponseStructure();
 
             await _service.PasswordResetAsync(dto);

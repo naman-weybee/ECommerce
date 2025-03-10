@@ -1,4 +1,5 @@
-﻿using ECommerce.Shared.ResponseModel;
+﻿using ECommerce.API.Helper;
+using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text;
@@ -70,7 +71,7 @@ namespace ECommerce.API.Filters
 
             context.Result = new JsonResult(response)
             {
-                StatusCode = 500
+                StatusCode = Convert.ToInt32(ExceptionHelper.GetStatusCode(context.Exception))
             };
 
             context.ExceptionHandled = true;
