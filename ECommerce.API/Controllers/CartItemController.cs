@@ -22,17 +22,13 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var isAdmin = User.IsInRole("Admin");
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllCartItemsAsync(requestParams, userId);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -40,105 +36,83 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCartItemById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetCartItemByIdAsync(id, _userId);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCartItem([FromBody] CartItemCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.CreateCartItemAsync(dto);
-            response.data = new { Message = "New Cart Item Added Successfully." };
-            response.success = true;
+            _response.data = new { Message = "New Cart Item Added Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCartItem([FromBody] CartItemUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.UpdateCartItemAsync(dto);
-            response.data = new { Message = "Cart Item Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Cart Item Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("UpdateQuantity")]
         public async Task<IActionResult> UpdateQuantity([FromBody] CartItemQuantityUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.UpdateQuantityAsync(dto);
-            response.data = new { Message = "Quantity Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Quantity Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("UpdateUnitPrice")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] CartItemUnitPriceUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
+            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasFullPermission);
 
             dto.UserId = _userId;
 
             await _service.UpdateUnitPriceAsync(dto);
-            response.data = new { Message = "Unit Price Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Unit Price Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasDeletePermission);
-
-            var response = new ResponseStructure();
-
             await _service.DeleteCartItemAsync(id, _userId);
-            response.data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

@@ -22,14 +22,10 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCities([FromQuery] RequestParams requestParams)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetAllCitiesAsync(requestParams);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -37,23 +33,19 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("GetAllCitiesByStateId/{stateId}")]
         public async Task<IActionResult> GetAllCitiesByStateId(Guid stateId)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetAllCitiesByStateIdAsync(stateId);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = 1,
                     page_size = data.Count,
@@ -61,27 +53,23 @@ namespace ECommerce.API.Controllers
                     total_records_count = 1
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCityById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetCityByIdAsync(id);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
@@ -89,13 +77,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.CreateCityAsync(dto);
-            response.data = new { Message = "New City Added Successfully." };
-            response.success = true;
+            _response.data = new { Message = "New City Added Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
@@ -103,13 +89,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.UpdateCityAsync(dto);
-            response.data = new { Message = "City Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "City Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
@@ -117,13 +101,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteCityAsync(id);
-            response.data = new { Message = $"City with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"City with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

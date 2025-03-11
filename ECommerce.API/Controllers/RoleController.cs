@@ -24,12 +24,10 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
 
-            var response = new ResponseStructure();
-
             var data = await _service.GetAllRolesAsync(requestParams);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -37,10 +35,10 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
@@ -48,16 +46,14 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
 
-            var response = new ResponseStructure();
-
             var data = await _service.GetRoleByIdAsync(id);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
@@ -65,13 +61,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.CreateRoleAsync(dto);
-            response.data = new { Message = "New Role Added Successfully." };
-            response.success = true;
+            _response.data = new { Message = "New Role Added Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
@@ -79,13 +73,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.UpdateRoleAsync(dto);
-            response.data = new { Message = "Role Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Role Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
@@ -93,13 +85,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteRoleAsync(id);
-            response.data = new { Message = $"Role with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"Role with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

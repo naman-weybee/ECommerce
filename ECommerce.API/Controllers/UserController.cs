@@ -24,12 +24,10 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
 
-            var response = new ResponseStructure();
-
             var data = await _service.GetAllUsersAsync(requestParams);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -37,10 +35,10 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("GetCurrentUser")]
@@ -48,56 +46,46 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
 
-            var response = new ResponseStructure();
-
             var data = await _service.GetUserByIdAsync(_userId);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
         {
-            var response = new ResponseStructure();
-
             await _service.CreateUserAsync(dto);
-            response.data = new { Message = "User Created Successfully." };
-            response.success = true;
+            _response.data = new { Message = "User Created Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPost("PasswordReset")]
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {
-            var response = new ResponseStructure();
-
             await _service.PasswordResetAsync(dto);
-            response.data = new { Message = "Password Reset Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Password Reset Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             dto.Id = _userId;
 
             await _service.UpdateUserAsync(dto);
-            response.data = new { Message = "User Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "User Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("DeleteCurrentUser")]
@@ -105,13 +93,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteUserAsync(_userId);
-            response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

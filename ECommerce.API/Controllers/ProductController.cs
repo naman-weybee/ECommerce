@@ -22,14 +22,10 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] RequestParams requestParams)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetAllProductsAsync(requestParams);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -37,27 +33,23 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetProductByIdAsync(id);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
@@ -65,13 +57,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.CreateProductAsync(dto);
-            response.data = new { Message = "New Product Added Successfully." };
-            response.success = true;
+            _response.data = new { Message = "New Product Added Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
@@ -79,13 +69,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.UpdateProductAsync(dto);
-            response.data = new { Message = "Product Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Product Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("IncreaseStock")]
@@ -93,13 +81,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, true);
-            response.data = new { Message = "Product Stock Increased Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Product Stock Increased Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("DecreaseStock")]
@@ -107,13 +93,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, false);
-            response.data = new { Message = "Product Stock Decreased Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Product Stock Decreased Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("PriceChange")]
@@ -121,13 +105,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.ProductPriceChangeAsync(dto);
-            response.data = new { Message = "Product Price Changed Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Product Price Changed Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
@@ -135,13 +117,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteProductAsync(id);
-            response.data = new { Message = $"Product with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"Product with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

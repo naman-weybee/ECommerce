@@ -22,17 +22,13 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var isAdmin = User.IsInRole("Admin");
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllOrdersAsync(requestParams, userId);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -40,26 +36,22 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("GetAllRecentOrders")]
         public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var isAdmin = User.IsInRole("Admin");
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllRecentOrdersAsync(requestParams, userId);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -67,43 +59,35 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetOrderByIdAsync(id, _userId);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateFromCartDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.CreateOrderAsync(dto);
-            response.data = new { Message = "New Order Added Successfully." };
-            response.success = true;
+            _response.data = new { Message = "New Order Added Successfully." };
+            _response.success = true;
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
@@ -111,13 +95,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             await _service.UpdateOrderAsync(dto);
-            response.data = new { Message = "Order Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Order Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut("UpdateOrderStatus")]
@@ -125,15 +107,13 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.UpdateOrderStatusAsync(dto);
-            response.data = new { Message = "Order Status Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Order Status Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
@@ -141,13 +121,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteOrderAsync(id);
-            response.data = new { Message = $"Order with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"Order with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }

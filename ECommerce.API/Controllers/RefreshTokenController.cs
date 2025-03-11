@@ -22,17 +22,13 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var isAdmin = User.IsInRole("Admin");
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllRefreshTokensAsync(requestParams, userId);
             if (data != null)
             {
-                response.data = new ResponseMetadata<object>()
+                _response.data = new ResponseMetadata<object>()
                 {
                     page_number = requestParams.pageNumber,
                     page_size = requestParams.pageSize,
@@ -40,46 +36,38 @@ namespace ECommerce.API.Controllers
                     total_records_count = requestParams.recordCount
                 };
 
-                response.success = true;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRefreshTokenById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasViewPermission);
-
-            var response = new ResponseStructure();
-
             var data = await _service.GetRefreshTokenByIdAsync(id);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateRefreshToken()
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasCreateOrUpdatePermission);
-
-            var response = new ResponseStructure();
-
             var dto = new RefreshTokenCreateDTO() { UserId = _userId };
 
             var data = await _service.CreateRefreshTokenAsync(dto);
             if (data != null)
             {
-                response.data = data;
-                response.success = true;
+                _response.data = data;
+                _response.success = true;
             }
 
-            return StatusCode(201, response);
+            return StatusCode(201, _response);
         }
 
         [HttpPut]
@@ -87,15 +75,13 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasCreateOrUpdatePermission);
 
-            var response = new ResponseStructure();
-
             dto.UserId = _userId;
 
             await _service.UpdateRefreshTokenAsync(dto);
-            response.data = new { Message = "Refresh Token Modified Successfully." };
-            response.success = true;
+            _response.data = new { Message = "Refresh Token Modified Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
 
         [HttpDelete("{id}")]
@@ -103,13 +89,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasDeletePermission);
 
-            var response = new ResponseStructure();
-
             await _service.DeleteRefreshTokenAsync(id, _userId);
-            response.data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };
-            response.success = true;
+            _response.data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };
+            _response.success = true;
 
-            return StatusCode(200, response);
+            return StatusCode(200, _response);
         }
     }
 }
