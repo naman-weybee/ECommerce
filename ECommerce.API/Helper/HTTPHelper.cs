@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.DTOs;
+﻿using AutoMapper;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using System.Security.Claims;
@@ -8,12 +9,14 @@ namespace ECommerce.API.Helper
     public class HTTPHelper : IHTTPHelper
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserService _service;
+        private readonly IRoleService _service;
+        private readonly IMapper _mapper;
 
-        public HTTPHelper(IHttpContextAccessor httpContextAccessor, IUserService service)
+        public HTTPHelper(IHttpContextAccessor httpContextAccessor, IRoleService service, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;
             _service = service;
+            _mapper = mapper;
         }
 
         public UserClaimsDTO GetClaims()
@@ -36,36 +39,39 @@ namespace ECommerce.API.Helper
             var httpContext = _httpContextAccessor?.HttpContext;
 
             if (httpContext == null || httpContext?.User?.Identity?.IsAuthenticated == false)
-                throw new InvalidOperationException("User is not authenticated.");
+                throw new InvalidOperationException("User is Not Authenticated.");
 
             return Guid.Parse(httpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         }
 
         public async Task ValidateUserAuthorization(eRoleEntity roleEntity, eUserPermission userPermission)
         {
-            var role = await GetUserRole();
-
-            if (GetPropertyValue<bool>(role, eUserPermission.HasFullPermission))
-                return;
-
-            if (!(role.RoleEntity.Equals(roleEntity) || role.RoleEntity.Equals(eRoleEntity.Full)))
+            var roles = await GetUserRoles();
+            if (roles.Count == 0)
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
 
-            if (!GetPropertyValue<bool>(role, userPermission))
+            // Full Access Check
+            if (roles.Any(role => role.RoleEntity == eRoleEntity.Full && role.HasFullPermission))
+                return;
+
+            // Specific Entity Access Check
+            if (!roles.Any(role => role.RoleEntity == roleEntity))
+                throw new UnauthorizedAccessException("Unauthorized User !!!");
+
+            // Specific Entity and Full Permission Check
+            if (roles.Any(role => role.RoleEntity == roleEntity && role.HasFullPermission))
+                return;
+
+            // Specific Entity and Specific Permission Check
+            if (!roles.Any(role => role.RoleEntity == roleEntity && GetPropertyValue<bool>(role, userPermission)))
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
         }
 
-        private async Task<RoleDTO> GetUserRole()
+        private async Task<List<RoleDTO>> GetUserRoles()
         {
-            var user = await _service.GetUserByIdAsync(GetUserId());
+            var roles = await _service.GetAllRolesByUserIdAsync(GetUserId());
 
-            return new RoleDTO
-            {
-                RoleEntity = user.Role.RoleEntity,
-                HasViewPermission = user.Role.HasViewPermission,
-                HasCreateOrUpdatePermission = user.Role.HasCreateOrUpdatePermission,
-                HasDeletePermission = user.Role.HasDeletePermission,
-            };
+            return _mapper.Map<List<RoleDTO>>(roles);
         }
 
         private static T GetPropertyValue<T>(object obj, Enum propertyName)
