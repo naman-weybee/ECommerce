@@ -20,6 +20,9 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateRole(Role role)
         {
+            if (role.HasFullPermission)
+                SetFullPermission(role);
+
             Role.CreateRole(role.Name, role.EntityName, role.HasViewPermission, role.HasCreateOrUpdatePermission, role.HasDeletePermission, role.HasFullPermission);
 
             EventType = eEventType.RoleCreated;
@@ -28,6 +31,9 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateRole(Role role)
         {
+            if (role.HasFullPermission)
+                SetFullPermission(role);
+
             Role.UpdateRole(role.Id, role.Name, role.EntityName, role.HasViewPermission, role.HasCreateOrUpdatePermission, role.HasDeletePermission, role.HasFullPermission);
 
             EventType = eEventType.RoleUpdated;
@@ -44,6 +50,14 @@ namespace ECommerce.Domain.Aggregates
         {
             var domainEvent = new RoleEvent(Role.Id, Role.Name, EventType);
             RaiseDomainEvent(domainEvent);
+        }
+
+        private void SetFullPermission(Role role)
+        {
+            role.EntityName = string.Empty;
+            role.HasViewPermission = true;
+            role.HasCreateOrUpdatePermission = true;
+            role.HasDeletePermission = true;
         }
     }
 }
