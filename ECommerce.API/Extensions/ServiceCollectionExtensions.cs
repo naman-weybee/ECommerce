@@ -61,6 +61,7 @@ namespace ECommerce.API.Extensions
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IGenderService, GenderService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleEntityService, RoleEntityService>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IAuthService, AuthService>();
@@ -94,6 +95,7 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<CityAggregate, City>, Repository<CityAggregate, City>>();
             services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
             services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
+            services.AddScoped<IRepository<RoleEntityAggregate, RoleEntity>, Repository<RoleEntityAggregate, RoleEntity>>();
             services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
             services.AddScoped<IRepository<RefreshTokenAggregate, RefreshToken>, Repository<RefreshTokenAggregate, RefreshToken>>();
             services.AddScoped<IRepository<OTPAggregate, OTP>, Repository<OTPAggregate, OTP>>();
@@ -197,6 +199,8 @@ namespace ECommerce.API.Extensions
             services.AddValidatorsFromAssemblyContaining<RoleCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<RoleUpdateDTOValidator>();
 
+            services.AddValidatorsFromAssemblyContaining<RoleEntityDTOValidator>();
+
             services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
             services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
@@ -239,6 +243,7 @@ namespace ECommerce.API.Extensions
                     typeof(Application.EventHandlers.EventHandler<CityEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
+                    typeof(Application.EventHandlers.EventHandler<RoleEntityEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly,
                     typeof(Application.EventHandlers.EventHandler<OTPEvent>).Assembly
                 );

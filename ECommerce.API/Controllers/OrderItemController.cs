@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateOrderItemAsync(dto);
             _response.data = new { Message = "New Order Item Successfully." };
@@ -67,7 +67,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateOrderItem([FromBody] OrderItemUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
             dto.UserId = _userId;
 
@@ -81,7 +81,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateQuantity")]
         public async Task<IActionResult> UpdateQuantity([FromBody] OrderItemQuantityUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
             dto.UserId = _userId;
 
@@ -95,7 +95,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateUnitPrice")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] OrderItemUnitPriceUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
             dto.UserId = _userId;
 
@@ -109,7 +109,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrderItem(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(OrderItem).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasDeletePermission);
 
             await _service.DeleteOrderItemAsync(id);
             _response.data = new { Message = $"Order Item with Id = {id} is Deleted Successfully." };

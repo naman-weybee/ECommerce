@@ -96,5 +96,9 @@
         OTPVerified,
         OTPUsed,
         OTPDeleted,
+
+        RoleEntityCreated,      // Role Entity Events
+        RoleEntityUpdated,
+        RoleEntityDeleted,
     }
 }

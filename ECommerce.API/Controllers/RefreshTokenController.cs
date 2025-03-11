@@ -73,7 +73,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRefreshToken([FromBody] RefreshTokenUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasCreateOrUpdatePermission);
 
             dto.UserId = _userId;
 
@@ -87,7 +87,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRefreshToken(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(RefreshToken).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasDeletePermission);
 
             await _service.DeleteRefreshTokenAsync(id, _userId);
             _response.data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };

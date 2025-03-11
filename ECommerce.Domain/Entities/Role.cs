@@ -1,3 +1,4 @@
+using ECommerce.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Domain.Entities
@@ -9,8 +10,7 @@ namespace ECommerce.Domain.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
-        [MaxLength(100)]
-        public string EntityName { get; set; }
+        public eRoleEntity RoleEntity { get; set; }
 
         public bool HasViewPermission { get; set; }
 
@@ -22,22 +22,22 @@ namespace ECommerce.Domain.Entities
 
         public virtual ICollection<User> Users { get; set; }
 
-        public void CreateRole(string name, string entityName, bool hasViewPermission, bool hasCreateOrUpdatePermission, bool hasDeletePermission, bool hasFullPermission)
+        public void CreateRole(string name, eRoleEntity roleEntity, bool hasViewPermission, bool hasCreateOrUpdatePermission, bool hasDeletePermission, bool hasFullPermission)
         {
             Id = Guid.NewGuid();
             Name = name;
-            EntityName = entityName;
+            RoleEntity = roleEntity;
             HasViewPermission = hasViewPermission;
             HasCreateOrUpdatePermission = hasCreateOrUpdatePermission;
             HasDeletePermission = hasDeletePermission;
             HasFullPermission = hasFullPermission;
         }
 
-        public void UpdateRole(Guid id, string name, string entityName, bool hasViewPermission, bool hasCreateOrUpdatePermission, bool hasDeletePermission, bool hasFullPermission)
+        public void UpdateRole(Guid id, string name, eRoleEntity roleEntity, bool hasViewPermission, bool hasCreateOrUpdatePermission, bool hasDeletePermission, bool hasFullPermission)
         {
             Id = id;
             Name = name;
-            EntityName = entityName;
+            RoleEntity = roleEntity;
             HasViewPermission = hasViewPermission;
             HasCreateOrUpdatePermission = hasCreateOrUpdatePermission;
             HasDeletePermission = hasDeletePermission;

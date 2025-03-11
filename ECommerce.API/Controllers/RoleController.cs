@@ -22,7 +22,7 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRoles([FromQuery] RequestParams requestParams)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
             var data = await _service.GetAllRolesAsync(requestParams);
             if (data != null)
@@ -44,7 +44,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleById(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasViewPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
             var data = await _service.GetRoleByIdAsync(id);
             if (data != null)
@@ -59,7 +59,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] RoleCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateRoleAsync(dto);
             _response.data = new { Message = "New Role Added Successfully." };
@@ -71,7 +71,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateRoleAsync(dto);
             _response.data = new { Message = "Role Modified Successfully." };
@@ -83,7 +83,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Role).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasDeletePermission);
 
             await _service.DeleteRoleAsync(id);
             _response.data = new { Message = $"Role with Id = {id} is Deleted Successfully." };

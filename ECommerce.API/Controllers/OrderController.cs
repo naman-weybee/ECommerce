@@ -93,7 +93,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateOrderAsync(dto);
             _response.data = new { Message = "Order Modified Successfully." };
@@ -105,7 +105,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateOrderStatus")]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderUpdateStatusDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasCreateOrUpdatePermission);
 
             dto.UserId = _userId;
 
@@ -119,7 +119,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Order).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasDeletePermission);
 
             await _service.DeleteOrderAsync(id);
             _response.data = new { Message = $"Order with Id = {id} is Deleted Successfully." };

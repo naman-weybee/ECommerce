@@ -8,10 +8,10 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
-        [StringLength(100)]
+        [MaxLength(100)]
         public string FirstName { get; set; }
 
-        [StringLength(100)]
+        [MaxLength(100)]
         public string LastName { get; set; }
 
         [ForeignKey("User")]

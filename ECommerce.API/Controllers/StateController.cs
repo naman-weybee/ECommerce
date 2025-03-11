@@ -75,7 +75,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateState([FromBody] StateCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateStateAsync(dto);
             _response.data = new { Message = "New State Added Successfully." };
@@ -87,7 +87,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateState([FromBody] StateUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateStateAsync(dto);
             _response.data = new { Message = "State Modified Successfully." };
@@ -99,7 +99,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteState(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(State).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasDeletePermission);
 
             await _service.DeleteStateAsync(id);
             _response.data = new { Message = $"State with Id = {id} is Deleted Successfully." };

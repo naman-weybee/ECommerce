@@ -19,12 +19,12 @@ namespace ECommerce.Infrastructure.Data.Configurations
             .IsUnique();
 
             builder
-            .HasIndex(r => r.EntityName)
-            .HasDatabaseName("IX_Role_EntityName");
+            .HasIndex(r => r.RoleEntity)
+            .HasDatabaseName("IX_Role_RoleEntityId");
 
             builder
-            .HasIndex(r => new { r.Name, r.EntityName, r.HasViewPermission, r.HasCreateOrUpdatePermission, r.HasFullPermission })
-            .HasDatabaseName("IX_Role_Name_EntityName_HasViewPermission_HasCreateOrUpdatePermission_HasFullPermission")
+            .HasIndex(r => new { r.Name, r.RoleEntity, r.HasViewPermission, r.HasCreateOrUpdatePermission, r.HasDeletePermission, r.HasFullPermission })
+            .HasDatabaseName("IX_Role_Name_RoleEntityId_HasViewPermission_HasCreateOrUpdatePermission_HasDeletePermission_HasFullPermission")
             .IsUnique();
         }
     }

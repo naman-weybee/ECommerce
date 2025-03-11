@@ -41,14 +41,14 @@ namespace ECommerce.API.Helper
             return Guid.Parse(httpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         }
 
-        public async Task ValidateUserAuthorization(string entityName, eUserPermission userPermission)
+        public async Task ValidateUserAuthorization(eRoleEntity roleEntity, eUserPermission userPermission)
         {
             var role = await GetUserRole();
 
             if (GetPropertyValue<bool>(role, eUserPermission.HasFullPermission))
                 return;
 
-            if (!role.EntityName.Equals(entityName, StringComparison.OrdinalIgnoreCase))
+            if (!(role.RoleEntity.Equals(roleEntity) || role.RoleEntity.Equals(eRoleEntity.Full)))
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
 
             if (!GetPropertyValue<bool>(role, userPermission))
@@ -61,7 +61,7 @@ namespace ECommerce.API.Helper
 
             return new RoleDTO
             {
-                EntityName = user.Role.EntityName,
+                RoleEntity = user.Role.RoleEntity,
                 HasViewPermission = user.Role.HasViewPermission,
                 HasCreateOrUpdatePermission = user.Role.HasCreateOrUpdatePermission,
                 HasDeletePermission = user.Role.HasDeletePermission,

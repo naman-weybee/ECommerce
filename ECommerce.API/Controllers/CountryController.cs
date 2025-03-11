@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCountry([FromBody] CountryCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Country).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCountryAsync(dto);
             _response.data = new { Message = "New Country Added Successfully." };
@@ -67,7 +67,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCountry([FromBody] CountryUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Country).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCountryAsync(dto);
             _response.data = new { Message = "Country Modified Successfully." };
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Country).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCountryAsync(id);
             _response.data = new { Message = $"Country with Id = {id} is Deleted Successfully." };

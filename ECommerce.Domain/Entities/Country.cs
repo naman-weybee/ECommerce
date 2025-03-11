@@ -6,7 +6,7 @@ namespace ECommerce.Domain.Entities
     {
         public Guid Id { get; set; }
 
-        [StringLength(100)]
+        [MaxLength(100)]
         public string Name { get; set; }
 
         public virtual ICollection<State> States { get; set; }

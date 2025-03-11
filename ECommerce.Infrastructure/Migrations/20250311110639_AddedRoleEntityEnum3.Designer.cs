@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311110639_AddedRoleEntityEnum3")]
+    partial class AddedRoleEntityEnum3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -619,6 +622,9 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("RoleEntity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RoleEntityId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -634,6 +640,8 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("RoleEntity")
                         .HasDatabaseName("IX_Role_RoleEntityId");
+
+                    b.HasIndex("RoleEntityId");
 
                     b.HasIndex("Name", "RoleEntity", "HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission")
                         .IsUnique()
@@ -924,6 +932,13 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.Role", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.RoleEntity", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("RoleEntityId");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>
                 {
                     b.HasOne("ECommerce.Domain.Entities.Country", "Country")
@@ -974,6 +989,11 @@ namespace ECommerce.Infrastructure.Migrations
             modelBuilder.Entity("ECommerce.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>

@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCategoryAsync(dto);
             _response.data = new { Message = "New Category Added Successfully." };
@@ -67,7 +67,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCategoryAsync(dto);
             _response.data = new { Message = "Category Modified Successfully." };
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("AddSubCategory/{id}")]
         public async Task<IActionResult> AddSubCategory(Guid id, [FromBody] CategoryCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.AddSubCategoryAsync(id, dto);
             _response.data = new { Message = "SubCategory Added Successfully." };
@@ -91,7 +91,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("RemoveSubCategory/{id}")]
         public async Task<IActionResult> RemoveSubCategory(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.RemoveSubCategoryAsync(id);
             _response.data = new { Message = "SubCategory Removed Successfully." };
@@ -103,7 +103,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Category).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCategoryAsync(id);
             _response.data = new { Message = $"Category with Id = {id} is Deleted Successfully." };

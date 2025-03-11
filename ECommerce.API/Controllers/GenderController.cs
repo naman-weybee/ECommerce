@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateGender([FromBody] GenderCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Gender).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Gender, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateGenderAsync(dto);
             _response.data = new { Message = "New Gender Added Successfully." };
@@ -67,7 +67,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateGender([FromBody] GenderUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Gender).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Gender, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateGenderAsync(dto);
             _response.data = new { Message = "Gender Modified Successfully." };
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGender(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Gender).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Gender, eUserPermission.HasDeletePermission);
 
             await _service.DeleteGenderAsync(id);
             _response.data = new { Message = $"Gender with Id = {id} is Deleted Successfully." };

@@ -1,3 +1,5 @@
+using ECommerce.Domain.Enums;
+
 namespace ECommerce.Application.DTOs
 {
     public class RoleDTO
@@ -6,7 +8,7 @@ namespace ECommerce.Application.DTOs
 
         public string Name { get; set; }
 
-        public string EntityName { get; set; }
+        public eRoleEntity RoleEntity { get; set; }
 
         public bool HasViewPermission { get; set; }
 

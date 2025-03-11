@@ -55,7 +55,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateProductAsync(dto);
             _response.data = new { Message = "New Product Added Successfully." };
@@ -67,7 +67,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateProductAsync(dto);
             _response.data = new { Message = "Product Modified Successfully." };
@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("IncreaseStock")]
         public async Task<IActionResult> IncreaseStock([FromBody] ProductStockChangeDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, true);
             _response.data = new { Message = "Product Stock Increased Successfully." };
@@ -91,7 +91,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("DecreaseStock")]
         public async Task<IActionResult> DecreaseStock([FromBody] ProductStockChangeDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, false);
             _response.data = new { Message = "Product Stock Decreased Successfully." };
@@ -103,7 +103,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("PriceChange")]
         public async Task<IActionResult> PriceChange([FromBody] ProductPriceChangeDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductPriceChangeAsync(dto);
             _response.data = new { Message = "Product Price Changed Successfully." };
@@ -115,7 +115,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(Product).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasDeletePermission);
 
             await _service.DeleteProductAsync(id);
             _response.data = new { Message = $"Product with Id = {id} is Deleted Successfully." };

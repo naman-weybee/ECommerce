@@ -1,7 +1,6 @@
 using ECommerce.API.Helper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;
@@ -22,7 +21,7 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
 
             var data = await _service.GetAllUsersAsync(requestParams);
             if (data != null)
@@ -44,7 +43,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetCurrentUser")]
         public async Task<IActionResult> GetUserById()
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasViewPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
 
             var data = await _service.GetUserByIdAsync(_userId);
             if (data != null)
@@ -91,7 +90,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("DeleteCurrentUser")]
         public async Task<IActionResult> DeleteUser()
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(User).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasDeletePermission);
 
             await _service.DeleteUserAsync(_userId);
             _response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };

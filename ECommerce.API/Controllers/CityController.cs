@@ -75,7 +75,7 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCity([FromBody] CityCreateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCityAsync(dto);
             _response.data = new { Message = "New City Added Successfully." };
@@ -87,7 +87,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCity([FromBody] CityUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasCreateOrUpdatePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCityAsync(dto);
             _response.data = new { Message = "City Modified Successfully." };
@@ -99,7 +99,7 @@ namespace ECommerce.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(Guid id)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(City).Name, eUserPermission.HasDeletePermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCityAsync(id);
             _response.data = new { Message = $"City with Id = {id} is Deleted Successfully." };

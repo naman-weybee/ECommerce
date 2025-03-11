@@ -14,9 +14,8 @@ namespace ECommerce.Application.Validators
                 .NotEmpty().WithMessage("Role name is required.")
                 .MaximumLength(100).WithMessage("Role name cannot exceed 100 characters.");
 
-            RuleFor(x => x.EntityName)
-                .NotEmpty().WithMessage("Entity name is required.")
-                .MaximumLength(100).WithMessage("Entity name cannot exceed 100 characters.");
+            RuleFor(x => x.RoleEntity)
+                .IsInEnum().NotEmpty().WithMessage("Role entity is required.");
 
             RuleFor(x => x.HasViewPermission)
                 .NotEmpty().WithMessage("View permission is required.");

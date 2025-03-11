@@ -9,6 +9,6 @@ namespace ECommerce.API.Helper
 
         Guid GetUserId();
 
-        Task ValidateUserAuthorization(string entityName, eUserPermission userPermission);
+        Task ValidateUserAuthorization(eRoleEntity roleEntity, eUserPermission userPermission);
     }
 }

@@ -94,7 +94,7 @@ namespace ECommerce.API.Controllers
         [HttpPut("UpdateUnitPrice")]
         public async Task<IActionResult> UpdateUnitPrice([FromBody] CartItemUnitPriceUpdateDTO dto)
         {
-            await _httpHelper.ValidateUserAuthorization(typeof(CartItem).Name, eUserPermission.HasFullPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.CartItem, eUserPermission.HasFullPermission);
 
             dto.UserId = _userId;
 
