@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ECommerce.Application.EventHandlers
 {
@@ -7,6 +8,14 @@ namespace ECommerce.Application.EventHandlers
         where TEvent : class, INotification
     {
         private readonly ILogger<EventHandler> _logger;
+        private static readonly string _filePath = Path.Combine("D:", "EventLogs", $"EventLog_{DateTime.UtcNow:ddMMyyyy}.json");
+        private static readonly SemaphoreSlim _fileLock = new(1, 1);
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
 
         public EventHandler(ILogger<EventHandler> logger)
         {
@@ -15,34 +24,47 @@ namespace ECommerce.Application.EventHandlers
 
         public async Task Handle(TEvent notification, CancellationToken cancellationToken)
         {
-            var properties = notification.GetType().GetProperties();
-            var message = new StringBuilder();
+            var eventDetails = notification.GetType()
+                .GetProperties()
+                .ToDictionary(prop => prop.Name, prop => prop.GetValue(notification, null) ?? "null");
 
-            message.AppendLine("------------------- Event Details ----------------------");
+            eventDetails["Timestamp"] = DateTime.UtcNow.ToString("o");
 
-            foreach (var property in properties)
-                message.AppendLine($"{property.Name}: {property.GetValue(notification, null)}");
+            await _fileLock.WaitAsync(cancellationToken);
 
-            message.AppendLine($"Timestamp: {DateTime.UtcNow:dd-MM-yyyy HH:mm:ss}");
-            message.AppendLine("--------------------------------------------------------");
+            try
+            {
+                var eventLogs = new List<Dictionary<string, object>>();
+                if (File.Exists(_filePath))
+                {
+                    using var stream = File.OpenRead(_filePath);
+                    if (stream.Length > 0)
+                        eventLogs = await JsonSerializer.DeserializeAsync<List<Dictionary<string, object>>>(stream, _jsonOptions, cancellationToken) ?? new();
+                }
 
-            var notificationMessage = message?.ToString();
-            _logger.LogInformation(notificationMessage);
+                eventLogs.Add(eventDetails);
+                var evenLog = JsonSerializer.Serialize(eventLogs, _jsonOptions);
 
-            await SaveMessageToFile(notificationMessage!);
-            await NotifyExternalSystems(notificationMessage!);
-            await UpdateAnalyticsService(notificationMessage!);
+                _logger.LogInformation(evenLog);
+                await SaveMessageToFile(evenLog, cancellationToken);
+            }
+            finally
+            {
+                _fileLock.Release();
+            }
+
+            var singleEventog = JsonSerializer.Serialize(eventDetails, _jsonOptions);
+            await NotifyExternalSystems(singleEventog);
+            await UpdateAnalyticsService(singleEventog);
         }
 
-        private async Task SaveMessageToFile(string message)
+        private async Task SaveMessageToFile(string message, CancellationToken cancellationToken)
         {
-            var filePath = Path.Combine("D:", "EventLogs", $"EventLog_{DateTime.UtcNow:ddMMyyyy}.txt");
+            var directory = Path.GetDirectoryName(_filePath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
 
-            var directory = Path.GetDirectoryName(filePath);
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory!);
-
-            await File.AppendAllTextAsync(filePath, message + Environment.NewLine);
+            await File.WriteAllTextAsync(_filePath, message, cancellationToken);
         }
 
         private async Task NotifyExternalSystems(string notificationMessage)
