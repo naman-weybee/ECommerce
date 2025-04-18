@@ -2,7 +2,6 @@
 using ECommerce.API.Filters;
 using ECommerce.API.Helper;
 using ECommerce.API.Mappings;
-using ECommerce.API.Validators;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Application.Templates;
@@ -146,108 +145,16 @@ namespace ECommerce.API.Extensions
 
         public static IServiceCollection AddFluentValidationServices(this IServiceCollection services)
         {
-            services.AddFluentValidationAutoValidation();
-            services.AddFluentValidationClientsideAdapters();
-
-            services.AddValidatorsFromAssemblyContaining<ProductDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<ProductCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<ProductUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<ProductStockChangeDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<ProductPriceChangeDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<CategoryDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CategoryCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CategoryUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<OrderItemDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderItemCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderItemUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderItemQuantityUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<CartItemDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CartItemCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CartItemUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CartItemQuantityUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CartItemUnitPriceUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<OrderDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OrderUpdateStatusDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<AddressDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<AddressCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<AddressUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<CountryDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CountryCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CountryUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<StateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<StateCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<StateUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<CityDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CityCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<CityUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<GenderDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<GenderCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<GenderUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<RoleDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RoleCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RoleUpdateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<RoleEntityDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<UserDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserLoginDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserTokenDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserClaimsDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<RefreshTokenDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RefreshTokenCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RefreshTokenUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<RevokeRefreshTokenDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<AccessTokenCreateDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<EmailSendDTOValidator>();
-
-            services.AddValidatorsFromAssemblyContaining<OTPDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OTPCreateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OTPUpdateDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OTPCreateFromEmailDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OTPVerifyDTOValidator>();
-            services.AddValidatorsFromAssemblyContaining<OTPTokenDTOValidator>();
+            services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssembly(typeof(BaseDTOValidator).Assembly);
 
             return services;
         }
 
         private static IServiceCollection AddEventHandlerServices(this IServiceCollection services)
         {
-            services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssemblies(
-                    typeof(Application.EventHandlers.EventHandler<ProductEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CategoryEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<OrderItemEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CartItemEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<OrderEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<AddressEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CountryEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<StateEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<CityEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<GenderEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<RoleEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<RoleEntityEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<UserEvent>).Assembly,
-                    typeof(Application.EventHandlers.EventHandler<OTPEvent>).Assembly
-                );
-            });
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application.EventHandlers.EventHandler<BaseEvent>).Assembly));
 
             return services;
         }

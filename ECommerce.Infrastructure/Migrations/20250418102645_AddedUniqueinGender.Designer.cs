@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418102645_AddedUniqueinGender")]
+    partial class AddedUniqueinGender
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,10 +231,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.HasIndex("Name", "StateId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_City_Name_StateId");
-
                     b.ToTable("Cities");
                 });
 
@@ -265,7 +264,6 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_Country_Id");
 
                     b.HasIndex("Name")
-                        .IsUnique()
                         .HasDatabaseName("IX_Country_Name");
 
                     b.ToTable("Countries");
@@ -710,10 +708,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Name")
                         .HasDatabaseName("IX_State_Name");
-
-                    b.HasIndex("Name", "CountryId")
-                        .IsUnique()
-                        .HasDatabaseName("IX_State_Name_CountryId");
 
                     b.ToTable("States");
                 });

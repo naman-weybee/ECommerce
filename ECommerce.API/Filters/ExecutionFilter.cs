@@ -20,6 +20,7 @@ namespace ECommerce.API.Filters
             var actionName = context.ActionDescriptor.DisplayName;
             _logger.LogInformation($"[LOG] Starting execution of '{actionName}'.");
 
+            // 1. Check for null parameters
             foreach (var param in context.ActionArguments)
             {
                 if (param.Value == null)
@@ -33,6 +34,23 @@ namespace ECommerce.API.Filters
                     _logger.LogWarning($"[WARN] Validation failed for parameter '{param.Key}'.");
                     return;
                 }
+            }
+
+            // 2. Check for ModelState errors
+            if (!context.ModelState.IsValid)
+            {
+                var error = context.ModelState
+                    .Where(ms => ms.Value!.Errors.Any())
+                    .Select(ms => ms.Value?.Errors.First().ErrorMessage)
+                    .FirstOrDefault();
+
+                context.Result = new BadRequestObjectResult(new ResponseStructure
+                {
+                    success = false,
+                    error = error ?? "Validation failed."
+                });
+
+                _logger.LogWarning($"[WARN] ModelState validation failed: {error}");
             }
         }
 

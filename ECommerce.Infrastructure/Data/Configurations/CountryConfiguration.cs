@@ -15,7 +15,8 @@ namespace ECommerce.Infrastructure.Data.Configurations
 
             builder
             .HasIndex(c => c.Name)
-            .HasDatabaseName("IX_Country_Name");
+            .HasDatabaseName("IX_Country_Name")
+            .IsUnique();
         }
     }
 }

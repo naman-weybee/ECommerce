@@ -16,6 +16,11 @@ namespace ECommerce.Infrastructure.Data.Configurations
             builder
             .HasIndex(c => c.Name)
             .HasDatabaseName("IX_City_Name");
+
+            builder
+            .HasIndex(c => new { c.Name, c.StateId })
+            .HasDatabaseName("IX_City_Name_StateId")
+            .IsUnique();
         }
     }
 }

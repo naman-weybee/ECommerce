@@ -1,5 +1,4 @@
 ﻿using ECommerce.Domain.Entities;
-using ECommerce.Infrastructure.Data.Configurations;
 using ECommerce.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -79,31 +78,17 @@ namespace ECommerce.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(Base).IsAssignableFrom(entityType.ClrType))
+            modelBuilder.Model.GetEntityTypes()
+                .Where(e => typeof(Base).IsAssignableFrom(e.ClrType))
+                .ToList()
+                .ForEach(e =>
                 {
-                    var parameter = Expression.Parameter(entityType.ClrType);
+                    var parameter = Expression.Parameter(e.ClrType);
                     var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "IsDeleted"), Expression.Constant(false)), parameter);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
-                }
-            }
+                    modelBuilder.Entity(e.ClrType).HasQueryFilter(deletedCheck);
+                });
 
-            modelBuilder
-            .ApplyConfiguration(new ProductConfiguration())
-            .ApplyConfiguration(new CategoryConfiguration())
-            .ApplyConfiguration(new OrderItemConfiguration())
-            .ApplyConfiguration(new CartItemConfiguration())
-            .ApplyConfiguration(new OrderConfiguration())
-            .ApplyConfiguration(new AddressConfiguration())
-            .ApplyConfiguration(new CountryConfiguration())
-            .ApplyConfiguration(new StateConfiguration())
-            .ApplyConfiguration(new CityConfiguration())
-            .ApplyConfiguration(new GenderConfiguration())
-            .ApplyConfiguration(new RoleConfiguration())
-            .ApplyConfiguration(new UserConfiguration())
-            .ApplyConfiguration(new RefreshTokenConfiguration())
-            .ApplyConfiguration(new OTPConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
         }
