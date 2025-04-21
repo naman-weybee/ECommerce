@@ -9,7 +9,7 @@ namespace ECommerce.Application.EventHandlers
         where TEvent : class, INotification
     {
         private readonly ILogger<EventHandler> _logger;
-        private static readonly string _filePath = Path.Combine("D:", "EventLogs", $"EventLog_{DateTime.UtcNow:ddMMyyyy}.json");
+        private static readonly string _filePath = Path.Combine("D:", "EventLogs", $"{DateTime.UtcNow:yyyy_MM_dd}", $"EventLog_{DateTime.UtcNow:yyyy_MM_dd}.json");
         private static readonly SemaphoreSlim _fileLock = new(1, 1);
 
         private static readonly JsonSerializerOptions _jsonOptions = new()
