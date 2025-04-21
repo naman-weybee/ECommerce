@@ -1,9 +1,8 @@
-﻿using ECommerce.API.Helper;
+﻿using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,29 +10,20 @@ namespace ECommerce.API.Controllers
     public class ProductController : BaseController
     {
         private readonly IProductService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public ProductController(IProductService service, IHTTPHelper httpHelper)
+        public ProductController(IHTTPHelper httpHelper, IProductService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllProductsAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -42,11 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetProductById(Guid id)
         {
             var data = await _service.GetProductByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -57,8 +43,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateProductAsync(dto);
-            _response.Data = new { Message = "New Product Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Product Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -69,8 +54,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateProductAsync(dto);
-            _response.Data = new { Message = "Product Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Product Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -81,8 +65,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, true);
-            _response.Data = new { Message = "Product Stock Increased Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Product Stock Increased Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -93,8 +76,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductStockChangeAsync(dto.Id, dto.Quantity, false);
-            _response.Data = new { Message = "Product Stock Decreased Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Product Stock Decreased Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -105,8 +87,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.ProductPriceChangeAsync(dto);
-            _response.Data = new { Message = "Product Price Changed Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Product Price Changed Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -117,8 +98,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasDeletePermission);
 
             await _service.DeleteProductAsync(id);
-            _response.Data = new { Message = $"Product with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Product with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

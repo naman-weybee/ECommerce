@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,11 +10,13 @@ namespace ECommerce.API.Controllers
     public class RoleController : BaseController
     {
         private readonly IRoleService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public RoleController(IRoleService service, IHTTPHelper httpHelper)
+        public RoleController(IHTTPHelper httpHelper, IRoleService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
@@ -24,18 +25,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
             var data = await _service.GetAllRolesAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -46,11 +36,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
             var data = await _service.GetRoleByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -61,8 +47,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateRoleAsync(dto);
-            _response.Data = new { Message = "New Role Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Role Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -73,8 +58,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateRoleAsync(dto);
-            _response.Data = new { Message = "Role Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Role Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -85,8 +69,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasDeletePermission);
 
             await _service.DeleteRoleAsync(id);
-            _response.Data = new { Message = $"Role with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Role with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

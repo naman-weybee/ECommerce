@@ -1,7 +1,7 @@
 ﻿using ECommerce.Application.DTOs;
 using ECommerce.Domain.Enums;
 
-namespace ECommerce.API.Helper
+namespace ECommerce.API.Helper.Interfaces
 {
     public interface IHTTPHelper
     {

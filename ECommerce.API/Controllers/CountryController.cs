@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,29 +10,20 @@ namespace ECommerce.API.Controllers
     public class CountryController : BaseController
     {
         private readonly ICountryService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public CountryController(ICountryService service, IHTTPHelper httpHelper)
+        public CountryController(IHTTPHelper httpHelper, ICountryService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCountries([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllCountriesAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -42,11 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetCountryById(Guid id)
         {
             var data = await _service.GetCountryByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -57,8 +43,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCountryAsync(dto);
-            _response.Data = new { Message = "New Country Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Country Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -69,8 +54,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCountryAsync(dto);
-            _response.Data = new { Message = "Country Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Country Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -81,8 +65,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCountryAsync(id);
-            _response.Data = new { Message = $"Country with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Country with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

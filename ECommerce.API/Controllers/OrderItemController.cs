@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,29 +10,20 @@ namespace ECommerce.API.Controllers
     public class OrderItemController : BaseController
     {
         private readonly IOrderItemService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public OrderItemController(IOrderItemService service, IHTTPHelper httpHelper)
+        public OrderItemController(IHTTPHelper httpHelper, IOrderItemService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllOrderItems([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllOrderItemsAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -42,11 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetOrderItemById(Guid id)
         {
             var data = await _service.GetOrderItemByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -57,8 +43,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateOrderItemAsync(dto);
-            _response.Data = new { Message = "New Order Item Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Order Item Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -71,8 +56,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateOrderItemAsync(dto);
-            _response.Data = new { Message = "Order Item Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Order Item Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -85,8 +69,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateQuantityAsync(dto);
-            _response.Data = new { Message = "Quantity Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Quantity Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -99,8 +82,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateUnitPriceAsync(dto);
-            _response.Data = new { Message = "Unit Price Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Unit Price Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -111,8 +93,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasDeletePermission);
 
             await _service.DeleteOrderItemAsync(id);
-            _response.Data = new { Message = $"Order Item with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Order Item with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

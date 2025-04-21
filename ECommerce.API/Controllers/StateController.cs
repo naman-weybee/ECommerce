@@ -1,4 +1,4 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
@@ -11,29 +11,20 @@ namespace ECommerce.API.Controllers
     public class StateController : BaseController
     {
         private readonly IStateService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public StateController(IStateService service, IHTTPHelper httpHelper)
+        public StateController(IHTTPHelper httpHelper, IStateService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllStates([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllStatesAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -42,18 +33,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetAllStatesByCountryId(Guid countryId)
         {
             var data = await _service.GetAllStatesByCountryIdAsync(countryId);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = 1,
-                    Page_Size = data.Count,
-                    Records = data,
-                    Total_Records_Count = 1
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -62,11 +42,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetStateById(Guid id)
         {
             var data = await _service.GetStateByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -89,8 +65,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateStateAsync(dto);
-            _response.Data = new { Message = "State Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "State Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -101,8 +76,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasDeletePermission);
 
             await _service.DeleteStateAsync(id);
-            _response.Data = new { Message = $"State with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"State with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

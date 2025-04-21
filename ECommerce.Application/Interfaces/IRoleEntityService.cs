@@ -5,6 +5,6 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IRoleEntityService
     {
-        Task<IEnumerable<RoleEntityDTO>> GetAllRoleEntitiesAsync(RequestParams requestParams);
+        Task<List<RoleEntityDTO>> GetAllRoleEntitiesAsync(RequestParams requestParams);
     }
 }

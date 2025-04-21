@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,11 +10,13 @@ namespace ECommerce.API.Controllers
     public class CartItemController : BaseController
     {
         private readonly ICartItemService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public CartItemController(ICartItemService service, IHTTPHelper httpHelper)
+        public CartItemController(IHTTPHelper httpHelper, ICartItemService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
@@ -25,18 +26,7 @@ namespace ECommerce.API.Controllers
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllCartItemsAsync(requestParams, userId);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -45,11 +35,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetCartItemById(Guid id)
         {
             var data = await _service.GetCartItemByIdAsync(id, _userId);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -60,8 +46,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.CreateCartItemAsync(dto);
-            _response.Data = new { Message = "New Cart Item Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Cart Item Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -72,8 +57,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateCartItemAsync(dto);
-            _response.Data = new { Message = "Cart Item Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Cart Item Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -84,8 +68,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateQuantityAsync(dto);
-            _response.Data = new { Message = "Quantity Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Quantity Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -98,8 +81,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateUnitPriceAsync(dto);
-            _response.Data = new { Message = "Unit Price Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Unit Price Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -108,8 +90,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
             await _service.DeleteCartItemAsync(id, _userId);
-            _response.Data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Cart Item with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

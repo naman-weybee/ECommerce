@@ -1,9 +1,8 @@
-﻿using ECommerce.API.Helper;
+﻿using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,29 +10,20 @@ namespace ECommerce.API.Controllers
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public CategoryController(ICategoryService service, IHTTPHelper httpHelper)
+        public CategoryController(IHTTPHelper httpHelper, ICategoryService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllCategoriesAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -42,11 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var data = await _service.GetCategoryByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -57,8 +43,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCategoryAsync(dto);
-            _response.Data = new { Message = "New Category Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Category Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -69,8 +54,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCategoryAsync(dto);
-            _response.Data = new { Message = "Category Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Category Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -81,8 +65,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.AddSubCategoryAsync(id, dto);
-            _response.Data = new { Message = "SubCategory Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "SubCategory Added Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -93,8 +76,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.RemoveSubCategoryAsync(id);
-            _response.Data = new { Message = "SubCategory Removed Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "SubCategory Removed Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -105,8 +87,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCategoryAsync(id);
-            _response.Data = new { Message = $"Category with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Category with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

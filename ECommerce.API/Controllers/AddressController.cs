@@ -1,8 +1,7 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -10,11 +9,13 @@ namespace ECommerce.API.Controllers
     public class AddressController : BaseController
     {
         private readonly IAddressService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public AddressController(IAddressService service, IHTTPHelper httpHelper)
+        public AddressController(IHTTPHelper httpHelper, IAddressService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
@@ -24,18 +25,7 @@ namespace ECommerce.API.Controllers
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllAddressesAsync(requestParams, userId);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -44,11 +34,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetAddressById(Guid id)
         {
             var data = await _service.GetAddressByIdAsync(id, _userId);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -59,8 +45,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.CreateAddressAsync(dto);
-            _response.Data = new { Message = "New Address Added Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "New Address Added Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -71,8 +56,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateAddressAsync(dto);
-            _response.Data = new { Message = "Address Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Address Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -83,8 +67,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateAddressTypeAsync(dto);
-            _response.Data = new { Message = "Address Type Updated Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Address Type Updated Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -93,8 +76,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
             await _service.DeleteAddressAsync(id, _userId);
-            _response.Data = new { Message = $"Address with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

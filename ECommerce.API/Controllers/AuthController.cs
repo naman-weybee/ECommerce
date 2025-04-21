@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.API.Helper.Interfaces;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
@@ -8,20 +9,21 @@ namespace ECommerce.API.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _service;
+        private readonly IControllerHelper _controllerHelper;
 
         internal ResponseStructure _response = new();
 
-        public AuthController(IAuthService service)
+        public AuthController(IAuthService service, IControllerHelper controllerHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserCreateDTO dto)
         {
             await _service.RegisterAsync(dto);
-            _response.Data = new { Message = "Verification email sent." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Verification email sent.");
 
             return StatusCode(201, _response);
         }
@@ -30,11 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginDTO dto)
         {
             var data = await _service.LoginAsync(dto);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(201, _response);
         }
@@ -43,8 +41,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> RevokeRefreshToken([FromBody] RevokeRefreshTokenDTO dto)
         {
             await _service.RevokeRefreshTokenAsync(dto);
-            _response.Data = new { Message = "Refresh Token Revoked Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Refresh Token Revoked Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -53,11 +50,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> ReCreateAccessToken([FromBody] AccessTokenCreateDTO dto)
         {
             var data = await _service.ReCreateAccessTokenAsync(dto);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(201, _response);
         }
@@ -66,8 +59,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> VerifyEmail(string token)
         {
             await _service.VerifyEmailAsync(token);
-            _response.Data = new { Message = "User verified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "User verified Successfully.");
 
             return StatusCode(200, _response);
         }

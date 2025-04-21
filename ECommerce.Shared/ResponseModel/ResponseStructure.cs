@@ -9,9 +9,9 @@
 
     public class ResponseMetadata<T>
     {
-        public int Page_Number = 1;
-        public int Page_Size;
-        public int Total_Records_Count;
+        public int PageNumber = 1;
+        public int PageSize;
+        public int TotalRecordsCount;
         public T Records;
     }
 }

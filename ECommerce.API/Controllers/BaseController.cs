@@ -1,4 +1,4 @@
-﻿using ECommerce.API.Helper;
+﻿using ECommerce.API.Helper.Interfaces;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

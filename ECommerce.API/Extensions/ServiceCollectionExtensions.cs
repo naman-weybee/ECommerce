@@ -1,6 +1,7 @@
 ﻿using ECommerce.API.Conventions;
 using ECommerce.API.Filters;
 using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.API.Mappings;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
@@ -33,6 +34,7 @@ namespace ECommerce.API.Extensions
         public static IServiceCollection AddAPIServices(this IServiceCollection services)
         {
             services.AddScoped<IHTTPHelper, HTTPHelper>();
+            services.AddScoped<IControllerHelper, ControllerHelper>();
 
             services.AddScoped<ExecutionFilter>();
 

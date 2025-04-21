@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,11 +10,13 @@ namespace ECommerce.API.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public UserController(IUserService service, IHTTPHelper httpHelper)
+        public UserController(IHTTPHelper httpHelper, IUserService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
@@ -24,18 +25,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
 
             var data = await _service.GetAllUsersAsync(requestParams);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -46,11 +36,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
 
             var data = await _service.GetUserByIdAsync(_userId);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -59,8 +45,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
         {
             await _service.CreateUserAsync(dto);
-            _response.Data = new { Message = "User Created Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "User Created Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -69,8 +54,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {
             await _service.PasswordResetAsync(dto);
-            _response.Data = new { Message = "Password Reset Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Password Reset Successfully.");
 
             return StatusCode(201, _response);
         }
@@ -81,8 +65,7 @@ namespace ECommerce.API.Controllers
             dto.Id = _userId;
 
             await _service.UpdateUserAsync(dto);
-            _response.Data = new { Message = "User Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "User Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -93,8 +76,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasDeletePermission);
 
             await _service.DeleteUserAsync(_userId);
-            _response.Data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"User with Id = {_userId} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

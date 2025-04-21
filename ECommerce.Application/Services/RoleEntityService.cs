@@ -16,7 +16,7 @@ namespace ECommerce.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<RoleEntityDTO>> GetAllRoleEntitiesAsync(RequestParams requestParams)
+        public async Task<List<RoleEntityDTO>> GetAllRoleEntitiesAsync(RequestParams requestParams)
         {
             var items = await _repository.GetAllAsync(requestParams);
 
@@ -24,7 +24,7 @@ namespace ECommerce.Application.Services
             {
                 Id = x.Id,
                 Name = x.Name,
-            })!;
+            })?.ToList()!;
         }
     }
 }

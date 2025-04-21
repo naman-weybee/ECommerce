@@ -1,9 +1,8 @@
-using ECommerce.API.Helper;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -11,11 +10,13 @@ namespace ECommerce.API.Controllers
     public class RefreshTokenController : BaseController
     {
         private readonly IRefreshTokenService _service;
+        private readonly IControllerHelper _controllerHelper;
 
-        public RefreshTokenController(IRefreshTokenService service, IHTTPHelper httpHelper)
+        public RefreshTokenController(IHTTPHelper httpHelper, IRefreshTokenService service, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _controllerHelper = controllerHelper;
         }
 
         [HttpGet]
@@ -25,18 +26,7 @@ namespace ECommerce.API.Controllers
             var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
 
             var data = await _service.GetAllRefreshTokensAsync(requestParams, userId);
-            if (data != null)
-            {
-                _response.Data = new ResponseMetadata<object>()
-                {
-                    Page_Number = requestParams.PageNumber,
-                    Page_Size = requestParams.PageSize,
-                    Records = data,
-                    Total_Records_Count = requestParams.RecordCount
-                };
-
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
@@ -45,11 +35,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetRefreshTokenById(Guid id)
         {
             var data = await _service.GetRefreshTokenByIdAsync(id);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
@@ -60,11 +46,7 @@ namespace ECommerce.API.Controllers
             var dto = new RefreshTokenCreateDTO() { UserId = _userId };
 
             var data = await _service.CreateRefreshTokenAsync(dto);
-            if (data != null)
-            {
-                _response.Data = data;
-                _response.Success = true;
-            }
+            _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(201, _response);
         }
@@ -77,8 +59,7 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateRefreshTokenAsync(dto);
-            _response.Data = new { Message = "Refresh Token Modified Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, "Refresh Token Modified Successfully.");
 
             return StatusCode(200, _response);
         }
@@ -89,8 +70,7 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasDeletePermission);
 
             await _service.DeleteRefreshTokenAsync(id, _userId);
-            _response.Data = new { Message = $"Refresh Token with Id = {id} is Deleted Successfully." };
-            _response.Success = true;
+            _controllerHelper.SetResponse(_response, $"Refresh Token with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }
