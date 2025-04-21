@@ -7,9 +7,6 @@ namespace ECommerce.Application.Validators
     {
         public OrderCreateFromCartDTOValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("User id is required.");
-
             RuleFor(x => x.BillingAddressId)
                 .NotEmpty().WithMessage("Order Billing Address Id is required.");
 

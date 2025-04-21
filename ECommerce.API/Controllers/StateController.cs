@@ -3,7 +3,6 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
-using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers

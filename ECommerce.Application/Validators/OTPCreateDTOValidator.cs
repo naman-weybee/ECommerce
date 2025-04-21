@@ -7,9 +7,6 @@ namespace ECommerce.Application.Validators
     {
         public OTPCreateDTOValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("User ID is required.");
-
             RuleFor(x => x.Type)
                 .IsInEnum().WithMessage("OTP Type is required");
         }

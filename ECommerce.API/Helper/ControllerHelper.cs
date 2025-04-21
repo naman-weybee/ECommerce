@@ -6,12 +6,12 @@ namespace ECommerce.API.Helper
 {
     public class ControllerHelper : IControllerHelper
     {
-        public void SetResponse(ResponseStructure response, string? messaeg)
+        public void SetResponse(ResponseStructure response, string? message)
         {
-            if (string.IsNullOrEmpty(messaeg))
+            if (string.IsNullOrEmpty(message))
                 return;
 
-            response.Data = new { Message = messaeg };
+            response.Data = new { Message = message };
             response.Success = true;
         }
 

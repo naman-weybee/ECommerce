@@ -7,9 +7,6 @@ namespace ECommerce.API.Validators
     {
         public AddressCreateDTOValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required");
-
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required")
                 .MaximumLength(100).WithMessage("First Name cannot exceed 50 characters.");

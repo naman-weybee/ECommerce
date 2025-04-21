@@ -7,8 +7,6 @@ namespace ECommerce.Application.Validators
     {
         public RefreshTokenCreateDTOValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("User ID is required.");
         }
     }
 }
