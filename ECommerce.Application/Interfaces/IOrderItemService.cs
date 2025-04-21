@@ -9,7 +9,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<OrderItemDTO> GetOrderItemByIdAsync(Guid id);
 
-        Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(Guid orderId);
+        Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(RequestParams requestParams, Guid orderId);
 
         Task CreateOrderItemAsync(OrderItemCreateDTO dto);
 

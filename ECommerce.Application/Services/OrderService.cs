@@ -231,7 +231,7 @@ namespace ECommerce.Application.Services
 
         private async Task<List<OrderItemDTO>> GetOrderItems(OrderUpdateStatusDTO dto)
         {
-            var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(dto.Id);
+            var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(new RequestParams(), dto.Id);
             if (!orderItems.Any() || orderItems.Count == 0)
                 throw new InvalidOperationException("Order is empty!");
 

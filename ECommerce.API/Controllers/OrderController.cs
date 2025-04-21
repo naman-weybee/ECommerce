@@ -20,24 +20,38 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
+        public async Task<IActionResult> GetAllOrders([FromQuery] RequestParams requestParams)
         {
-            var isAdmin = User.IsInRole("Admin");
-            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllOrdersAsync(requestParams, userId);
+            var data = await _service.GetAllOrdersAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetOrdersForUser")]
+        public async Task<IActionResult> GetOrdersForUser([FromQuery] RequestParams requestParams)
+        {
+            var data = await _service.GetAllOrdersAsync(requestParams, _userId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
 
         [HttpGet("GetAllRecentOrders")]
-        public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
+        public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams)
         {
-            var isAdmin = User.IsInRole("Admin");
-            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+            var data = await _service.GetAllRecentOrdersAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
 
-            var data = await _service.GetAllRecentOrdersAsync(requestParams, userId);
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetRecentOrdersForUser")]
+        public async Task<IActionResult> GetRecentOrdersForUser([FromQuery] RequestParams requestParams)
+        {
+            var data = await _service.GetAllRecentOrdersAsync(requestParams, _userId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);

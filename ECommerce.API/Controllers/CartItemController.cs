@@ -20,12 +20,20 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
+        public async Task<IActionResult> GetAllCartItems([FromQuery] RequestParams requestParams)
         {
-            var isAdmin = User.IsInRole("Admin");
-            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.CartItem, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllCartItemsAsync(requestParams, userId);
+            var data = await _service.GetAllCartItemsAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetCartItemsForUser")]
+        public async Task<IActionResult> GetCartItemsForUser([FromQuery] RequestParams requestParams)
+        {
+            var data = await _service.GetAllCartItemsAsync(requestParams, _userId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);

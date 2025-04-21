@@ -1,6 +1,7 @@
 using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +20,20 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
+        public async Task<IActionResult> GetAllAddresses([FromQuery] RequestParams requestParams)
         {
-            var isAdmin = User.IsInRole("Admin");
-            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Address, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllAddressesAsync(requestParams, userId);
+            var data = await _service.GetAllAddressesAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetAddressesForUser")]
+        public async Task<IActionResult> GetAddressesForUser([FromQuery] RequestParams requestParams)
+        {
+            var data = await _service.GetAllAddressesAsync(requestParams, _userId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);

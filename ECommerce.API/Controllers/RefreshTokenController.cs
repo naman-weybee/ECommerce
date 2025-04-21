@@ -20,12 +20,20 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams, [FromQuery] bool isAdminSelf = false)
+        public async Task<IActionResult> GetAllRefreshTokens([FromQuery] RequestParams requestParams)
         {
-            var isAdmin = User.IsInRole("Admin");
-            var userId = (!isAdmin || (isAdmin && isAdminSelf)) ? _userId : default;
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllRefreshTokensAsync(requestParams, userId);
+            var data = await _service.GetAllRefreshTokensAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetRefreshTokensForUser")]
+        public async Task<IActionResult> GetRefreshTokensForUser([FromQuery] RequestParams requestParams)
+        {
+            var data = await _service.GetAllRefreshTokensAsync(requestParams, _userId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);

@@ -7,7 +7,7 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams dto, Guid userId = default);
 
-        Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId);
+        Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId = default);
 
         Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId);
 

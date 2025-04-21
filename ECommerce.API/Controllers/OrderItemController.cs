@@ -22,7 +22,18 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrderItems([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasFullPermission);
+
             var data = await _service.GetAllOrderItemsAsync(requestParams);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetOrderItemsForOrder")]
+        public async Task<IActionResult> GetOrderItemsForOrder([FromQuery] RequestParams requestParams, [FromQuery] Guid orderId)
+        {
+            var data = await _service.GetOrderItemsByOrderIdAsync(requestParams, orderId);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
