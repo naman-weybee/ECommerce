@@ -20,6 +20,6 @@ namespace ECommerce.Shared.Repositories
 
         Task SaveAsync(TEntity entity);
 
-        IQueryable<TEntity> GetDbSet();
+        IQueryable<TEntity> GetQuery();
     }
 }

@@ -25,15 +25,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllRoleEntitiesAsync(requestParams);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);

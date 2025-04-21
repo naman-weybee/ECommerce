@@ -42,7 +42,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams, Guid userId = default)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
@@ -55,7 +55,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId = default)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
@@ -68,7 +68,7 @@ namespace ECommerce.Application.Services
 
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(u => u.UserId == userId).Include(c => c.OrderItems);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -206,7 +206,7 @@ namespace ECommerce.Application.Services
 
         private async Task CheckForAddressExistance(Guid userId, Guid addressId, eAddressType addressType)
         {
-            var isAddressExist = await _addressRepository.GetDbSet()
+            var isAddressExist = await _addressRepository.GetQuery()
                 .AnyAsync(x => x.Id == addressId && x.UserId == userId && x.AdderessType == addressType);
 
             if (!isAddressExist)

@@ -24,15 +24,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllCitiesAsync(requestParams);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -44,15 +44,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllCitiesByStateIdAsync(stateId);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = 1,
-                    page_size = data.Count,
-                    records = data,
-                    total_records_count = 1
+                    Page_Number = 1,
+                    Page_Size = data.Count,
+                    Records = data,
+                    Total_Records_Count = 1
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -64,8 +64,8 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetCityByIdAsync(id);
             if (data != null)
             {
-                _response.data = data;
-                _response.success = true;
+                _response.Data = data;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -77,8 +77,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCityAsync(dto);
-            _response.data = new { Message = "New City Added Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "New City Added Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -89,8 +89,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCityAsync(dto);
-            _response.data = new { Message = "City Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "City Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -101,8 +101,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCityAsync(id);
-            _response.data = new { Message = $"City with Id = {id} is Deleted Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = $"City with Id = {id} is Deleted Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }

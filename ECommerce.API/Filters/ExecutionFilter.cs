@@ -27,8 +27,8 @@ namespace ECommerce.API.Filters
                 {
                     context.Result = new BadRequestObjectResult(new ResponseStructure
                     {
-                        success = false,
-                        error = $"Parameter '{param.Key}' cannot be null."
+                        Success = false,
+                        Error = $"Parameter '{param.Key}' cannot be null."
                     });
 
                     _logger.LogWarning($"[WARN] Validation failed for parameter '{param.Key}'.");
@@ -46,8 +46,8 @@ namespace ECommerce.API.Filters
 
                 context.Result = new BadRequestObjectResult(new ResponseStructure
                 {
-                    success = false,
-                    error = error ?? "Validation failed."
+                    Success = false,
+                    Error = error ?? "Validation failed."
                 });
 
                 _logger.LogWarning($"[WARN] ModelState validation failed: {error}");
@@ -83,8 +83,8 @@ namespace ECommerce.API.Filters
 
             var response = new ResponseStructure
             {
-                success = false,
-                error = finalErrorMessage
+                Success = false,
+                Error = finalErrorMessage
             };
 
             context.Result = new JsonResult(response)

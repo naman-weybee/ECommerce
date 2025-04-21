@@ -209,7 +209,7 @@ namespace ECommerce.Application.Templates
 
         private async Task<UserDTO> GetUserByIdAsync(Guid userId)
         {
-            var item = await _userRepository.GetDbSet()
+            var item = await _userRepository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Id == userId);
 
             return _mapper.Map<UserDTO>(item);
@@ -217,7 +217,7 @@ namespace ECommerce.Application.Templates
 
         private async Task<UserDTO> GetUserByEmailIdAsync(string email)
         {
-            var item = await _userRepository.GetDbSet()
+            var item = await _userRepository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Email == email);
 
             return _mapper.Map<UserDTO>(item);
@@ -225,7 +225,7 @@ namespace ECommerce.Application.Templates
 
         private async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
         {
-            var item = await _orderRepository.GetDbSet()
+            var item = await _orderRepository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Id == orderId);
 
             return _mapper.Map<OrderDTO>(item);
@@ -233,7 +233,7 @@ namespace ECommerce.Application.Templates
 
         private async Task<OTPDTO> GetUserByOTPIdAsync(Guid otpId)
         {
-            var item = await _otpRepository.GetDbSet()
+            var item = await _otpRepository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Id == otpId);
 
             return _mapper.Map<OTPDTO>(item);

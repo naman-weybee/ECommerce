@@ -2,15 +2,15 @@
 {
     public class RequestParams
     {
-        public string? search { get; set; }
+        public string? Search { get; set; }
 
-        private const int maxPageSize = 50;
+        private const int MaxPageSize = 50;
 
-        public int pageNumber { get; set; } = 1;
+        public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 10;
 
-        public int pageSize
+        public int PageSize
         {
             get
             {
@@ -19,14 +19,14 @@
 
             set
             {
-                _pageSize = (value > maxPageSize) ? maxPageSize : value;
+                _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
             }
         }
 
-        public virtual int recordCount { get; set; }
+        public virtual int RecordCount { get; set; }
 
-        public string? sortBy { get; set; }
+        public string? SortBy { get; set; }
 
-        public string? orderBy { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

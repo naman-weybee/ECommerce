@@ -26,15 +26,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllAddressesAsync(requestParams, userId);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -46,8 +46,8 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAddressByIdAsync(id, _userId);
             if (data != null)
             {
-                _response.data = data;
-                _response.success = true;
+                _response.Data = data;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -59,8 +59,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.CreateAddressAsync(dto);
-            _response.data = new { Message = "New Address Added Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "New Address Added Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -71,8 +71,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateAddressAsync(dto);
-            _response.data = new { Message = "Address Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Address Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -83,8 +83,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateAddressTypeAsync(dto);
-            _response.data = new { Message = "Address Type Updated Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Address Type Updated Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -93,8 +93,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
             await _service.DeleteAddressAsync(id, _userId);
-            _response.data = new { Message = $"Address with Id = {id} is Deleted Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = $"Address with Id = {id} is Deleted Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }

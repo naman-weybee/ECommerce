@@ -26,15 +26,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllUsersAsync(requestParams);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -48,8 +48,8 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetUserByIdAsync(_userId);
             if (data != null)
             {
-                _response.data = data;
-                _response.success = true;
+                _response.Data = data;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -59,8 +59,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
         {
             await _service.CreateUserAsync(dto);
-            _response.data = new { Message = "User Created Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "User Created Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -69,8 +69,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {
             await _service.PasswordResetAsync(dto);
-            _response.data = new { Message = "Password Reset Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Password Reset Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -81,8 +81,8 @@ namespace ECommerce.API.Controllers
             dto.Id = _userId;
 
             await _service.UpdateUserAsync(dto);
-            _response.data = new { Message = "User Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "User Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -93,8 +93,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasDeletePermission);
 
             await _service.DeleteUserAsync(_userId);
-            _response.data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = $"User with Id = {_userId} is Deleted Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }

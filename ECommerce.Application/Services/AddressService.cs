@@ -28,7 +28,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId = default)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
@@ -40,7 +40,7 @@ namespace ECommerce.Application.Services
 
         public async Task<AddressDTO> GetAddressByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -73,7 +73,7 @@ namespace ECommerce.Application.Services
 
             try
             {
-                var query = _repository.GetDbSet();
+                var query = _repository.GetQuery();
 
                 // Get all addresses for the user
                 var addresses = await query.Where(x => x.UserId == dto.UserId).ToListAsync()
@@ -108,7 +108,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteAddressAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);

@@ -32,7 +32,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllCitiesByStateIdAsync(Guid stateId)
         {
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.StateId == stateId).ToListAsync();
 
             if (items.Count == 0)

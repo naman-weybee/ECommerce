@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams, Guid userId = default)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
@@ -39,7 +39,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -49,7 +49,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId)
         {
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.UserId == userId).ToListAsync();
 
             return _mapper.Map<List<CartItemDTO>>(items);
@@ -100,7 +100,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteCartItemAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(x => x.Id == id && x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -112,7 +112,7 @@ namespace ECommerce.Application.Services
 
         public async Task ClearCartItemsAsync(Guid userId)
         {
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.UserId == userId).ToListAsync();
 
             foreach (var item in items)

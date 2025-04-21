@@ -36,7 +36,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(u => u.Role);
 
             var items = await _repository.GetAllAsync(requestParams, query);
@@ -46,7 +46,7 @@ namespace ECommerce.Application.Services
 
         public async Task<UserDTO> GetUserByIdAsync(Guid id)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(u => u.Role);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -98,11 +98,11 @@ namespace ECommerce.Application.Services
 
             try
             {
-                var otp = await _otpRepository.GetDbSet()
+                var otp = await _otpRepository.GetQuery()
                     .SingleOrDefaultAsync(x => x.Token == dto.Token && x.Type == eOTPType.PasswordReset && !x.IsUsed && x.TokenExpiredDate >= DateTime.UtcNow)
                     ?? throw new InvalidOperationException("Invalid Token.");
 
-                var user = await _repository.GetDbSet()
+                var user = await _repository.GetQuery()
                     .SingleOrDefaultAsync(x => x.Id == otp.UserId)
                     ?? throw new InvalidOperationException("User not found.");
 
@@ -141,7 +141,7 @@ namespace ECommerce.Application.Services
 
         public async Task VerifyEmailAsync(string token)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             var user = await query.SingleOrDefaultAsync(x => x.EmailVerificationToken == token)
                 ?? throw new InvalidOperationException("Invalid token.");

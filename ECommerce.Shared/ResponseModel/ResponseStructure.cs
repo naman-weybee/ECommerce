@@ -2,16 +2,16 @@
 {
     public class ResponseStructure
     {
-        public bool success;
-        public object data;
-        public string error;
+        public bool Success;
+        public object Data;
+        public string Error;
     }
 
     public class ResponseMetadata<T>
     {
-        public int page_number = 1;
-        public int page_size;
-        public int total_records_count;
-        public T records;
+        public int Page_Number = 1;
+        public int Page_Size;
+        public int Total_Records_Count;
+        public T Records;
     }
 }

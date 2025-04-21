@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CountryDTO>> GetAllCountriesAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(x => x.States);
 
             var items = await _repository.GetAllAsync(requestParams, query);

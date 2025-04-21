@@ -31,7 +31,7 @@ namespace ECommerce.Application.Services
 
         public async Task RegisterAsync(UserCreateDTO dto)
         {
-            var query = _userRepository.GetDbSet();
+            var query = _userRepository.GetQuery();
 
             var isEmailExist = await query.AnyAsync(x => x.Email == dto.Email);
 
@@ -45,7 +45,7 @@ namespace ECommerce.Application.Services
 
         public async Task<UserTokenDTO> LoginAsync(UserLoginDTO dto)
         {
-            var query = _userRepository.GetDbSet();
+            var query = _userRepository.GetQuery();
 
             var isEmailExist = await query.AnyAsync(x => x.Email == dto.Email && x.IsEmailVerified);
 
@@ -69,7 +69,7 @@ namespace ECommerce.Application.Services
 
         public async Task<UserTokenDTO> ReCreateAccessTokenAsync(AccessTokenCreateDTO dto)
         {
-            var refreshToken = await _refreshTokenRepository.GetDbSet()
+            var refreshToken = await _refreshTokenRepository.GetQuery()
                 .Where(x => x.Token == dto.RefreshToken).FirstOrDefaultAsync();
 
             if (refreshToken?.IsRevoked != false || refreshToken.ExpiredDate <= DateTime.UtcNow)

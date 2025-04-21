@@ -24,15 +24,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllCountriesAsync(requestParams);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -44,8 +44,8 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetCountryByIdAsync(id);
             if (data != null)
             {
-                _response.data = data;
-                _response.success = true;
+                _response.Data = data;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -57,8 +57,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.CreateCountryAsync(dto);
-            _response.data = new { Message = "New Country Added Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "New Country Added Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -69,8 +69,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
             await _service.UpdateCountryAsync(dto);
-            _response.data = new { Message = "Country Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Country Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -81,8 +81,8 @@ namespace ECommerce.API.Controllers
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasDeletePermission);
 
             await _service.DeleteCountryAsync(id);
-            _response.data = new { Message = $"Country with Id = {id} is Deleted Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = $"Country with Id = {id} is Deleted Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }

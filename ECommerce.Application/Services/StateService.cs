@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(x => x.Cities);
 
             var items = await _repository.GetAllAsync(requestParams, query);
@@ -35,7 +35,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID)
         {
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.CountryId == countryID).Include(x => x.Cities).ToListAsync();
 
             if (items.Count == 0)

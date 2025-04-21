@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams requestParams)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(c => c.Products);
 
             var items = await _repository.GetAllAsync(requestParams, query);
@@ -35,7 +35,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CategoryDTO> GetCategoryByIdAsync(Guid id)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Include(c => c.Products);
 
             var item = await _repository.GetByIdAsync(id, query);

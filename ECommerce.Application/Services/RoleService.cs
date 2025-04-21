@@ -34,11 +34,11 @@ namespace ECommerce.Application.Services
 
         public async Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId)
         {
-            var user = await _userRepository.GetDbSet()
+            var user = await _userRepository.GetQuery()
                     .SingleOrDefaultAsync(x => x.Id == userId)
                     ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.Id == user.RoleId)
                 .OrderBy(x => x.RoleEntity)
                 .ThenBy(x => x.HasFullPermission)

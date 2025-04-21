@@ -49,7 +49,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(Guid orderId)
         {
-            var items = await _repository.GetDbSet()
+            var items = await _repository.GetQuery()
                 .Where(x => x.OrderId == orderId).ToListAsync();
 
             return _mapper.Map<List<OrderItemDTO>>(items);
@@ -69,7 +69,7 @@ namespace ECommerce.Application.Services
             var orderItem = await GetOrderItemByIdAsync(dto.Id);
             var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
 
-            var order = await _orderRepository.GetDbSet()
+            var order = await _orderRepository.GetQuery()
                 .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
 
             dto.UnitPrice = new Money(dto.Quantity * product.Price.Amount);
@@ -95,7 +95,7 @@ namespace ECommerce.Application.Services
 
                 var item = _mapper.Map<OrderItem>(orderItem);
                 var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
-                var order = await _orderRepository.GetDbSet()
+                var order = await _orderRepository.GetQuery()
                     .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
 
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
@@ -140,7 +140,7 @@ namespace ECommerce.Application.Services
 
         private async Task UpdateOrderTotalAmountAsync(Guid orderId, Guid userId)
         {
-            var item = await _orderRepository.GetDbSet()
+            var item = await _orderRepository.GetQuery()
                 .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
 
             var aggregate = new OrderAggregate(item!, _eventCollector);

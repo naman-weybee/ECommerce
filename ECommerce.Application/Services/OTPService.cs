@@ -43,7 +43,7 @@ namespace ECommerce.Application.Services
 
         public async Task CreateOTPAsync(OTPCreateFromEmailDTO dto)
         {
-            var user = await _userRepository.GetDbSet()
+            var user = await _userRepository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Email == dto.Email)
                 ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
@@ -65,11 +65,11 @@ namespace ECommerce.Application.Services
 
         public async Task<OTPTokenDTO> VerifyOTPAsync(OTPVerifyDTO dto)
         {
-            var user = await _userRepository.GetDbSet()
+            var user = await _userRepository.GetQuery()
                     .SingleOrDefaultAsync(x => x.Email == dto.Email)
                     ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
-            var otp = await _repository.GetDbSet()
+            var otp = await _repository.GetQuery()
                 .SingleOrDefaultAsync(x => x.UserId == user.Id && x.Code == dto.Code && !x.IsUsed && x.OTPExpiredDate >= DateTime.UtcNow)
                 ?? throw new InvalidOperationException("Invalid OTP.");
 
@@ -93,7 +93,7 @@ namespace ECommerce.Application.Services
 
         public async Task SetOTPIsUsedAsync(Guid otpId)
         {
-            var otp = await _repository.GetDbSet()
+            var otp = await _repository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Id == otpId)
                 ?? throw new InvalidOperationException("OTP not found.");
 

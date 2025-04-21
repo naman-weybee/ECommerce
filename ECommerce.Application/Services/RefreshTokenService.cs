@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensAsync(RequestParams requestParams, Guid userId = default)
         {
-            var query = _repository.GetDbSet();
+            var query = _repository.GetQuery();
 
             if (userId != default)
                 query = query.Where(x => x.UserId == userId);
@@ -64,7 +64,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteRefreshTokenAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetDbSet()
+            var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
             var item = await _repository.GetByIdAsync(id, query);
@@ -76,7 +76,7 @@ namespace ECommerce.Application.Services
 
         public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenDTO dto)
         {
-            var entity = await _repository.GetDbSet()
+            var entity = await _repository.GetQuery()
                 .SingleOrDefaultAsync(x => x.Token == dto.RefreshToken);
 
             var refreshToken = _mapper.Map<RefreshToken>(entity);

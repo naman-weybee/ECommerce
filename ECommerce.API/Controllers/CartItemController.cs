@@ -27,15 +27,15 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetAllCartItemsAsync(requestParams, userId);
             if (data != null)
             {
-                _response.data = new ResponseMetadata<object>()
+                _response.Data = new ResponseMetadata<object>()
                 {
-                    page_number = requestParams.pageNumber,
-                    page_size = requestParams.pageSize,
-                    records = data,
-                    total_records_count = requestParams.recordCount
+                    Page_Number = requestParams.PageNumber,
+                    Page_Size = requestParams.PageSize,
+                    Records = data,
+                    Total_Records_Count = requestParams.RecordCount
                 };
 
-                _response.success = true;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -47,8 +47,8 @@ namespace ECommerce.API.Controllers
             var data = await _service.GetCartItemByIdAsync(id, _userId);
             if (data != null)
             {
-                _response.data = data;
-                _response.success = true;
+                _response.Data = data;
+                _response.Success = true;
             }
 
             return StatusCode(200, _response);
@@ -60,8 +60,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.CreateCartItemAsync(dto);
-            _response.data = new { Message = "New Cart Item Added Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "New Cart Item Added Successfully." };
+            _response.Success = true;
 
             return StatusCode(201, _response);
         }
@@ -72,8 +72,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateCartItemAsync(dto);
-            _response.data = new { Message = "Cart Item Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Cart Item Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -84,8 +84,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateQuantityAsync(dto);
-            _response.data = new { Message = "Quantity Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Quantity Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -98,8 +98,8 @@ namespace ECommerce.API.Controllers
             dto.UserId = _userId;
 
             await _service.UpdateUnitPriceAsync(dto);
-            _response.data = new { Message = "Unit Price Modified Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = "Unit Price Modified Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }
@@ -108,8 +108,8 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
             await _service.DeleteCartItemAsync(id, _userId);
-            _response.data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
-            _response.success = true;
+            _response.Data = new { Message = $"Cart Item with Id = {id} is Deleted Successfully." };
+            _response.Success = true;
 
             return StatusCode(200, _response);
         }

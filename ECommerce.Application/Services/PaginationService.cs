@@ -9,12 +9,12 @@ namespace ECommerce.Application.Services
     {
         public IPagedList<T> SortResult<T>(IQueryable<T> source, RequestParams requestParams)
         {
-            if (!string.IsNullOrEmpty(requestParams.sortBy))
+            if (!string.IsNullOrEmpty(requestParams.SortBy))
             {
-                var property = typeof(T).GetProperty(requestParams.sortBy);
+                var property = typeof(T).GetProperty(requestParams.SortBy);
                 if (property != null)
                 {
-                    source = string.Equals(requestParams.orderBy?.Trim(), "DESC", StringComparison.OrdinalIgnoreCase)
+                    source = string.Equals(requestParams.OrderBy?.Trim(), "DESC", StringComparison.OrdinalIgnoreCase)
                         ? source.AsEnumerable().OrderByDescending(e => property.GetValue(e)).AsQueryable()
                         : source.AsEnumerable().OrderBy(e => property.GetValue(e)).AsQueryable();
                 }
@@ -26,7 +26,7 @@ namespace ECommerce.Application.Services
                     source = source.AsEnumerable().OrderByDescending(e => nameProperty.GetValue(e)).AsQueryable();
             }
 
-            return source.ToPagedList(requestParams.pageNumber, requestParams.pageSize);
+            return source.ToPagedList(requestParams.PageNumber, requestParams.PageSize);
         }
     }
 }

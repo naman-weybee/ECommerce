@@ -13,13 +13,13 @@ namespace ECommerce.Infrastructure.Repositories
         where TEntity : class
     {
         internal ApplicationDbContext _context;
-        internal DbSet<TEntity> DbSet;
+        internal DbSet<TEntity> Query;
         private readonly IPaginationService _pagination;
 
         public Repository(ApplicationDbContext context, IPaginationService pagination)
         {
             _context = context;
-            DbSet = context.Set<TEntity>();
+            Query = context.Set<TEntity>();
             _pagination = pagination;
         }
 
@@ -39,17 +39,17 @@ namespace ECommerce.Infrastructure.Repositories
         {
             query ??= _context.Set<TEntity>().AsQueryable();
 
-            if (!string.IsNullOrEmpty(requestParams.search))
+            if (!string.IsNullOrEmpty(requestParams.Search))
             {
                 var nameProperty = typeof(TEntity).GetProperty("Name");
                 if (nameProperty != null)
                 {
-                    var searchTerm = $"%{requestParams.search}%";
+                    var searchTerm = $"%{requestParams.Search}%";
                     query = query.Where(e => EF.Functions.Like(EF.Property<string>(e, "Name"), searchTerm));
                 }
             }
 
-            requestParams.recordCount = await query.CountAsync();
+            requestParams.RecordCount = await query.CountAsync();
 
             return _pagination.SortResult(query, requestParams);
         }
@@ -58,7 +58,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            DbSet.Add(entity);
+            Query.Add(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -66,7 +66,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            DbSet.Update(entity);
+            Query.Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -74,7 +74,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             if (entity != null)
             {
-                DbSet.Remove(entity);
+                Query.Remove(entity);
                 await _context.SaveChangesAsync();
             }
             else
@@ -85,13 +85,13 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task SaveAsync(TEntity entity)
         {
-            DbSet.Update(entity);
+            Query.Update(entity);
             await _context.SaveChangesAsync();
         }
 
-        public virtual IQueryable<TEntity> GetDbSet()
+        public virtual IQueryable<TEntity> GetQuery()
         {
-            return DbSet = _context.Set<TEntity>();
+            return Query = _context.Set<TEntity>();
         }
     }
 }
