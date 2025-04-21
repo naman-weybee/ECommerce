@@ -51,7 +51,7 @@ namespace ECommerce.Infrastructure.Repositories
 
             requestParams.recordCount = await query.CountAsync();
 
-            return await _pagination.SortResult(query, requestParams);
+            return _pagination.SortResult(query, requestParams);
         }
 
         public virtual async Task InsertAsync(TAggregate aggregate)

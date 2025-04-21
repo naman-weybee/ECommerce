@@ -1,12 +1,13 @@
 ﻿using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.RequestModel;
 using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace ECommerce.Application.Services
 {
     public class PaginationService : IPaginationService
     {
-        public async Task<IPagedList<T>> SortResult<T>(IQueryable<T> source, RequestParams requestParams)
+        public IPagedList<T> SortResult<T>(IQueryable<T> source, RequestParams requestParams)
         {
             if (!string.IsNullOrEmpty(requestParams.sortBy))
             {
@@ -25,7 +26,7 @@ namespace ECommerce.Application.Services
                     source = source.AsEnumerable().OrderByDescending(e => nameProperty.GetValue(e)).AsQueryable();
             }
 
-            return await source.ToPagedListAsync(requestParams.pageNumber, requestParams.pageSize);
+            return source.ToPagedList(requestParams.pageNumber, requestParams.pageSize);
         }
     }
 }
