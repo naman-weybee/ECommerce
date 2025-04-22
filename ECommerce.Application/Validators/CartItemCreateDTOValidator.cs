@@ -12,9 +12,6 @@ namespace ECommerce.Application.Validators
 
             RuleFor(x => x.Quantity)
                 .GreaterThan(0).WithMessage("Quantity must be greater than zero.");
-
-            RuleFor(x => x.UnitPrice)
-                .NotNull().WithMessage("Unit price is required.");
         }
     }
 }

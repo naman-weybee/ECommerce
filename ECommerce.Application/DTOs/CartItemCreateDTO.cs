@@ -1,5 +1,3 @@
-using ECommerce.Domain.ValueObjects;
-
 namespace ECommerce.Application.DTOs
 {
     public class CartItemCreateDTO
@@ -9,7 +7,5 @@ namespace ECommerce.Application.DTOs
         public Guid ProductId { get; set; }
 
         public int Quantity { get; set; }
-
-        public Money UnitPrice { get; set; }
     }
 }
