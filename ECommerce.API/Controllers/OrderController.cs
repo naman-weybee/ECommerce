@@ -42,6 +42,8 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetAllRecentOrders")]
         public async Task<IActionResult> GetAllRecentOrders([FromQuery] RequestParams requestParams)
         {
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
+
             var data = await _service.GetAllRecentOrdersAsync(requestParams);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
