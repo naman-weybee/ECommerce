@@ -69,6 +69,17 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDTO>(item);
         }
 
+        public async Task<UserDTO> GetUserByEmailAsync(string email, bool useQuery = false)
+        {
+            IQueryable<User> query = useQuery
+                ? _repository.GetQuery().Where(x => x.Email == email)!
+                : null!;
+
+            var item = await _serviceHelper.GetByQueryAsync(query);
+
+            return _mapper.Map<UserDTO>(item);
+        }
+
         public async Task CreateUserAsync(UserCreateDTO dto)
         {
             // Begin Transaction

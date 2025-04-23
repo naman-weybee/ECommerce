@@ -43,5 +43,10 @@ namespace ECommerce.Application.ServiceHelper
                     return await _repository.GetByIdAsync(id);
             }
         }
+
+        public async Task<TEntity> GetByQueryAsync(IQueryable<TEntity> query)
+        {
+            return await _repository.GetByPropertyAsync(query);
+        }
     }
 }

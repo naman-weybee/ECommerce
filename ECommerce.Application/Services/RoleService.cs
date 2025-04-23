@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -13,15 +14,15 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<Role> _repository;
         private readonly IServiceHelper<Role> _serviceHelper;
-        private readonly IUserService _userService;
+        private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public RoleService(IRepository<Role> repository, IServiceHelper<Role> serviceHelper, IUserService userService, IMapper mapper, IDomainEventCollector eventCollector)
+        public RoleService(IRepository<Role> repository, IServiceHelper<Role> serviceHelper, IRepository<User> userRepository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _serviceHelper = serviceHelper;
-            _userService = userService;
+            _userRepository = userRepository;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -35,7 +36,9 @@ namespace ECommerce.Application.Services
 
         public async Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await _userRepository.GetQuery()
+                    .SingleOrDefaultAsync(x => x.Id == userId)
+                    ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
             var query = _repository.GetQuery()
                 .Where(x => x.Id == user.RoleId)
@@ -56,7 +59,9 @@ namespace ECommerce.Application.Services
 
         public async Task<RoleDTO> GetSpecificRoleByUserAsync(Guid id, Guid userId)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
+            var user = await _userRepository.GetQuery()
+                    .SingleOrDefaultAsync(x => x.Id == userId)
+                    ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
             var query = _repository.GetQuery()
                 .Where(x => x.Id == user.RoleId);

@@ -43,6 +43,16 @@ namespace ECommerce.Infrastructure.Repositories
             throw new InvalidOperationException($"Data for Id = {id} is not available.");
         }
 
+        public virtual async Task<TEntity> GetByPropertyAsync(IQueryable<TEntity> query)
+        {
+            var entity = await query.FirstAsync();
+
+            if (entity != null)
+                return entity;
+
+            throw new InvalidOperationException("Data is not available.");
+        }
+
         public async Task<List<TEntity>> GetAllAsync()
         {
             return await _context.Set<TEntity>()?.ToListAsync()!;

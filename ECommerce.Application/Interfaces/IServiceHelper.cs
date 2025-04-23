@@ -8,5 +8,7 @@ namespace ECommerce.Application.Interfaces
         Task<List<TEntity>> GetAllAsync(RequestParams? requestParams = null, IQueryable<TEntity>? query = null);
 
         Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null);
+
+        Task<TEntity> GetByQueryAsync(IQueryable<TEntity> query);
     }
 }

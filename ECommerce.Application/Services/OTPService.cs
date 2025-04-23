@@ -43,9 +43,20 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OTPDTO>(item);
         }
 
+        public async Task<OTPDTO> ValidateOTP(Guid userId, OTPVerifyDTO dto)
+        {
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId && x.Code == dto.Code && !x.IsUsed && x.OTPExpiredDate >= DateTime.UtcNow);
+
+            var item = await _serviceHelper.GetByQueryAsync(query);
+
+            return _mapper.Map<OTPDTO>(item);
+        }
+
         public async Task<OTPDTO> GetSpecificOTPByUserAsync(Guid id, Guid userId)
         {
-            var query = _repository.GetQuery().Where(x => x.UserId == userId);
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId);
 
             var item = await _serviceHelper.GetByIdAsync(id, query);
 
@@ -55,7 +66,7 @@ namespace ECommerce.Application.Services
         public async Task CreateOTPAsync(OTPCreateFromEmailDTO dto)
         {
             var user = await _userRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Email == dto.Email)
+                .SingleOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
                 ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
             var otp = new OTPCreateDTO()
@@ -77,11 +88,10 @@ namespace ECommerce.Application.Services
         public async Task<OTPTokenDTO> VerifyOTPAsync(OTPVerifyDTO dto)
         {
             var user = await _userRepository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Email == dto.Email)
-                    ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
+                .SingleOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
+                ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
-            var otp = await _repository.GetQuery()
-                .SingleOrDefaultAsync(x => x.UserId == user.Id && x.Code == dto.Code && !x.IsUsed && x.OTPExpiredDate >= DateTime.UtcNow)
+            var otp = await ValidateOTP(user.Id, dto)
                 ?? throw new InvalidOperationException("Invalid OTP.");
 
             var item = _mapper.Map<OTP>(otp);
