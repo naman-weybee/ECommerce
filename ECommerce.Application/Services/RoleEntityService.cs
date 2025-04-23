@@ -1,6 +1,5 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
@@ -9,9 +8,9 @@ namespace ECommerce.Application.Services
 {
     public class RoleEntityService : IRoleEntityService
     {
-        private readonly IRepository<RoleEntityAggregate, RoleEntity> _repository;
+        private readonly IRepository<RoleEntity> _repository;
 
-        public RoleEntityService(IRepository<RoleEntityAggregate, RoleEntity> repository)
+        public RoleEntityService(IRepository<RoleEntity> repository)
         {
             _repository = repository;
         }

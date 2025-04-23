@@ -12,11 +12,11 @@ namespace ECommerce.Application.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly IRepository<RefreshTokenAggregate, RefreshToken> _repository;
+        private readonly IRepository<RefreshToken> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public RefreshTokenService(IRepository<RefreshTokenAggregate, RefreshToken> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public RefreshTokenService(IRepository<RefreshToken> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -48,7 +48,7 @@ namespace ECommerce.Application.Services
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.CreateRefreshToken(item.UserId);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
 
             return await GetRefreshTokenByIdAsync(aggregate.RefreshToken.Id);
         }
@@ -59,7 +59,7 @@ namespace ECommerce.Application.Services
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.UpdateRefreshToken(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteRefreshTokenAsync(Guid id, Guid userId)
@@ -83,7 +83,7 @@ namespace ECommerce.Application.Services
             var aggregate = new RefreshTokenAggregate(refreshToken, _eventCollector);
             aggregate.RevokeToken();
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
     }
 }

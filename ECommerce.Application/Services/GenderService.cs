@@ -11,11 +11,11 @@ namespace ECommerce.Application.Services
 {
     public class GenderService : IGenderService
     {
-        private readonly IRepository<GenderAggregate, Gender> _repository;
+        private readonly IRepository<Gender> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public GenderService(IRepository<GenderAggregate, Gender> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public GenderService(IRepository<Gender> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -42,7 +42,7 @@ namespace ECommerce.Application.Services
             var aggregate = new GenderAggregate(item, _eventCollector);
             aggregate.CreateGender(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateGenderAsync(GenderUpdateDTO dto)
@@ -51,7 +51,7 @@ namespace ECommerce.Application.Services
             var aggregate = new GenderAggregate(item, _eventCollector);
             aggregate.UpdateGender(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteGenderAsync(Guid id)

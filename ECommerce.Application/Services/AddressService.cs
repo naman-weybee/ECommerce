@@ -13,12 +13,12 @@ namespace ECommerce.Application.Services
 {
     public class AddressService : IAddressService
     {
-        private readonly IRepository<AddressAggregate, Address> _repository;
+        private readonly IRepository<Address> _repository;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public AddressService(IRepository<AddressAggregate, Address> repository, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public AddressService(IRepository<Address> repository, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _transactionManagerService = transactionManagerService;
@@ -54,7 +54,7 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(item, _eventCollector);
             aggregate.CreateAddress(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateAddressAsync(AddressUpdateDTO dto)
@@ -63,7 +63,7 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(item, _eventCollector);
             aggregate.UpdateAddress(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task UpdateAddressTypeAsync(AddressTypeUpdateDTO dto)
@@ -123,7 +123,7 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(address, _eventCollector);
             aggregate.UpdateAddressType(addressType);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
     }
 }

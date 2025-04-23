@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.Constants;
@@ -13,12 +12,12 @@ namespace ECommerce.Application.Templates
     public class EmailTemplates : IEmailTemplates
     {
         private readonly IEmailService _emailService;
-        private readonly IRepository<UserAggregate, User> _userRepository;
-        private readonly IRepository<OrderAggregate, Order> _orderRepository;
-        private readonly IRepository<OTPAggregate, OTP> _otpRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<OTP> _otpRepository;
         private readonly IMapper _mapper;
 
-        public EmailTemplates(IEmailService emailService, IRepository<UserAggregate, User> userRepository, IRepository<OrderAggregate, Order> orderRepository, IRepository<OTPAggregate, OTP> otpRepository, IMapper mapper)
+        public EmailTemplates(IEmailService emailService, IRepository<User> userRepository, IRepository<Order> orderRepository, IRepository<OTP> otpRepository, IMapper mapper)
         {
             _emailService = emailService;
             _userRepository = userRepository;

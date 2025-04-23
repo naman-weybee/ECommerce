@@ -12,11 +12,11 @@ namespace ECommerce.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository<CategoryAggregate, Category> _repository;
+        private readonly IRepository<Category> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CategoryService(IRepository<CategoryAggregate, Category> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CategoryService(IRepository<Category> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -49,7 +49,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CategoryAggregate(item, _eventCollector);
             aggregate.CreateCategory(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateCategoryAsync(CategoryUpdateDTO dto)
@@ -58,7 +58,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CategoryAggregate(item, _eventCollector);
             aggregate.UpdateCategory(aggregate.Category);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
@@ -69,7 +69,7 @@ namespace ECommerce.Application.Services
             var subCategory = _mapper.Map<Category>(dto);
             aggregate.AddSubCategory(subCategory);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task RemoveSubCategoryAsync(Guid id)

@@ -12,12 +12,12 @@ namespace ECommerce.Application.Services
 {
     public class CartItemService : ICartItemService
     {
-        private readonly IRepository<CartItemAggregate, CartItem> _repository;
+        private readonly IRepository<CartItem> _repository;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CartItemService(IRepository<CartItemAggregate, CartItem> repository, IProductService productService, IMapper mapper, IDomainEventCollector eventCollector)
+        public CartItemService(IRepository<CartItem> repository, IProductService productService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _productService = productService;
@@ -63,7 +63,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.CreateCartItem(item, product.Price);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateCartItemAsync(CartItemUpdateDTO dto)
@@ -74,7 +74,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.UpdateCartItem(item, product.Price);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
@@ -86,7 +86,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task UpdateUnitPriceAsync(CartItemUnitPriceUpdateDTO dto)
@@ -95,7 +95,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.UpdateUnitPrice(dto.UnitPrice);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteCartItemAsync(Guid id, Guid userId)

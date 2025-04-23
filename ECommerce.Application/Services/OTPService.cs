@@ -12,13 +12,13 @@ namespace ECommerce.Application.Services
 {
     public class OTPService : IOTPService
     {
-        private readonly IRepository<OTPAggregate, OTP> _repository;
-        private readonly IRepository<UserAggregate, User> _userRepository;
+        private readonly IRepository<OTP> _repository;
+        private readonly IRepository<User> _userRepository;
         private readonly IEmailTemplates _emailTemplates;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OTPService(IRepository<OTPAggregate, OTP> repository, IRepository<UserAggregate, User> userRepository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
+        public OTPService(IRepository<OTP> repository, IRepository<User> userRepository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _userRepository = userRepository;
@@ -57,7 +57,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.CreateOTP(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
 
             //Send Email to User
             await _emailTemplates.SendOTPEmailAsync(aggregate.OTP.Id, dto.Email, dto.Type);
@@ -77,7 +77,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.VerifyOTP();
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
 
             return new OTPTokenDTO() { Token = aggregate.OTP.Token! };
         }
@@ -88,7 +88,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.UpdateOTP(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task SetOTPIsUsedAsync(Guid otpId)
@@ -101,7 +101,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.MarkAsUsed();
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteOTPAsync(Guid id)

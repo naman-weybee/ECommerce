@@ -14,15 +14,15 @@ namespace ECommerce.Application.Services
 {
     public class OrderItemService : IOrderItemService
     {
-        private readonly IRepository<OrderItemAggregate, OrderItem> _repository;
-        private readonly IRepository<OrderAggregate, Order> _orderRepository;
+        private readonly IRepository<OrderItem> _repository;
+        private readonly IRepository<Order> _orderRepository;
         private readonly IProductService _productService;
         private readonly IInventoryService _inventoryService;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderItemService(IRepository<OrderItemAggregate, OrderItem> repository, IRepository<OrderAggregate, Order> orderRepository, IProductService productService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderItemService(IRepository<OrderItem> repository, IRepository<Order> orderRepository, IProductService productService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _orderRepository = orderRepository;
@@ -63,7 +63,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.CreateOrderItem(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateOrderItemAsync(OrderItemUpdateDTO dto)
@@ -80,7 +80,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.UpdateOrderItem(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task UpdateQuantityAsync(OrderItemQuantityUpdateDTO dto)
@@ -103,7 +103,7 @@ namespace ECommerce.Application.Services
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
                 aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
-                await _repository.UpdateAsync(aggregate);
+                await _repository.UpdateAsync(aggregate.Entity);
 
                 // Update Product Stock
                 await UpdateOrderItemProductStockAsync(product.Id, orderItem.Quantity, dto.Quantity);
@@ -128,7 +128,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.UpdateUnitPrice(dto.UnitPrice);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteOrderItemAsync(Guid id)
@@ -148,7 +148,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(item!, _eventCollector);
             aggregate.UpdateTotalAmount();
 
-            await _orderRepository.UpdateAsync(aggregate);
+            await _orderRepository.UpdateAsync(aggregate.Entity);
         }
 
         private async Task ValidateProductStockAsync(Guid productId, int oldQuantity, int newQuantity)

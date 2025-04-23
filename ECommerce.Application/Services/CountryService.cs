@@ -12,11 +12,11 @@ namespace ECommerce.Application.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly IRepository<CountryAggregate, Country> _repository;
+        private readonly IRepository<Country> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CountryService(IRepository<CountryAggregate, Country> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CountryService(IRepository<Country> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -46,7 +46,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CountryAggregate(item, _eventCollector);
             aggregate.CreateCountry(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateCountryAsync(CountryUpdateDTO dto)
@@ -55,7 +55,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CountryAggregate(item, _eventCollector);
             aggregate.UpdateCountry(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteCountryAsync(Guid id)

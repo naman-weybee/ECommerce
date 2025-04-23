@@ -12,11 +12,11 @@ namespace ECommerce.Application.Services
 {
     public class CityService : ICityService
     {
-        private readonly IRepository<CityAggregate, City> _repository;
+        private readonly IRepository<City> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CityService(IRepository<CityAggregate, City> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CityService(IRepository<City> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -54,7 +54,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CityAggregate(item, _eventCollector);
             aggregate.CreateCity(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateCityAsync(CityUpdateDTO dto)
@@ -63,7 +63,7 @@ namespace ECommerce.Application.Services
             var aggregate = new CityAggregate(item, _eventCollector);
             aggregate.UpdateCity(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteCityAsync(Guid id)

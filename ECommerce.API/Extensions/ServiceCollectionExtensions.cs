@@ -7,7 +7,6 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
 using ECommerce.Application.Templates;
 using ECommerce.Application.Validators;
-using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.DomainServices.Interfaces;
 using ECommerce.Domain.DomainServices.Services;
 using ECommerce.Domain.Entities;
@@ -85,21 +84,21 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IIProductDomainService, ProductService>();
 
-            services.AddScoped<IRepository<ProductAggregate, Product>, Repository<ProductAggregate, Product>>();
-            services.AddScoped<IRepository<CategoryAggregate, Category>, Repository<CategoryAggregate, Category>>();
-            services.AddScoped<IRepository<OrderItemAggregate, OrderItem>, Repository<OrderItemAggregate, OrderItem>>();
-            services.AddScoped<IRepository<CartItemAggregate, CartItem>, Repository<CartItemAggregate, CartItem>>();
-            services.AddScoped<IRepository<OrderAggregate, Order>, Repository<OrderAggregate, Order>>();
-            services.AddScoped<IRepository<AddressAggregate, Address>, Repository<AddressAggregate, Address>>();
-            services.AddScoped<IRepository<CountryAggregate, Country>, Repository<CountryAggregate, Country>>();
-            services.AddScoped<IRepository<StateAggregate, State>, Repository<StateAggregate, State>>();
-            services.AddScoped<IRepository<CityAggregate, City>, Repository<CityAggregate, City>>();
-            services.AddScoped<IRepository<GenderAggregate, Gender>, Repository<GenderAggregate, Gender>>();
-            services.AddScoped<IRepository<RoleAggregate, Role>, Repository<RoleAggregate, Role>>();
-            services.AddScoped<IRepository<RoleEntityAggregate, RoleEntity>, Repository<RoleEntityAggregate, RoleEntity>>();
-            services.AddScoped<IRepository<UserAggregate, User>, Repository<UserAggregate, User>>();
-            services.AddScoped<IRepository<RefreshTokenAggregate, RefreshToken>, Repository<RefreshTokenAggregate, RefreshToken>>();
-            services.AddScoped<IRepository<OTPAggregate, OTP>, Repository<OTPAggregate, OTP>>();
+            services.AddScoped<IRepository<Product>, Repository<Product>>();
+            services.AddScoped<IRepository<Category>, Repository<Category>>();
+            services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
+            services.AddScoped<IRepository<CartItem>, Repository<CartItem>>();
+            services.AddScoped<IRepository<Order>, Repository<Order>>();
+            services.AddScoped<IRepository<Address>, Repository<Address>>();
+            services.AddScoped<IRepository<Country>, Repository<Country>>();
+            services.AddScoped<IRepository<State>, Repository<State>>();
+            services.AddScoped<IRepository<City>, Repository<City>>();
+            services.AddScoped<IRepository<Gender>, Repository<Gender>>();
+            services.AddScoped<IRepository<Role>, Repository<Role>>();
+            services.AddScoped<IRepository<RoleEntity>, Repository<RoleEntity>>();
+            services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IRepository<RefreshToken>, Repository<RefreshToken>>();
+            services.AddScoped<IRepository<OTP>, Repository<OTP>>();
 
             services.AddScoped<IDomainEventCollector, DomainEventCollector>();
 

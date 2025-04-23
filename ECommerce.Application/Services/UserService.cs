@@ -13,8 +13,8 @@ namespace ECommerce.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<UserAggregate, User> _repository;
-        private readonly IRepository<OTPAggregate, OTP> _otpRepository;
+        private readonly IRepository<User> _repository;
+        private readonly IRepository<OTP> _otpRepository;
         private readonly IOTPService _otpService;
         private readonly IEmailTemplates _emailTemplates;
         private readonly ITransactionManagerService _transactionManagerService;
@@ -22,7 +22,7 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public UserService(IRepository<UserAggregate, User> repository, IRepository<OTPAggregate, OTP> otpRepository, IOTPService otpService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMD5Service mD5Service, IMapper mapper, IDomainEventCollector eventCollector)
+        public UserService(IRepository<User> repository, IRepository<OTP> otpRepository, IOTPService otpService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMD5Service mD5Service, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _otpRepository = otpRepository;
@@ -66,7 +66,7 @@ namespace ECommerce.Application.Services
                 var aggregate = new UserAggregate(item, _eventCollector);
                 aggregate.CreateUser(item);
 
-                await _repository.InsertAsync(aggregate);
+                await _repository.InsertAsync(aggregate.Entity);
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
@@ -88,7 +88,7 @@ namespace ECommerce.Application.Services
             var aggregate = new UserAggregate(item, _eventCollector);
             aggregate.UpdateUser(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task PasswordResetAsync(PasswordResetDTO dto)
@@ -114,7 +114,7 @@ namespace ECommerce.Application.Services
                 var aggregate = new UserAggregate(user, _eventCollector);
                 aggregate.UpdateUser(user);
 
-                await _repository.UpdateAsync(aggregate);
+                await _repository.UpdateAsync(aggregate.Entity);
 
                 // Mark OTP as used
                 await _otpService.SetOTPIsUsedAsync(otp.Id);
@@ -152,7 +152,7 @@ namespace ECommerce.Application.Services
             var aggregate = new UserAggregate(user, _eventCollector);
             aggregate.EmailVerified();
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
     }
 }

@@ -12,11 +12,11 @@ namespace ECommerce.Application.Services
 {
     public class StateService : IStateService
     {
-        private readonly IRepository<StateAggregate, State> _repository;
+        private readonly IRepository<State> _repository;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public StateService(IRepository<StateAggregate, State> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public StateService(IRepository<State> repository, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _mapper = mapper;
@@ -57,7 +57,7 @@ namespace ECommerce.Application.Services
             var aggregate = new StateAggregate(item, _eventCollector);
             aggregate.CreateState(item);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         public async Task UpdateStateAsync(StateUpdateDTO dto)
@@ -66,7 +66,7 @@ namespace ECommerce.Application.Services
             var aggregate = new StateAggregate(item, _eventCollector);
             aggregate.UpdateState(item);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteStateAsync(Guid id)

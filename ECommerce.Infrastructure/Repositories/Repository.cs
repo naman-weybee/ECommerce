@@ -1,5 +1,4 @@
-﻿using ECommerce.Domain.Aggregates;
-using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Infrastructure.Data;
 using ECommerce.Shared.Interfaces;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
@@ -8,8 +7,7 @@ using X.PagedList;
 
 namespace ECommerce.Infrastructure.Repositories
 {
-    public class Repository<TAggregate, TEntity> : IRepository<TAggregate, TEntity>
-        where TAggregate : AggregateRoot<TEntity>
+    public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
         private readonly ApplicationDbContext _context;
@@ -54,18 +52,14 @@ namespace ECommerce.Infrastructure.Repositories
             return _pagination.SortResult(query, requestParams);
         }
 
-        public virtual async Task InsertAsync(TAggregate aggregate)
+        public virtual async Task InsertAsync(TEntity entity)
         {
-            var entity = aggregate.Entity;
-
             DbSet.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task UpdateAsync(TAggregate aggregate)
+        public virtual async Task UpdateAsync(TEntity entity)
         {
-            var entity = aggregate.Entity;
-
             DbSet.Update(entity);
             await _context.SaveChangesAsync();
         }

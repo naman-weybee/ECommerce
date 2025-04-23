@@ -15,8 +15,8 @@ namespace ECommerce.Application.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository<OrderAggregate, Order> _repository;
-        private readonly IRepository<AddressAggregate, Address> _addressRepository;
+        private readonly IRepository<Order> _repository;
+        private readonly IRepository<Address> _addressRepository;
         private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
         private readonly IOrderItemService _orderItemService;
@@ -26,7 +26,7 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderService(IRepository<OrderAggregate, Order> repository, IRepository<AddressAggregate, Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderService(IRepository<Order> repository, IRepository<Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _addressRepository = addressRepository;
@@ -128,7 +128,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrder(aggregate.Order);
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
@@ -149,7 +149,7 @@ namespace ECommerce.Application.Services
                 await UpdateProductStock(orderItems, true);
             }
 
-            await _repository.UpdateAsync(aggregate);
+            await _repository.UpdateAsync(aggregate.Entity);
 
             // Send Email to User
             await _emailTemplates.SendOrderEmailAsync(item.UserId, item.Id, aggregate.EventType);
@@ -201,7 +201,7 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(order, _eventCollector);
             aggregate.CreateOrder(order);
 
-            await _repository.InsertAsync(aggregate);
+            await _repository.InsertAsync(aggregate.Entity);
         }
 
         private async Task CheckForAddressExistance(Guid userId, Guid addressId, eAddressType addressType)
