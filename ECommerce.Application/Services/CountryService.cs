@@ -13,29 +13,36 @@ namespace ECommerce.Application.Services
     public class CountryService : ICountryService
     {
         private readonly IRepository<Country> _repository;
+        private readonly IServiceHelper<Country> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CountryService(IRepository<Country> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CountryService(IRepository<Country> repository, IServiceHelper<Country> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<CountryDTO>> GetAllCountriesAsync(RequestParams requestParams)
+        public async Task<List<CountryDTO>> GetAllCountriesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(x => x.States);
+            IQueryable<Country> query = useQuery
+                ? _repository.GetQuery().Include(c => c.States)!
+                : null!;
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<CountryDTO>>(items);
         }
 
-        public async Task<CountryDTO> GetCountryByIdAsync(Guid id)
+        public async Task<CountryDTO> GetCountryByIdAsync(Guid id, bool useQuery = false)
         {
-            var item = await _repository.GetByIdAsync(id);
+            IQueryable<Country> query = useQuery
+                ? _repository.GetQuery().Include(c => c.States)!
+                : null!;
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<CountryDTO>(item);
         }

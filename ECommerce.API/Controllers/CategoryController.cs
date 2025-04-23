@@ -22,7 +22,7 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllCategoriesAsync(requestParams);
+            var data = await _service.GetAllCategoriesAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -31,7 +31,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
-            var data = await _service.GetCategoryByIdAsync(id);
+            var data = await _service.GetCategoryByIdAsync(id, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

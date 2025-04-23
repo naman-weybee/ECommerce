@@ -14,36 +14,50 @@ namespace ECommerce.Application.Services
     public class AddressService : IAddressService
     {
         private readonly IRepository<Address> _repository;
+        private readonly IServiceHelper<Address> _serviceHelper;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public AddressService(IRepository<Address> repository, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public AddressService(IRepository<Address> repository, IServiceHelper<Address> serviceHelper, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams requestParams, Guid userId = default)
+        public async Task<List<AddressDTO>> GetAllAddressesAsync(RequestParams? requestParams = null)
         {
-            var query = _repository.GetQuery();
-
-            if (userId != default)
-                query = query.Where(x => x.UserId == userId);
-
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<AddressDTO>>(items);
         }
 
-        public async Task<AddressDTO> GetAddressByIdAsync(Guid id, Guid userId)
+        public async Task<List<AddressDTO>> GetAllAddressesByUserAsync(Guid userId, RequestParams? requestParams = null)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<AddressDTO>>(items);
+        }
+
+        public async Task<AddressDTO> GetAddressByIdAsync(Guid id)
+        {
+            var item = await _serviceHelper.GetByIdAsync(id);
+
+            return _mapper.Map<AddressDTO>(item);
+        }
+
+        public async Task<AddressDTO> GetSpecificAddressByUserAsync(Guid id, Guid userId)
+        {
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId);
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<AddressDTO>(item);
         }

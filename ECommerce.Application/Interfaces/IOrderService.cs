@@ -5,11 +5,17 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams dto, Guid userId = default);
+        Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams? requestParams = null, bool useQuery = false);
 
-        Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId = default);
+        Task<List<OrderDTO>> GetAllOrdersByUserAsync(Guid userId, RequestParams? requestParams = null, bool useQuery = false);
 
-        Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId);
+        Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams? requestParams = null, bool useQuery = false);
+
+        Task<List<OrderDTO>> GetAllRecentOrdersByUserAsync(Guid userId, RequestParams? requestParams = null, bool useQuery = false);
+
+        Task<OrderDTO> GetOrderByIdAsync(Guid id, bool useQuery = false);
+
+        Task<OrderDTO> GetSpecificOrderByUserAsync(Guid id, Guid userId, bool useQuery = false);
 
         Task CreateOrderAsync(OrderCreateFromCartDTO dto);
 

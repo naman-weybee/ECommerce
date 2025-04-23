@@ -13,33 +13,35 @@ namespace ECommerce.Application.Services
     public class ProductService : IProductService, IIProductDomainService
     {
         private readonly IRepository<Product> _repository;
+        private readonly IServiceHelper<Product> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public ProductService(IRepository<Product> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public ProductService(IRepository<Product> repository, IServiceHelper<Product> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<ProductDTO>> GetAllProductsAsync(RequestParams requestParams)
+        public async Task<List<ProductDTO>> GetAllProductsAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<ProductDTO>>(items);
         }
 
         public async Task<ProductDTO> GetProductByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<ProductDTO>(item);
         }
 
         public async Task<int> GetProductStockByIdAsync(Guid id)
         {
-            var item = await GetProductByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return item.Stock;
         }

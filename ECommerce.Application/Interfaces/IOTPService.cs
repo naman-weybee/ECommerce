@@ -5,7 +5,7 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IOTPService
     {
-        Task<List<OTPDTO>> GetAllOTPAsync(RequestParams requestParams);
+        Task<List<OTPDTO>> GetAllOTPAsync(RequestParams? requestParams = null);
 
         Task<OTPDTO> GetOTPByIdAsync(Guid id);
 

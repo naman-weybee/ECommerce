@@ -12,26 +12,28 @@ namespace ECommerce.Application.Services
     public class GenderService : IGenderService
     {
         private readonly IRepository<Gender> _repository;
+        private readonly IServiceHelper<Gender> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public GenderService(IRepository<Gender> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public GenderService(IRepository<Gender> repository, IServiceHelper<Gender> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<GenderDTO>> GetAllGendersAsync(RequestParams requestParams)
+        public async Task<List<GenderDTO>> GetAllGendersAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<GenderDTO>>(items);
         }
 
         public async Task<GenderDTO> GetGenderByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<GenderDTO>(item);
         }

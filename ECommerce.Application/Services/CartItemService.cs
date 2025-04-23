@@ -13,46 +13,52 @@ namespace ECommerce.Application.Services
     public class CartItemService : ICartItemService
     {
         private readonly IRepository<CartItem> _repository;
+        private readonly IServiceHelper<CartItem> _serviceHelper;
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CartItemService(IRepository<CartItem> repository, IProductService productService, IMapper mapper, IDomainEventCollector eventCollector)
+        public CartItemService(IRepository<CartItem> repository, IServiceHelper<CartItem> serviceHelper, IProductService productService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _productService = productService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams, Guid userId = default)
+        public async Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams? requestParams = null)
         {
-            var query = _repository.GetQuery();
-
-            if (userId != default)
-                query = query.Where(x => x.UserId == userId);
-
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<CartItemDTO>>(items);
         }
 
-        public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId)
+        public async Task<List<CartItemDTO>> GetAllCartItemsByUserAsync(Guid userId, RequestParams? requestParams = null)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<CartItemDTO>>(items);
+        }
+
+        public async Task<CartItemDTO> GetCartItemByIdAsync(Guid id)
+        {
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<CartItemDTO>(item);
         }
 
-        public async Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId)
+        public async Task<CartItemDTO> GetSpecificCartItemsByUserAsync(Guid id, Guid userId)
         {
-            var items = await _repository.GetQuery()
-                .Where(x => x.UserId == userId).ToListAsync();
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId);
 
-            return _mapper.Map<List<CartItemDTO>>(items);
+            var item = await _serviceHelper.GetByIdAsync(id, query);
+
+            return _mapper.Map<CartItemDTO>(item);
         }
 
         public async Task CreateCartItemAsync(CartItemCreateDTO dto)
@@ -79,7 +85,7 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
         {
-            var cartItem = await GetCartItemByIdAsync(dto.Id, dto.UserId);
+            var cartItem = await GetSpecificCartItemsByUserAsync(dto.Id, dto.UserId);
             var product = await _productService.GetProductByIdAsync(cartItem.ProductId);
 
             var item = _mapper.Map<CartItem>(cartItem);

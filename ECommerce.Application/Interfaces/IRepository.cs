@@ -6,9 +6,17 @@ namespace ECommerce.Shared.Repositories
     public interface IRepository<TEntity>
         where TEntity : class
     {
-        Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null);
+        Task<TEntity> GetByIdAsync(Guid id);
 
-        Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity>? query = null);
+        Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity> query);
+
+        Task<List<TEntity>> GetAllAsync();
+
+        Task<List<TEntity>> GetAllAsync(IQueryable<TEntity> query);
+
+        Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams);
+
+        Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity> query);
 
         Task InsertAsync(TEntity entity);
 

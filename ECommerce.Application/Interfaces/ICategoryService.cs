@@ -5,9 +5,9 @@ namespace ECommerce.Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams dto);
+        Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams? requestParams = null, bool isInclude = false);
 
-        Task<CategoryDTO> GetCategoryByIdAsync(Guid id);
+        Task<CategoryDTO> GetCategoryByIdAsync(Guid id, bool isInclude = false);
 
         Task CreateCategoryAsync(CategoryCreateDTO dto);
 

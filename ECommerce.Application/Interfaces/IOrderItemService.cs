@@ -5,11 +5,11 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IOrderItemService
     {
-        Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams requestParams);
+        Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams? requestParams = null);
+
+        Task<List<OrderItemDTO>> GetOrderItemsByOrderAsync(Guid orderId, RequestParams? requestParams = null);
 
         Task<OrderItemDTO> GetOrderItemByIdAsync(Guid id);
-
-        Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(RequestParams requestParams, Guid orderId);
 
         Task CreateOrderItemAsync(OrderItemCreateDTO dto);
 

@@ -4,6 +4,7 @@ using ECommerce.API.Helper;
 using ECommerce.API.Helper.Interfaces;
 using ECommerce.API.Mappings;
 using ECommerce.Application.Interfaces;
+using ECommerce.Application.ServiceHelper;
 using ECommerce.Application.Services;
 using ECommerce.Application.Templates;
 using ECommerce.Application.Validators;
@@ -99,6 +100,22 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<RefreshToken>, Repository<RefreshToken>>();
             services.AddScoped<IRepository<OTP>, Repository<OTP>>();
+
+            services.AddScoped<IServiceHelper<Product>, ServiceHelper<Product>>();
+            services.AddScoped<IServiceHelper<Category>, ServiceHelper<Category>>();
+            services.AddScoped<IServiceHelper<OrderItem>, ServiceHelper<OrderItem>>();
+            services.AddScoped<IServiceHelper<CartItem>, ServiceHelper<CartItem>>();
+            services.AddScoped<IServiceHelper<Order>, ServiceHelper<Order>>();
+            services.AddScoped<IServiceHelper<Address>, ServiceHelper<Address>>();
+            services.AddScoped<IServiceHelper<Country>, ServiceHelper<Country>>();
+            services.AddScoped<IServiceHelper<State>, ServiceHelper<State>>();
+            services.AddScoped<IServiceHelper<City>, ServiceHelper<City>>();
+            services.AddScoped<IServiceHelper<Gender>, ServiceHelper<Gender>>();
+            services.AddScoped<IServiceHelper<Role>, ServiceHelper<Role>>();
+            services.AddScoped<IServiceHelper<RoleEntity>, ServiceHelper<RoleEntity>>();
+            services.AddScoped<IServiceHelper<User>, ServiceHelper<User>>();
+            services.AddScoped<IServiceHelper<RefreshToken>, ServiceHelper<RefreshToken>>();
+            services.AddScoped<IServiceHelper<OTP>, ServiceHelper<OTP>>();
 
             services.AddScoped<IDomainEventCollector, DomainEventCollector>();
 

@@ -5,11 +5,13 @@ namespace ECommerce.Application.Interfaces
 {
     public interface ICartItemService
     {
-        Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams requestParams, Guid userId = default);
+        Task<List<CartItemDTO>> GetAllCartItemsAsync(RequestParams? requestParams = null);
 
-        Task<CartItemDTO> GetCartItemByIdAsync(Guid id, Guid userId);
+        Task<List<CartItemDTO>> GetAllCartItemsByUserAsync(Guid userId, RequestParams? requestParams = null);
 
-        Task<List<CartItemDTO>> GetCartItemsByUserIdAsync(Guid userId);
+        Task<CartItemDTO> GetCartItemByIdAsync(Guid id);
+
+        Task<CartItemDTO> GetSpecificCartItemsByUserAsync(Guid id, Guid userId);
 
         Task CreateCartItemAsync(CartItemCreateDTO dto);
 

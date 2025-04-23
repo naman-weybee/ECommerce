@@ -5,9 +5,9 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IStateService
     {
-        Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams);
+        Task<List<StateDTO>> GetAllStatesAsync(RequestParams? requestParams = null, bool useQuery = false);
 
-        Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID);
+        Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null);
 
         Task<StateDTO> GetStateByIdAsync(Guid id);
 

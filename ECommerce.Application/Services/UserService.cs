@@ -14,6 +14,7 @@ namespace ECommerce.Application.Services
     public class UserService : IUserService
     {
         private readonly IRepository<User> _repository;
+        private readonly IServiceHelper<User> _serviceHelper;
         private readonly IRepository<OTP> _otpRepository;
         private readonly IOTPService _otpService;
         private readonly IEmailTemplates _emailTemplates;
@@ -22,9 +23,10 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public UserService(IRepository<User> repository, IRepository<OTP> otpRepository, IOTPService otpService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMD5Service mD5Service, IMapper mapper, IDomainEventCollector eventCollector)
+        public UserService(IRepository<User> repository, IServiceHelper<User> serviceHelper, IRepository<OTP> otpRepository, IOTPService otpService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMD5Service mD5Service, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _otpRepository = otpRepository;
             _otpService = otpService;
             _emailTemplates = emailTemplates;
@@ -34,22 +36,35 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams requestParams)
+        public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(u => u.Role);
+            IQueryable<User> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Role)!
+                : null!;
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<UserDTO>>(items);
         }
 
-        public async Task<UserDTO> GetUserByIdAsync(Guid id)
+        public async Task<List<UserDTO>> GetAllActiveUsersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(u => u.Role);
+            IQueryable<User> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Role).Where(x => x.IsActive)!
+                : null!;
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
+
+            return _mapper.Map<List<UserDTO>>(items);
+        }
+
+        public async Task<UserDTO> GetUserByIdAsync(Guid id, bool useQuery = false)
+        {
+            IQueryable<User> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Role)!
+                : null!;
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<UserDTO>(item);
         }

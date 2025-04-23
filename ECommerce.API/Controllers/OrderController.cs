@@ -24,16 +24,16 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllOrdersAsync(requestParams);
+            var data = await _service.GetAllOrdersAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetOrdersForUser")]
-        public async Task<IActionResult> GetOrdersForUser([FromQuery] RequestParams requestParams)
+        [HttpGet("GetAllOrdersByUser")]
+        public async Task<IActionResult> GetAllOrdersByUser([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllOrdersAsync(requestParams, _userId);
+            var data = await _service.GetAllOrdersByUserAsync(_userId, requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -44,16 +44,18 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllRecentOrdersAsync(requestParams);
+            var data = await _service.GetAllRecentOrdersAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetRecentOrdersForUser")]
-        public async Task<IActionResult> GetRecentOrdersForUser([FromQuery] RequestParams requestParams)
+        [HttpGet("GetAllRecentOrdersByUser")]
+        public async Task<IActionResult> GetAllRecentOrdersByUser([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllRecentOrdersAsync(requestParams, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetAllRecentOrdersByUserAsync(_userId, requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -62,7 +64,16 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
-            var data = await _service.GetOrderByIdAsync(id, _userId);
+            var data = await _service.GetOrderByIdAsync(id, true);
+            _controllerHelper.SetResponse(_response, data);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetSpecificOrderByUser/{id}")]
+        public async Task<IActionResult> GetSpecificOrderByUser(Guid id)
+        {
+            var data = await _service.GetSpecificOrderByUserAsync(id, _userId, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

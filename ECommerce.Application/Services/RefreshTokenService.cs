@@ -13,31 +13,48 @@ namespace ECommerce.Application.Services
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly IRepository<RefreshToken> _repository;
+        private readonly IServiceHelper<RefreshToken> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public RefreshTokenService(IRepository<RefreshToken> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public RefreshTokenService(IRepository<RefreshToken> repository, IServiceHelper<RefreshToken> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensAsync(RequestParams requestParams, Guid userId = default)
+        public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensAsync(RequestParams? requestParams = null)
         {
-            var query = _repository.GetQuery();
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
-            if (userId != default)
-                query = query.Where(x => x.UserId == userId);
+            return _mapper.Map<List<RefreshTokenDTO>>(items);
+        }
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+        public async Task<List<RefreshTokenDTO>> GetAllRefreshTokensByUserAsync(Guid userId, RequestParams? requestParams = null)
+        {
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId);
+
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<RefreshTokenDTO>>(items);
         }
 
         public async Task<RefreshTokenDTO> GetRefreshTokenByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
+
+            return _mapper.Map<RefreshTokenDTO>(item);
+        }
+
+        public async Task<RefreshTokenDTO> GetSpecificRefreshTokenByUserAsync(Guid id, Guid userId)
+        {
+            var query = _repository.GetQuery()
+                .Where(x => x.UserId == userId);
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<RefreshTokenDTO>(item);
         }

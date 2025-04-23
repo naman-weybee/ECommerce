@@ -30,10 +30,10 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetCartItemsForUser")]
-        public async Task<IActionResult> GetCartItemsForUser([FromQuery] RequestParams requestParams)
+        [HttpGet("GetAllCartItemsByUser")]
+        public async Task<IActionResult> GetAllCartItemsByUser([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllCartItemsAsync(requestParams, _userId);
+            var data = await _service.GetAllCartItemsByUserAsync(_userId, requestParams);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -42,7 +42,18 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCartItemById(Guid id)
         {
-            var data = await _service.GetCartItemByIdAsync(id, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.CartItem, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetCartItemByIdAsync(id);
+            _controllerHelper.SetResponse(_response, data);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetSpecificCartItemByUser/{id}")]
+        public async Task<IActionResult> GetSpecificCartItemByUser(Guid id)
+        {
+            var data = await _service.GetSpecificCartItemsByUserAsync(id, _userId);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

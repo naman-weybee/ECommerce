@@ -22,20 +22,42 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers([FromQuery] RequestParams requestParams)
         {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllUsersAsync(requestParams);
+            var data = await _service.GetAllUsersAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
         }
 
+        [HttpGet("GetAllActiveUsers")]
+        public async Task<IActionResult> GetAllActiveUsers([FromQuery] RequestParams requestParams)
+        {
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetAllActiveUsersAsync(requestParams, true);
+            _controllerHelper.SetResponse(_response, data, requestParams);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetUserByIdAsync(id, true);
+            _controllerHelper.SetResponse(_response, data);
+
+            return StatusCode(200, _response);
+        }
+
         [HttpGet("GetCurrentUser")]
-        public async Task<IActionResult> GetUserById()
+        public async Task<IActionResult> GetCurrentUser()
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasViewPermission);
 
-            var data = await _service.GetUserByIdAsync(_userId);
+            var data = await _service.GetUserByIdAsync(_userId, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

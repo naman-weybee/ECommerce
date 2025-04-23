@@ -13,30 +13,41 @@ namespace ECommerce.Application.Services
     public class OTPService : IOTPService
     {
         private readonly IRepository<OTP> _repository;
+        private readonly IServiceHelper<OTP> _serviceHelper;
         private readonly IRepository<User> _userRepository;
         private readonly IEmailTemplates _emailTemplates;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OTPService(IRepository<OTP> repository, IRepository<User> userRepository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
+        public OTPService(IRepository<OTP> repository, IServiceHelper<OTP> serviceHelper, IRepository<User> userRepository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _userRepository = userRepository;
             _emailTemplates = emailTemplates;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<OTPDTO>> GetAllOTPAsync(RequestParams requestParams)
+        public async Task<List<OTPDTO>> GetAllOTPAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<OTPDTO>>(items);
         }
 
         public async Task<OTPDTO> GetOTPByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
+
+            return _mapper.Map<OTPDTO>(item);
+        }
+
+        public async Task<OTPDTO> GetSpecificOTPByUserAsync(Guid id, Guid userId)
+        {
+            var query = _repository.GetQuery().Where(x => x.UserId == userId);
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<OTPDTO>(item);
         }

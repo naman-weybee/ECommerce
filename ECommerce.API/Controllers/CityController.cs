@@ -29,9 +29,9 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("GetAllCitiesByStateId/{stateId}")]
-        public async Task<IActionResult> GetAllCitiesByStateId(Guid stateId)
+        public async Task<IActionResult> GetAllCitiesByStateId(Guid stateId, [FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllCitiesByStateIdAsync(stateId);
+            var data = await _service.GetAllCitiesByStateIdAsync(stateId, requestParams);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

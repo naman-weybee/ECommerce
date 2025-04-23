@@ -21,9 +21,19 @@ namespace ECommerce.Infrastructure.Repositories
             _pagination = pagination;
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null)
+        public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            query ??= _context.Set<TEntity>().AsQueryable();
+            var entity = await _context.Set<TEntity>().FindAsync(id);
+
+            if (entity != null)
+                return entity;
+
+            throw new InvalidOperationException($"Data for Id = {id} is not available.");
+        }
+
+        public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity> query)
+        {
+            query = _context.Set<TEntity>().AsQueryable();
 
             var entity = await query.SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id));
 
@@ -33,10 +43,39 @@ namespace ECommerce.Infrastructure.Repositories
             throw new InvalidOperationException($"Data for Id = {id} is not available.");
         }
 
-        public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity>? query = null)
+        public async Task<List<TEntity>> GetAllAsync()
         {
-            query ??= _context.Set<TEntity>().AsQueryable();
+            return await _context.Set<TEntity>()?.ToListAsync()!;
+        }
 
+        public async Task<List<TEntity>> GetAllAsync(IQueryable<TEntity> query)
+        {
+            query = _context.Set<TEntity>().AsQueryable();
+
+            return await query?.ToListAsync()!;
+        }
+
+        public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams)
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            if (!string.IsNullOrEmpty(requestParams.Search))
+            {
+                var nameProperty = typeof(TEntity).GetProperty("Name");
+                if (nameProperty != null)
+                {
+                    var searchTerm = $"%{requestParams.Search}%";
+                    query = query.Where(e => EF.Functions.Like(EF.Property<string>(e, "Name"), searchTerm));
+                }
+            }
+
+            requestParams.RecordCount = await query.CountAsync();
+
+            return _pagination.SortResult(query, requestParams);
+        }
+
+        public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams, IQueryable<TEntity> query)
+        {
             if (!string.IsNullOrEmpty(requestParams.Search))
             {
                 var nameProperty = typeof(TEntity).GetProperty("Name");
@@ -81,6 +120,11 @@ namespace ECommerce.Infrastructure.Repositories
         {
             DbSet.Update(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public virtual Task<int> SaveChanges()
+        {
+            return _context.SaveChangesAsync();
         }
 
         public virtual IQueryable<TEntity> GetQuery()

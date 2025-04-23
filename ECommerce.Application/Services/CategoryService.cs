@@ -13,32 +13,36 @@ namespace ECommerce.Application.Services
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<Category> _repository;
+        private readonly IServiceHelper<Category> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CategoryService(IRepository<Category> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CategoryService(IRepository<Category> repository, IServiceHelper<Category> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams requestParams)
+        public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(c => c.Products);
+            IQueryable<Category> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Products)!
+                : null!;
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<CategoryDTO>>(items);
         }
 
-        public async Task<CategoryDTO> GetCategoryByIdAsync(Guid id)
+        public async Task<CategoryDTO> GetCategoryByIdAsync(Guid id, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(c => c.Products);
+            IQueryable<Category> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Products)!
+                : null!;
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<CategoryDTO>(item);
         }

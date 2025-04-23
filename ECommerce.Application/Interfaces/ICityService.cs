@@ -5,9 +5,9 @@ namespace ECommerce.Application.Interfaces
 {
     public interface ICityService
     {
-        Task<List<CityDTO>> GetAllCitiesAsync(RequestParams requestParams);
+        Task<List<CityDTO>> GetAllCitiesAsync(RequestParams? requestParams = null);
 
-        Task<List<StateDTO>> GetAllCitiesByStateIdAsync(Guid stateId);
+        Task<List<CityDTO>> GetAllCitiesByStateIdAsync(Guid stateId, RequestParams? requestParams = null);
 
         Task<CityDTO> GetCityByIdAsync(Guid id);
 

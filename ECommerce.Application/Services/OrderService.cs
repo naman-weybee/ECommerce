@@ -16,6 +16,7 @@ namespace ECommerce.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IRepository<Order> _repository;
+        private readonly IServiceHelper<Order> _serviceHelper;
         private readonly IRepository<Address> _addressRepository;
         private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
@@ -26,9 +27,10 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderService(IRepository<Order> repository, IRepository<Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderService(IRepository<Order> repository, IServiceHelper<Order> serviceHelper, IRepository<Address> addressRepository, IUserService userService, ICartItemService cartItemService, IOrderItemService orderItemService, IInventoryService inventoryService, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _addressRepository = addressRepository;
             _userService = userService;
             _cartItemService = cartItemService;
@@ -40,38 +42,72 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams requestParams, Guid userId = default)
+        public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery();
+            IQueryable<Order> query = useQuery
+                ? _repository.GetQuery().Include(c => c.OrderItems)!
+                : null!;
 
-            if (userId != default)
-                query = query.Where(x => x.UserId == userId);
-
-            query = query.Include(x => x.OrderItems);
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<OrderDTO>>(items);
         }
 
-        public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams requestParams, Guid userId = default)
+        public async Task<List<OrderDTO>> GetAllOrdersByUserAsync(Guid userId, RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery();
+            IQueryable<Order> query = useQuery
+                ? _repository.GetQuery().Where(x => x.UserId == userId).Include(c => c.OrderItems)!
+                : null!;
 
-            if (userId != default)
-                query = query.Where(x => x.UserId == userId);
-
-            query = query.Include(x => x.OrderItems);
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
         }
 
-        public async Task<OrderDTO> GetOrderByIdAsync(Guid id, Guid userId)
+        public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams? requestParams = null, bool useQuery = false)
+        {
+            IQueryable<Order> query = useQuery
+                ? _repository.GetQuery().OrderByDescending(x => x.OrderPlacedDate).Include(c => c.OrderItems)!
+                : null!;
+
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<OrderDTO>>(items);
+        }
+
+        public async Task<List<OrderDTO>> GetAllRecentOrdersByUserAsync(Guid userId, RequestParams? requestParams = null, bool useQuery = false)
         {
             var query = _repository.GetQuery()
-                .Where(u => u.UserId == userId).Include(c => c.OrderItems);
+                .Where(x => x.UserId == userId);
 
-            var item = await _repository.GetByIdAsync(id, query);
+            if (useQuery)
+                query = query.Include(x => x.OrderItems);
+
+            query = query.OrderByDescending(x => x.CreatedDate);
+
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
+
+            return _mapper.Map<List<OrderDTO>>(items);
+        }
+
+        public async Task<OrderDTO> GetOrderByIdAsync(Guid id, bool useQuery = false)
+        {
+            IQueryable<Order> query = useQuery
+                ? _repository.GetQuery().Include(c => c.OrderItems)!
+                : null!;
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
+
+            return _mapper.Map<OrderDTO>(item);
+        }
+
+        public async Task<OrderDTO> GetSpecificOrderByUserAsync(Guid id, Guid userId, bool useQuery = false)
+        {
+            IQueryable<Order> query = useQuery
+                ? _repository.GetQuery().Where(x => x.UserId == userId).Include(c => c.OrderItems)!
+                : null!;
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<OrderDTO>(item);
         }
@@ -133,7 +169,7 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
         {
-            var order = await GetOrderByIdAsync(dto.Id, dto.UserId);
+            var order = await GetSpecificOrderByUserAsync(dto.Id, dto.UserId);
 
             var item = _mapper.Map<Order>(order);
             var aggregate = new OrderAggregate(item, _eventCollector);
@@ -166,7 +202,7 @@ namespace ECommerce.Application.Services
 
         private async Task<List<CartItemDTO>> GetUserCartItems(Guid userId)
         {
-            var cartItems = await _cartItemService.GetCartItemsByUserIdAsync(userId);
+            var cartItems = await _cartItemService.GetAllCartItemsByUserAsync(userId);
             if (!cartItems.Any() || cartItems.Count == 0)
                 throw new InvalidOperationException("Cart is empty!");
 
@@ -231,7 +267,7 @@ namespace ECommerce.Application.Services
 
         private async Task<List<OrderItemDTO>> GetOrderItems(OrderUpdateStatusDTO dto)
         {
-            var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(new RequestParams(), dto.Id);
+            var orderItems = await _orderItemService.GetOrderItemsByOrderAsync(dto.Id);
             if (!orderItems.Any() || orderItems.Count == 0)
                 throw new InvalidOperationException("Order is empty!");
 

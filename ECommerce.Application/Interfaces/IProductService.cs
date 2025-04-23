@@ -5,7 +5,7 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<List<ProductDTO>> GetAllProductsAsync(RequestParams dto);
+        Task<List<ProductDTO>> GetAllProductsAsync(RequestParams? requestParams = null);
 
         Task<ProductDTO> GetProductByIdAsync(Guid id);
 

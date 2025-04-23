@@ -5,7 +5,7 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IGenderService
     {
-        Task<List<GenderDTO>> GetAllGendersAsync(RequestParams requestParams);
+        Task<List<GenderDTO>> GetAllGendersAsync(RequestParams? requestParams = null);
 
         Task<GenderDTO> GetGenderByIdAsync(Guid id);
 

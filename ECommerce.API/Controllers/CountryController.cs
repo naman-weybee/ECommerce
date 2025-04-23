@@ -22,7 +22,7 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCountries([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllCountriesAsync(requestParams);
+            var data = await _service.GetAllCountriesAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -31,7 +31,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCountryById(Guid id)
         {
-            var data = await _service.GetCountryByIdAsync(id);
+            var data = await _service.GetCountryByIdAsync(id, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

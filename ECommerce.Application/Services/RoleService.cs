@@ -6,50 +6,62 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
     public class RoleService : IRoleService
     {
         private readonly IRepository<Role> _repository;
-        private readonly IRepository<User> _userRepository;
+        private readonly IServiceHelper<Role> _serviceHelper;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public RoleService(IRepository<Role> repository, IRepository<User> userRepository, IMapper mapper, IDomainEventCollector eventCollector)
+        public RoleService(IRepository<Role> repository, IServiceHelper<Role> serviceHelper, IUserService userService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
-            _userRepository = userRepository;
+            _serviceHelper = serviceHelper;
+            _userService = userService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<RoleDTO>> GetAllRolesAsync(RequestParams requestParams)
+        public async Task<List<RoleDTO>> GetAllRolesAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<RoleDTO>>(items);
         }
 
         public async Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId)
         {
-            var user = await _userRepository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Id == userId)
-                    ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
+            var user = await _userService.GetUserByIdAsync(userId);
 
-            var items = await _repository.GetQuery()
+            var query = _repository.GetQuery()
                 .Where(x => x.Id == user.RoleId)
                 .OrderBy(x => x.RoleEntity)
-                .ThenBy(x => x.HasFullPermission)
-                .ToListAsync();
+                .ThenBy(x => x.HasFullPermission);
+
+            var items = await _serviceHelper.GetAllAsync(query: query);
 
             return _mapper.Map<List<RoleDTO>>(items);
         }
 
         public async Task<RoleDTO> GetRoleByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
+
+            return _mapper.Map<RoleDTO>(item);
+        }
+
+        public async Task<RoleDTO> GetSpecificRoleByUserAsync(Guid id, Guid userId)
+        {
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            var query = _repository.GetQuery()
+                .Where(x => x.Id == user.RoleId);
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<RoleDTO>(item);
         }

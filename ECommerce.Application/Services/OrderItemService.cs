@@ -15,6 +15,7 @@ namespace ECommerce.Application.Services
     public class OrderItemService : IOrderItemService
     {
         private readonly IRepository<OrderItem> _repository;
+        private readonly IServiceHelper<OrderItem> _serviceHelper;
         private readonly IRepository<Order> _orderRepository;
         private readonly IProductService _productService;
         private readonly IInventoryService _inventoryService;
@@ -22,9 +23,10 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OrderItemService(IRepository<OrderItem> repository, IRepository<Order> orderRepository, IProductService productService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public OrderItemService(IRepository<OrderItem> repository, IServiceHelper<OrderItem> serviceHelper, IRepository<Order> orderRepository, IProductService productService, IInventoryService inventoryService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _orderRepository = orderRepository;
             _productService = productService;
             _inventoryService = inventoryService;
@@ -33,26 +35,26 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams requestParams)
+        public async Task<List<OrderItemDTO>> GetAllOrderItemsAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<OrderItemDTO>>(items);
         }
 
-        public async Task<List<OrderItemDTO>> GetOrderItemsByOrderIdAsync(RequestParams requestParams, Guid orderId)
+        public async Task<List<OrderItemDTO>> GetOrderItemsByOrderAsync(Guid orderId, RequestParams? requestParams = null)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.OrderId == orderId);
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderItemDTO>>(items);
         }
 
         public async Task<OrderItemDTO> GetOrderItemByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<OrderItemDTO>(item);
         }

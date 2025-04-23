@@ -13,40 +13,42 @@ namespace ECommerce.Application.Services
     public class StateService : IStateService
     {
         private readonly IRepository<State> _repository;
+        private readonly IServiceHelper<State> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public StateService(IRepository<State> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public StateService(IRepository<State> repository, IServiceHelper<State> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams requestParams)
+        public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var query = _repository.GetQuery()
-                .Include(x => x.Cities);
+            IQueryable<State> query = useQuery
+                ? _repository.GetQuery().Include(c => c.Cities)!
+                : null!;
 
-            var items = await _repository.GetAllAsync(requestParams, query);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<StateDTO>>(items);
         }
 
-        public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryID)
+        public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null)
         {
-            var items = await _repository.GetQuery()
-                .Where(x => x.CountryId == countryID).Include(x => x.Cities).ToListAsync();
+            var query = _repository.GetQuery()
+                .Where(x => x.CountryId == countryId);
 
-            if (items.Count == 0)
-                throw new InvalidOperationException($"No State Found for Country Id = {countryID}");
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<StateDTO>>(items);
         }
 
         public async Task<StateDTO> GetStateByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<StateDTO>(item);
         }

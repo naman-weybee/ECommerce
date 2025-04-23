@@ -6,44 +6,44 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
     public class CityService : ICityService
     {
         private readonly IRepository<City> _repository;
+        private readonly IServiceHelper<City> _serviceHelper;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public CityService(IRepository<City> repository, IMapper mapper, IDomainEventCollector eventCollector)
+        public CityService(IRepository<City> repository, IServiceHelper<City> serviceHelper, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
+            _serviceHelper = serviceHelper;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<CityDTO>> GetAllCitiesAsync(RequestParams requestParams)
+        public async Task<List<CityDTO>> GetAllCitiesAsync(RequestParams? requestParams = null)
         {
-            var items = await _repository.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams);
 
             return _mapper.Map<List<CityDTO>>(items);
         }
 
-        public async Task<List<StateDTO>> GetAllCitiesByStateIdAsync(Guid stateId)
+        public async Task<List<CityDTO>> GetAllCitiesByStateIdAsync(Guid stateId, RequestParams? requestParams = null)
         {
-            var items = await _repository.GetQuery()
-                .Where(x => x.StateId == stateId).ToListAsync();
+            var query = _repository.GetQuery()
+                .Where(x => x.StateId == stateId);
 
-            if (items.Count == 0)
-                throw new InvalidOperationException($"No City Found for State Id = {stateId}");
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
-            return _mapper.Map<List<StateDTO>>(items);
+            return _mapper.Map<List<CityDTO>>(items);
         }
 
         public async Task<CityDTO> GetCityByIdAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
 
             return _mapper.Map<CityDTO>(item);
         }

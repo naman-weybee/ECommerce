@@ -30,10 +30,10 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetAddressesForUser")]
-        public async Task<IActionResult> GetAddressesForUser([FromQuery] RequestParams requestParams)
+        [HttpGet("GetAllAddressesByUser")]
+        public async Task<IActionResult> GetAllAddressesByUser([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllAddressesAsync(requestParams, _userId);
+            var data = await _service.GetAllAddressesByUserAsync(_userId, requestParams);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -42,7 +42,18 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAddressById(Guid id)
         {
-            var data = await _service.GetAddressByIdAsync(id, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Address, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetAddressByIdAsync(id);
+            _controllerHelper.SetResponse(_response, data);
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpGet("GetSpecificAddressByUser/{id}")]
+        public async Task<IActionResult> GetSpecificAddressByUser(Guid id)
+        {
+            var data = await _service.GetSpecificAddressByUserAsync(id, _userId);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
