@@ -12,14 +12,14 @@ namespace ECommerce.Infrastructure.Repositories
         where TAggregate : AggregateRoot<TEntity>
         where TEntity : class
     {
-        internal ApplicationDbContext _context;
-        internal DbSet<TEntity> Query;
+        private readonly ApplicationDbContext _context;
+        private DbSet<TEntity> DbSet;
         private readonly IPaginationService _pagination;
 
         public Repository(ApplicationDbContext context, IPaginationService pagination)
         {
             _context = context;
-            Query = context.Set<TEntity>();
+            DbSet = context.Set<TEntity>();
             _pagination = pagination;
         }
 
@@ -58,7 +58,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            Query.Add(entity);
+            DbSet.Add(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -66,7 +66,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             var entity = aggregate.Entity;
 
-            Query.Update(entity);
+            DbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -74,7 +74,7 @@ namespace ECommerce.Infrastructure.Repositories
         {
             if (entity != null)
             {
-                Query.Remove(entity);
+                DbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
             else
@@ -85,13 +85,13 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task SaveAsync(TEntity entity)
         {
-            Query.Update(entity);
+            DbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
 
         public virtual IQueryable<TEntity> GetQuery()
         {
-            return Query = _context.Set<TEntity>();
+            return DbSet = _context.Set<TEntity>();
         }
     }
 }
