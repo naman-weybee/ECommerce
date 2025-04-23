@@ -1,4 +1,4 @@
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.City;
 using ECommerce.Shared.RequestModel;
 
 namespace ECommerce.Application.Interfaces

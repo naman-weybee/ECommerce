@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.Application.DTOs.Email;
 
 namespace ECommerce.Application.Interfaces
 {

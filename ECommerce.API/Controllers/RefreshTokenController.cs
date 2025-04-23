@@ -1,5 +1,5 @@
 using ECommerce.API.Helper.Interfaces;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.RefreshToken;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using ECommerce.Shared.RequestModel;

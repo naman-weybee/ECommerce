@@ -1,5 +1,5 @@
 using AutoMapper;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Gender;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;

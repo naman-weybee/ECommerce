@@ -1,5 +1,7 @@
 ﻿using ECommerce.API.Helper.Interfaces;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Auth;
+using ECommerce.Application.DTOs.RefreshToken;
+using ECommerce.Application.DTOs.User;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;

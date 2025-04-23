@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.CartItem;
+using ECommerce.Application.DTOs.Order;
+using ECommerce.Application.DTOs.OrderItem;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.DomainServices.Interfaces;

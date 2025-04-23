@@ -1,5 +1,5 @@
 using ECommerce.API.Helper.Interfaces;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.OTP;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.RequestModel;
 using ECommerce.Shared.ResponseModel;

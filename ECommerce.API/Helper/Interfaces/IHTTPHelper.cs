@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.Application.DTOs.User;
 using ECommerce.Domain.Enums;
 
 namespace ECommerce.API.Helper.Interfaces

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerce.API.Helper.Interfaces;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Role;
+using ECommerce.Application.DTOs.User;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
 using System.Security.Claims;

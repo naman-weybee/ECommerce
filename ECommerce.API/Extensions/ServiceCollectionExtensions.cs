@@ -7,7 +7,7 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.ServiceHelper;
 using ECommerce.Application.Services;
 using ECommerce.Application.Templates;
-using ECommerce.Application.Validators;
+using ECommerce.Application.Validators.Base;
 using ECommerce.Domain.DomainServices.Interfaces;
 using ECommerce.Domain.DomainServices.Services;
 using ECommerce.Domain.Entities;

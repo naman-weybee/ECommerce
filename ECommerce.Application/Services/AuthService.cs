@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Auth;
+using ECommerce.Application.DTOs.RefreshToken;
+using ECommerce.Application.DTOs.User;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Shared.Repositories;

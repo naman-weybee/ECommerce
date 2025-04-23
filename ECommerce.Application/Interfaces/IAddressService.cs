@@ -1,4 +1,4 @@
-using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Address;
 using ECommerce.Shared.RequestModel;
 
 namespace ECommerce.Application.Interfaces

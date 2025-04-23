@@ -1,5 +1,19 @@
 using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Address;
+using ECommerce.Application.DTOs.CartItem;
+using ECommerce.Application.DTOs.Category;
+using ECommerce.Application.DTOs.City;
+using ECommerce.Application.DTOs.Country;
+using ECommerce.Application.DTOs.Gender;
+using ECommerce.Application.DTOs.Order;
+using ECommerce.Application.DTOs.OrderItem;
+using ECommerce.Application.DTOs.OTP;
+using ECommerce.Application.DTOs.Product;
+using ECommerce.Application.DTOs.RefreshToken;
+using ECommerce.Application.DTOs.Role;
+using ECommerce.Application.DTOs.State;
+using ECommerce.Application.DTOs.User;
 using ECommerce.Domain.Aggregates;
 using ECommerce.Domain.Entities;
 

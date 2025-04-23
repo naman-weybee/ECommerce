@@ -1,4 +1,4 @@
-﻿using ECommerce.Application.DTOs;
+﻿using ECommerce.Application.DTOs.Email;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.Constants;
 using System.Net;
