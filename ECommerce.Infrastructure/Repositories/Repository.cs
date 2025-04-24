@@ -58,8 +58,6 @@ namespace ECommerce.Infrastructure.Repositories
 
         public async Task<List<TEntity>> GetAllAsync(IQueryable<TEntity> query)
         {
-            query = _context.Set<TEntity>().AsQueryable();
-
             return await query?.ToListAsync()!;
         }
 

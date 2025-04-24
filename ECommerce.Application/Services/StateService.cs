@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<StateDTO>> GetAllStatesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<State> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Cities)!
                 : null!;
 

@@ -1,4 +1,4 @@
-CREATE TABLE HistoryOrder (
+CREATE TABLE HistoryOrders (
     Id INT PRIMARY KEY IDENTITY(1,1),
     OrderId NVARCHAR(50),
     UserId NVARCHAR(50),
@@ -32,5 +32,4 @@ CREATE TABLE HistoryOrder (
     OrderCanceledDate DATETIME,
     TotalAmount DECIMAL(18,2),
     PaymentMethod NVARCHAR(100),
-    OperationType NVARCHAR(10),
     CreatedDate DATETIME DEFAULT GETDATE());

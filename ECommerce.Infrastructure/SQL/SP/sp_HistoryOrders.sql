@@ -1,11 +1,17 @@
-ALTER PROCEDURE sp_CreateOrderHistory
-    @orderId NVARCHAR(MAX),
-    @operationType NVARCHAR(10) = NULL
+USE [ECommerce]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_HistoryOrders]    Script Date: 22-04-2025 18:57:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[sp_HistoryOrders]
+    @orderId NVARCHAR(MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO HistoryOrder (
+    INSERT INTO HistoryOrders (
         OrderId,
         UserId,
         UserEmail,
@@ -37,8 +43,7 @@ BEGIN
         OrderDeliveredDate,
         OrderCanceledDate,
         TotalAmount,
-        PaymentMethod,
-        OperationType)
+        PaymentMethod)
     SELECT
         o.Id AS OrderId,
         o.UserId,
@@ -71,8 +76,7 @@ BEGIN
         o.OrderDeliveredDate,
         o.OrderCanceledDate,
         o.TotalAmount,
-        o.PaymentMethod,
-        @operationType
+        o.PaymentMethod
     FROM Orders o
     LEFT JOIN Users u ON o.UserId = u.Id
     LEFT JOIN Address ba ON o.BillingAddressId = ba.Id

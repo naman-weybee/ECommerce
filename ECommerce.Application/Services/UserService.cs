@@ -38,7 +38,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<UserDTO>> GetAllUsersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<User> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Role)!
                 : null!;
 
@@ -49,7 +49,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<UserDTO>> GetAllActiveUsersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<User> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Role).Where(x => x.IsActive)!
                 : null!;
 
@@ -60,7 +60,7 @@ namespace ECommerce.Application.Services
 
         public async Task<UserDTO> GetUserByIdAsync(Guid id, bool useQuery = false)
         {
-            IQueryable<User> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Role)!
                 : null!;
 
@@ -71,7 +71,7 @@ namespace ECommerce.Application.Services
 
         public async Task<UserDTO> GetUserByEmailAsync(string email, bool useQuery = false)
         {
-            IQueryable<User> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Where(x => x.Email == email)!
                 : null!;
 

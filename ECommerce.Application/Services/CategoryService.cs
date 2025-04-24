@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<Category> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Products)!
                 : null!;
 
@@ -38,7 +38,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CategoryDTO> GetCategoryByIdAsync(Guid id, bool useQuery = false)
         {
-            IQueryable<Category> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.Products)!
                 : null!;
 

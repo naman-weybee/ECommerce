@@ -1,4 +1,4 @@
-CREATE TABLE HistoryOrderItem (
+CREATE TABLE HistoryOrderItems (
     Id INT PRIMARY KEY IDENTITY(1,1),
     HistoryOrderId INT NOT NULL,
     OrderId NVARCHAR(MAX) NOT NULL,
@@ -15,9 +15,8 @@ CREATE TABLE HistoryOrderItem (
 
     CategoryId NVARCHAR(MAX),
     CategoryName NVARCHAR(100),
-    OperationType NVARCHAR(10),
     CreatedDate DATETIME DEFAULT GETDATE(),
 
-    CONSTRAINT FK_HistoryOrderItem_HistoryOrder 
+    CONSTRAINT FK_HistoryOrderItem_HistoryOrders
         FOREIGN KEY (HistoryOrderId) 
-        REFERENCES HistoryOrder(Id));
+        REFERENCES HistoryOrders(Id));

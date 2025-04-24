@@ -47,7 +47,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllOrdersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<Order> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.OrderItems)!
                 : null!;
 
@@ -58,7 +58,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllOrdersByUserAsync(Guid userId, RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<Order> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Where(x => x.UserId == userId).Include(c => c.OrderItems)!
                 : null!;
 
@@ -69,7 +69,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<OrderDTO>> GetAllRecentOrdersAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<Order> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().OrderByDescending(x => x.OrderPlacedDate).Include(c => c.OrderItems)!
                 : null!;
 
@@ -95,7 +95,7 @@ namespace ECommerce.Application.Services
 
         public async Task<OrderDTO> GetOrderByIdAsync(Guid id, bool useQuery = false)
         {
-            IQueryable<Order> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.OrderItems)!
                 : null!;
 
@@ -106,7 +106,7 @@ namespace ECommerce.Application.Services
 
         public async Task<OrderDTO> GetSpecificOrderByUserAsync(Guid id, Guid userId, bool useQuery = false)
         {
-            IQueryable<Order> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Where(x => x.UserId == userId).Include(c => c.OrderItems)!
                 : null!;
 
@@ -172,9 +172,10 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
         {
-            var order = await GetSpecificOrderByUserAsync(dto.Id, dto.UserId);
+            var query = _repository.GetQuery()
+                .Include(x => x.OrderItems);
 
-            var item = _mapper.Map<Order>(order);
+            var item = await _serviceHelper.GetByIdAsync(dto.Id, query);
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrderStatus(dto.OrderStatus);
 

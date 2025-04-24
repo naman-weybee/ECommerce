@@ -27,7 +27,7 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CountryDTO>> GetAllCountriesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            IQueryable<Country> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.States)!
                 : null!;
 
@@ -38,7 +38,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CountryDTO> GetCountryByIdAsync(Guid id, bool useQuery = false)
         {
-            IQueryable<Country> query = useQuery
+            var query = useQuery
                 ? _repository.GetQuery().Include(c => c.States)!
                 : null!;
 

@@ -5,14 +5,13 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[sp_CreateOrderItemHistory]
-    @orderItemId NVARCHAR(MAX),
-    @operationType NVARCHAR(10) = NULL
+CREATE PROCEDURE [dbo].[sp_HistoryOrderItems]
+    @orderItemId NVARCHAR(MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO HistoryOrderItem (
+    INSERT INTO HistoryOrderItems (
         HistoryOrderId,
         OrderId,
         OrderItemId,
@@ -24,8 +23,7 @@ BEGIN
         UnitPrice,
         Currency,
         CategoryId,
-        CategoryName,
-        OperationType)
+        CategoryName)
     SELECT
         ho.Id,
         oi.OrderId,
@@ -38,10 +36,9 @@ BEGIN
         oi.UnitPrice,
         p.Currency,
         p.CategoryId,
-        c.Name,
-        @operationType
+        c.Name
     FROM OrderItems oi
-    INNER JOIN HistoryOrder ho ON oi.OrderId = ho.OrderId
+    INNER JOIN HistoryOrders ho ON oi.OrderId = ho.OrderId
     INNER JOIN Products p ON oi.ProductId = p.Id
     LEFT JOIN Categories c ON p.CategoryId = c.Id
     WHERE oi.Id = @orderItemId;
