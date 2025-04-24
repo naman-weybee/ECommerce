@@ -6,7 +6,6 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -84,7 +83,7 @@ namespace ECommerce.Application.Services
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var item = await _serviceHelper.GetByIdAsync(id, query);
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.DeleteRefreshToken();
 
@@ -93,11 +92,11 @@ namespace ECommerce.Application.Services
 
         public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenDTO dto)
         {
-            var entity = await _repository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Token == dto.RefreshToken);
+            var query = _repository.GetQuery()
+                .Where(x => x.Token == dto.RefreshToken);
 
-            var refreshToken = _mapper.Map<RefreshToken>(entity);
-            var aggregate = new RefreshTokenAggregate(refreshToken, _eventCollector);
+            var item = await _serviceHelper.GetByQueryAsync(query);
+            var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.RevokeToken();
 
             await _repository.UpdateAsync(aggregate.Entity);

@@ -9,11 +9,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<RoleEntity> builder)
         {
             builder
-            .HasIndex(r => r.Id)
-            .HasDatabaseName("IX_RoleEntity_Id")
-            .IsUnique();
-
-            builder
             .HasIndex(r => r.Name)
             .HasDatabaseName("IX_RoleEntity_Name")
             .IsUnique();

@@ -92,10 +92,21 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [HttpDelete("DeleteAddressByUser/{id}")]
+        public async Task<IActionResult> DeleteAddressByUser(Guid id)
+        {
+            await _service.DeleteAddressByUserAsync(id, _userId);
+            _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
+
+            return StatusCode(200, _response);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(Guid id)
         {
-            await _service.DeleteAddressAsync(id, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Address, eUserPermission.HasFullPermission);
+
+            await _service.DeleteAddressAsync(id);
             _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);

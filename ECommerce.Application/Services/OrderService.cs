@@ -197,7 +197,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteOrderAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.DeleteOrder();
 

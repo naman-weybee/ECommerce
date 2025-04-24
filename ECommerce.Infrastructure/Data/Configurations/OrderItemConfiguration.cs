@@ -10,18 +10,13 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder
-            .HasIndex(o => o.Id)
-            .HasDatabaseName("IX_OrderItem_Id")
+            .HasIndex(o => new { o.OrderId, o.ProductId })
+            .HasDatabaseName("IX_OrderItem_OrderId_ProductId")
             .IsUnique();
 
             builder
             .Property(p => p.UnitPrice)
             .HasConversion(new MoneyConverter());
-
-            builder
-            .HasIndex(o => new { o.OrderId, o.ProductId })
-            .HasDatabaseName("IX_OrderItem_OrderId_ProductId")
-            .IsUnique();
 
             builder
             .HasOne(oi => oi.Order)

@@ -8,11 +8,9 @@ namespace ECommerce.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
-            builder.HasKey(rt => rt.Id);
-
-            builder.Property(rt => rt.Token)
-                .IsRequired()
-                .HasMaxLength(256);
+            builder
+            .HasIndex(c => new { c.UserId, c.Token })
+            .HasDatabaseName("IX_RefreshToken_UserId_Token");
         }
     }
 }

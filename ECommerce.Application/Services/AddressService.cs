@@ -7,7 +7,6 @@ using ECommerce.Domain.Enums;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -87,10 +86,10 @@ namespace ECommerce.Application.Services
 
             try
             {
-                var query = _repository.GetQuery();
+                var query = _repository.GetQuery()
+                    .Where(x => x.UserId == dto.UserId);
 
-                // Get all addresses for the user
-                var addresses = await query.Where(x => x.UserId == dto.UserId).ToListAsync()
+                var addresses = await _serviceHelper.GetAllAsync(query: query)
                     ?? throw new InvalidOperationException($"No Address found for User Id = {dto.UserId}.");
 
                 // Get the address to update
@@ -120,16 +119,25 @@ namespace ECommerce.Application.Services
             }
         }
 
-        public async Task DeleteAddressAsync(Guid id, Guid userId)
+        public async Task DeleteAddressByUserAsync(Guid id, Guid userId)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
 
-            var item = await _repository.GetByIdAsync(id, query);
+            var item = await _serviceHelper.GetByIdAsync(id, query);
             var aggregate = new AddressAggregate(item, _eventCollector);
             aggregate.DeleteAddress();
 
-            await _repository.DeleteAsync(item);
+            await _repository.DeleteAsync(aggregate.Entity);
+        }
+
+        public async Task DeleteAddressAsync(Guid id)
+        {
+            var item = await _serviceHelper.GetByIdAsync(id);
+            var aggregate = new AddressAggregate(item, _eventCollector);
+            aggregate.DeleteAddress();
+
+            await _repository.DeleteAsync(aggregate.Entity);
         }
 
         private async Task SetAddressTypeAsync(Address address, eAddressType addressType)

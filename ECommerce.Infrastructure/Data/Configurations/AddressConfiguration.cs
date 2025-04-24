@@ -9,14 +9,12 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Address> builder)
         {
             builder
-            .HasIndex(a => a.Id)
-            .HasDatabaseName("IX_Address_Id")
-            .IsUnique();
+            .HasIndex(c => c.UserId)
+            .HasDatabaseName("IX_Address_UserId");
 
             builder
-            .HasIndex(a => new { a.FirstName, a.LastName, a.UserId, a.CountryId, a.StateId, a.CityId, a.PostalCode, a.AdderessType, a.PhoneNumber })
-            .HasDatabaseName("IX_Address_FirstName_LastName_UserId_CountryId_StateId_CityId_PostalCode_AdderessType_PhoneNumber")
-            .IsUnique();
+            .HasIndex(c => new { c.CountryId, c.StateId, c.CityId })
+            .HasDatabaseName("IX_Address_CountryId_StateId_CityId");
 
             builder
             .HasOne(o => o.Country)

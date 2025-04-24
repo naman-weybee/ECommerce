@@ -10,11 +10,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder
-            .HasIndex(o => o.Id)
-            .HasDatabaseName("IX_Order_Id")
-            .IsUnique();
-
-            builder
             .HasIndex(o => o.UserId)
             .HasDatabaseName("IX_Order_UserId");
 

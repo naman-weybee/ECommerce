@@ -19,6 +19,8 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateAddressTypeAsync(AddressTypeUpdateDTO dto);
 
-        Task DeleteAddressAsync(Guid id, Guid userId);
+        Task DeleteAddressByUserAsync(Guid id, Guid userId);
+
+        Task DeleteAddressAsync(Guid id);
     }
 }

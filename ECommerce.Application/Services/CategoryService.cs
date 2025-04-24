@@ -67,7 +67,7 @@ namespace ECommerce.Application.Services
 
         public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new CategoryAggregate(item, _eventCollector);
 
             var subCategory = _mapper.Map<Category>(dto);
@@ -78,7 +78,7 @@ namespace ECommerce.Application.Services
 
         public async Task RemoveSubCategoryAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             if (item.ParentCategoryId == null)
                 throw new Exception("Provided Category is not Sub Caegory, Its Parent Category.");
 
@@ -90,7 +90,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteCategoryAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new CategoryAggregate(item, _eventCollector);
             aggregate.DeleteCategory();
 

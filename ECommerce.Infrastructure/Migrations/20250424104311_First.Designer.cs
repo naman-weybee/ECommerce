@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250123092612_updatedaddressconfiguration3")]
-    partial class updatedaddressconfiguration3
+    [Migration("20250424104311_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -66,7 +66,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -86,21 +86,17 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Address_Id");
-
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_Address_UserId");
 
-                    b.HasIndex("FirstName", "LastName", "UserId", "CountryId", "StateId", "CityId", "PostalCode", "AdderessType", "PhoneNumber")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Address_FirstName_LastName_UserId_CountryId_StateId_CityId_PostalCode_AdderessType_PhoneNumber");
+                    b.HasIndex("CountryId", "StateId", "CityId")
+                        .HasDatabaseName("IX_Address_CountryId_StateId_CityId");
 
                     b.ToTable("Address");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.CartItem", b =>
@@ -135,15 +131,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_CartItem_Id");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_CartItem_ProductId");
 
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_CartItem_UserId");
 
                     b.ToTable("CartItems");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>
@@ -177,13 +173,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Category_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Category_Name");
-
                     b.HasIndex("ParentCategoryId");
 
                     b.HasIndex("Name", "ParentCategoryId")
@@ -192,6 +181,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasFilter("[ParentCategoryId] IS NOT NULL");
 
                     b.ToTable("Categories");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.City", b =>
@@ -222,16 +213,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_City_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_City_Name");
-
                     b.HasIndex("StateId");
 
+                    b.HasIndex("Name", "StateId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_City_Name_StateId");
+
                     b.ToTable("Cities");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Country", b =>
@@ -259,14 +249,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Country_Id");
-
                     b.HasIndex("Name")
+                        .IsUnique()
                         .HasDatabaseName("IX_Country_Name");
 
                     b.ToTable("Countries");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Gender", b =>
@@ -294,14 +283,62 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Gender_Id");
-
                     b.HasIndex("Name")
+                        .IsUnique()
                         .HasDatabaseName("IX_Gender_Name");
 
                     b.ToTable("Gender");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.OTP", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("OTPExpiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("TokenExpiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_OTP_Id_UserId");
+
+                    b.ToTable("OTP");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
@@ -310,7 +347,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AddressId")
+                    b.Property<Guid>("BillingAddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -341,6 +378,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ShippingAddressId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -352,17 +392,18 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .HasDatabaseName("IX_Order_AddressId");
+                    b.HasIndex("BillingAddressId")
+                        .HasDatabaseName("IX_Order_BillingAddressId");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Order_Id");
+                    b.HasIndex("ShippingAddressId")
+                        .HasDatabaseName("IX_Order_ShippingAddressId");
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("IX_Order_UserId");
 
                     b.ToTable("Orders");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OrderItem", b =>
@@ -397,10 +438,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_OrderItem_Id");
-
                     b.HasIndex("ProductId");
 
                     b.HasIndex("OrderId", "ProductId")
@@ -408,6 +445,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_OrderItem_OrderId_ProductId");
 
                     b.ToTable("OrderItems");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Product", b =>
@@ -459,17 +498,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Brand")
-                        .HasDatabaseName("IX_Product_Brand");
-
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Product_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Product_Name");
 
                     b.HasIndex("SKU")
                         .IsUnique()
@@ -481,6 +510,8 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasFilter("[Brand] IS NOT NULL");
 
                     b.ToTable("Products");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.RefreshToken", b =>
@@ -509,8 +540,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -520,9 +550,12 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "Token")
+                        .HasDatabaseName("IX_RefreshToken_UserId_Token");
 
                     b.ToTable("RefreshTokens");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Role", b =>
@@ -537,6 +570,18 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("HasCreateOrUpdatePermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasDeletePermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasFullPermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasViewPermission")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -545,19 +590,47 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("RoleEntity")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Name", "RoleEntity")
                         .IsUnique()
-                        .HasDatabaseName("IX_Gender_Id");
+                        .HasDatabaseName("IX_Role_Name_RoleEntity");
 
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Gender_Name");
+                    b.HasIndex("HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Role_PermissionFlags");
 
                     b.ToTable("Roles");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RoleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RoleEntity_Name");
+
+                    b.ToTable("RoleEntities");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>
@@ -590,14 +663,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Name", "CountryId")
                         .IsUnique()
-                        .HasDatabaseName("IX_State_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_State_Name");
+                        .HasDatabaseName("IX_State_Name_CountryId");
 
                     b.ToTable("States");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.User", b =>
@@ -621,7 +693,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("EmailVerificationToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -673,13 +745,12 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("GenderId");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_User_Id");
-
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId", "GenderId", "EmailVerificationToken")
+                        .HasDatabaseName("IX_User_RoleId_GenderId_EmailVerificationToken");
 
                     b.ToTable("Users");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Address", b =>
@@ -758,9 +829,15 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("ECommerce.Domain.Entities.Address", "Address")
+                    b.HasOne("ECommerce.Domain.Entities.Address", "BillingAddress")
                         .WithMany()
-                        .HasForeignKey("AddressId")
+                        .HasForeignKey("BillingAddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Domain.Entities.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -770,7 +847,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("BillingAddress");
+
+                    b.Navigation("ShippingAddress");
 
                     b.Navigation("User");
                 });

@@ -4,9 +4,9 @@ namespace ECommerce.Domain.DomainServices.Services
 {
     public class InventoryService : IInventoryService
     {
-        private readonly IIProductDomainService _productDomainService;
+        private readonly IProductDomainService _productDomainService;
 
-        public InventoryService(IIProductDomainService productDomainService)
+        public InventoryService(IProductDomainService productDomainService)
         {
             _productDomainService = productDomainService;
         }

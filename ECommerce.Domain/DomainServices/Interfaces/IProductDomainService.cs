@@ -1,6 +1,6 @@
 ﻿namespace ECommerce.Domain.DomainServices.Interfaces
 {
-    public interface IIProductDomainService
+    public interface IProductDomainService
     {
         Task<int> GetProductStockByIdAsync(Guid id);
 

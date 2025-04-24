@@ -91,7 +91,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteRoleAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new RoleAggregate(item, _eventCollector);
             aggregate.DeleteRole();
 

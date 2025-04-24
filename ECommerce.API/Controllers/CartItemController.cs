@@ -53,7 +53,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetSpecificCartItemByUser/{id}")]
         public async Task<IActionResult> GetSpecificCartItemByUser(Guid id)
         {
-            var data = await _service.GetSpecificCartItemsByUserAsync(id, _userId);
+            var data = await _service.GetSpecificCartItemByUserAsync(id, _userId);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
@@ -105,10 +105,30 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [HttpDelete("DeleteCartItemByUser/{id}")]
+        public async Task<IActionResult> DeleteCartItemByUser(Guid id)
+        {
+            await _service.DeleteCartItemByUserAsync(id, _userId);
+            _controllerHelper.SetResponse(_response, $"Cart Item with Id = {id} is Deleted Successfully.");
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpDelete("ClearCartItem")]
+        public async Task<IActionResult> ClearCartItem()
+        {
+            await _service.ClearCartItemsAsync(_userId);
+            _controllerHelper.SetResponse(_response, "Cart Item Cleared Successfully.");
+
+            return StatusCode(200, _response);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
-            await _service.DeleteCartItemAsync(id, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.CartItem, eUserPermission.HasFullPermission);
+
+            await _service.DeleteCartItemAsync(id);
             _controllerHelper.SetResponse(_response, $"Cart Item with Id = {id} is Deleted Successfully.");
 
             return StatusCode(200, _response);

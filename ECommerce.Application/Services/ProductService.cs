@@ -10,7 +10,7 @@ using ECommerce.Shared.RequestModel;
 
 namespace ECommerce.Application.Services
 {
-    public class ProductService : IProductService, IIProductDomainService
+    public class ProductService : IProductService, IProductDomainService
     {
         private readonly IRepository<Product> _repository;
         private readonly IServiceHelper<Product> _serviceHelper;
@@ -66,7 +66,7 @@ namespace ECommerce.Application.Services
 
         public async Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new ProductAggregate(item, _eventCollector);
 
             if (isIncrease)
@@ -79,7 +79,7 @@ namespace ECommerce.Application.Services
 
         public async Task ProductPriceChangeAsync(ProductPriceChangeDTO dto)
         {
-            var item = await _repository.GetByIdAsync(dto.Id);
+            var item = await _serviceHelper.GetByIdAsync(dto.Id);
             var aggregate = new ProductAggregate(item, _eventCollector);
             aggregate.ChangePrice(dto.Price);
 
@@ -88,7 +88,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteProductAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new ProductAggregate(item, _eventCollector);
             aggregate.DeleteProduct();
 

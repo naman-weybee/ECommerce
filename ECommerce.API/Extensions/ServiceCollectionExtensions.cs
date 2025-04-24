@@ -83,7 +83,7 @@ namespace ECommerce.API.Extensions
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
             services.AddScoped<IInventoryService, InventoryService>();
-            services.AddScoped<IIProductDomainService, ProductService>();
+            services.AddScoped<IProductDomainService, ProductService>();
 
             services.AddScoped<IRepository<Product>, Repository<Product>>();
             services.AddScoped<IRepository<Category>, Repository<Category>>();

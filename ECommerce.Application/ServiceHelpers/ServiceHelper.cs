@@ -48,5 +48,10 @@ namespace ECommerce.Application.ServiceHelper
         {
             return await _repository.GetByPropertyAsync(query);
         }
+
+        public async Task<TEntity> DeleteAsync(IQueryable<TEntity> query)
+        {
+            return await _repository.GetByPropertyAsync(query);
+        }
     }
 }

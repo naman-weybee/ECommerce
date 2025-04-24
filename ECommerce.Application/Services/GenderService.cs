@@ -58,7 +58,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteGenderAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new GenderAggregate(item, _eventCollector);
             aggregate.DeleteGender();
 

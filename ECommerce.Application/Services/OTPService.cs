@@ -127,7 +127,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteOTPAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.DeleteOTP();
 

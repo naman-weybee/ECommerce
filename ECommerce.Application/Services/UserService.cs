@@ -158,7 +158,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteUserAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new UserAggregate(item, _eventCollector);
             aggregate.DeleteUser();
 
@@ -167,9 +167,10 @@ namespace ECommerce.Application.Services
 
         public async Task VerifyEmailAsync(string token)
         {
-            var query = _repository.GetQuery();
+            var query = _repository.GetQuery()
+                .Where(x => x.EmailVerificationToken == token);
 
-            var user = await query.SingleOrDefaultAsync(x => x.EmailVerificationToken == token)
+            var user = await _serviceHelper.GetByQueryAsync(query)
                 ?? throw new InvalidOperationException("Invalid token.");
 
             user.EmailVerificationToken = null;

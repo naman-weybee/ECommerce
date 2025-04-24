@@ -9,11 +9,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Country> builder)
         {
             builder
-            .HasIndex(c => c.Id)
-            .HasDatabaseName("IX_Country_Id")
-            .IsUnique();
-
-            builder
             .HasIndex(c => c.Name)
             .HasDatabaseName("IX_Country_Name")
             .IsUnique();

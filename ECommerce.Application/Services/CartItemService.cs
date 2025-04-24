@@ -6,7 +6,6 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -51,7 +50,7 @@ namespace ECommerce.Application.Services
             return _mapper.Map<CartItemDTO>(item);
         }
 
-        public async Task<CartItemDTO> GetSpecificCartItemsByUserAsync(Guid id, Guid userId)
+        public async Task<CartItemDTO> GetSpecificCartItemByUserAsync(Guid id, Guid userId)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);
@@ -85,7 +84,7 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
         {
-            var cartItem = await GetSpecificCartItemsByUserAsync(dto.Id, dto.UserId);
+            var cartItem = await GetSpecificCartItemByUserAsync(dto.Id, dto.UserId);
             var product = await _productService.GetProductByIdAsync(cartItem.ProductId);
 
             var item = _mapper.Map<CartItem>(cartItem);
@@ -104,7 +103,7 @@ namespace ECommerce.Application.Services
             await _repository.UpdateAsync(aggregate.Entity);
         }
 
-        public async Task DeleteCartItemAsync(Guid id, Guid userId)
+        public async Task DeleteCartItemByUserAsync(Guid id, Guid userId)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.Id == id && x.UserId == userId);
@@ -116,15 +115,21 @@ namespace ECommerce.Application.Services
             await _repository.DeleteAsync(item);
         }
 
+        public async Task DeleteCartItemAsync(Guid id)
+        {
+            var item = await _repository.GetByIdAsync(id);
+            var aggregate = new CartItemAggregate(item, _eventCollector);
+            aggregate.DeleteCartItem();
+
+            await _repository.DeleteAsync(item);
+        }
+
         public async Task ClearCartItemsAsync(Guid userId)
         {
-            var items = await _repository.GetQuery()
-                .Where(x => x.UserId == userId).ToListAsync();
+            var items = await GetAllCartItemsByUserAsync(userId);
 
             foreach (var item in items)
-            {
-                await DeleteCartItemAsync(item.Id, userId);
-            }
+                await DeleteCartItemByUserAsync(item.Id, userId);
         }
     }
 }

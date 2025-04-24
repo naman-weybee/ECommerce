@@ -68,7 +68,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteCityAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new CityAggregate(item, _eventCollector);
             aggregate.DeleteCity();
 

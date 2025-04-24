@@ -67,7 +67,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteCountryAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new CountryAggregate(item, _eventCollector);
             aggregate.DeleteCountry();
 

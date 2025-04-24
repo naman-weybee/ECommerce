@@ -63,7 +63,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -83,21 +83,17 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Address_Id");
-
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_Address_UserId");
 
-                    b.HasIndex("FirstName", "LastName", "UserId", "CountryId", "StateId", "CityId", "PostalCode", "AdderessType", "PhoneNumber")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Address_FirstName_LastName_UserId_CountryId_StateId_CityId_PostalCode_AdderessType_PhoneNumber");
+                    b.HasIndex("CountryId", "StateId", "CityId")
+                        .HasDatabaseName("IX_Address_CountryId_StateId_CityId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.CartItem", b =>
@@ -132,15 +128,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_CartItem_Id");
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("IX_CartItem_ProductId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_CartItem_UserId");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("CartItems");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>
@@ -174,13 +170,6 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Category_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Category_Name");
-
                     b.HasIndex("ParentCategoryId");
 
                     b.HasIndex("Name", "ParentCategoryId")
@@ -188,7 +177,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_Category_Name_ParentCategoryId")
                         .HasFilter("[ParentCategoryId] IS NOT NULL");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.City", b =>
@@ -219,20 +210,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_City_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_City_Name");
-
                     b.HasIndex("StateId");
 
                     b.HasIndex("Name", "StateId")
                         .IsUnique()
                         .HasDatabaseName("IX_City_Name_StateId");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Country", b =>
@@ -260,15 +246,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Country_Id");
-
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasDatabaseName("IX_Country_Name");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Gender", b =>
@@ -296,15 +280,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Gender_Id");
-
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasDatabaseName("IX_Gender_Name");
 
-                    b.ToTable("Gender", (string)null);
+                    b.ToTable("Gender");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OTP", b =>
@@ -349,18 +331,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_OTP_Id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_OTP_UserId");
-
                     b.HasIndex("Id", "UserId")
                         .IsUnique()
                         .HasDatabaseName("IX_OTP_Id_UserId");
 
-                    b.ToTable("OTP", (string)null);
+                    b.ToTable("OTP");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
@@ -417,17 +392,15 @@ namespace ECommerce.Infrastructure.Migrations
                     b.HasIndex("BillingAddressId")
                         .HasDatabaseName("IX_Order_BillingAddressId");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Order_Id");
-
                     b.HasIndex("ShippingAddressId")
                         .HasDatabaseName("IX_Order_ShippingAddressId");
 
                     b.HasIndex("UserId")
                         .HasDatabaseName("IX_Order_UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OrderItem", b =>
@@ -462,17 +435,15 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_OrderItem_Id");
-
                     b.HasIndex("ProductId");
 
                     b.HasIndex("OrderId", "ProductId")
                         .IsUnique()
                         .HasDatabaseName("IX_OrderItem_OrderId_ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Product", b =>
@@ -524,17 +495,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Brand")
-                        .HasDatabaseName("IX_Product_Brand");
-
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Product_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_Product_Name");
 
                     b.HasIndex("SKU")
                         .IsUnique()
@@ -545,7 +506,9 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_Product_Name_Brand_CategoryId")
                         .HasFilter("[Brand] IS NOT NULL");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.RefreshToken", b =>
@@ -574,8 +537,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -585,9 +547,12 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "Token")
+                        .HasDatabaseName("IX_RefreshToken_UserId_Token");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Role", b =>
@@ -630,22 +595,17 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Name", "RoleEntity")
                         .IsUnique()
-                        .HasDatabaseName("IX_Role_Id");
+                        .HasDatabaseName("IX_Role_Name_RoleEntity");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission")
                         .IsUnique()
-                        .HasDatabaseName("IX_Role_Name");
+                        .HasDatabaseName("IX_Role_PermissionFlags");
 
-                    b.HasIndex("RoleEntity")
-                        .HasDatabaseName("IX_Role_RoleEntityId");
+                    b.ToTable("Roles");
 
-                    b.HasIndex("Name", "RoleEntity", "HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Role_Name_RoleEntityId_HasViewPermission_HasCreateOrUpdatePermission_HasDeletePermission_HasFullPermission");
-
-                    b.ToTable("Roles", (string)null);
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.RoleEntity", b =>
@@ -663,15 +623,11 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_RoleEntity_Id");
-
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasDatabaseName("IX_RoleEntity_Name");
 
-                    b.ToTable("RoleEntities", (string)null);
+                    b.ToTable("RoleEntities");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>
@@ -704,18 +660,13 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_State_Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("IX_State_Name");
-
                     b.HasIndex("Name", "CountryId")
                         .IsUnique()
                         .HasDatabaseName("IX_State_Name_CountryId");
 
-                    b.ToTable("States", (string)null);
+                    b.ToTable("States");
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.User", b =>
@@ -739,7 +690,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("EmailVerificationToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -791,13 +742,12 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("GenderId");
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("IX_User_Id");
+                    b.HasIndex("RoleId", "GenderId", "EmailVerificationToken")
+                        .HasDatabaseName("IX_User_RoleId_GenderId_EmailVerificationToken");
 
-                    b.HasIndex("RoleId");
+                    b.ToTable("Users");
 
-                    b.ToTable("Users", (string)null);
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Address", b =>

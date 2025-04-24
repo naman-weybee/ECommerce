@@ -9,11 +9,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Gender> builder)
         {
             builder
-            .HasIndex(g => g.Id)
-            .HasDatabaseName("IX_Gender_Id")
-            .IsUnique();
-
-            builder
             .HasIndex(g => g.Name)
             .HasDatabaseName("IX_Gender_Name")
             .IsUnique();

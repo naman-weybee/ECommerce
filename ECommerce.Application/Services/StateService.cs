@@ -73,7 +73,7 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteStateAsync(Guid id)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new StateAggregate(item, _eventCollector);
             aggregate.DeleteState();
 
