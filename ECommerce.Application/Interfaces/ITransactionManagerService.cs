@@ -8,8 +8,6 @@
 
         Task RollbackTransactionAsync();
 
-        Task SaveChangesAsync();
-
         void Dispose();
     }
 }

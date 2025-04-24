@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.State
 {
-    public class StateCreateDTOValidator : AbstractValidator<StateCreateDTO>
+    public class StateCreateDTOValidator : AbstractValidator<StateUpsertDTO>
     {
         public StateCreateDTOValidator()
         {

@@ -9,9 +9,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<ProductDTO> GetProductByIdAsync(Guid id);
 
-        Task CreateProductAsync(ProductCreateDTO dto);
-
-        Task UpdateProductAsync(ProductUpdateDTO dto);
+        Task UpsertProductAsync(ProductUpsertDTO dto);
 
         Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease);
 

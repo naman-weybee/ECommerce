@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.City
 {
-    public class CityCreateDTOValidator : AbstractValidator<CityCreateDTO>
+    public class CityCreateDTOValidator : AbstractValidator<CityUpsertDTO>
     {
         public CityCreateDTOValidator()
         {

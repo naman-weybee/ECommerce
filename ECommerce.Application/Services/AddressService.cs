@@ -61,22 +61,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<AddressDTO>(item);
         }
 
-        public async Task CreateAddressAsync(AddressCreateDTO dto)
+        public async Task UpsertAddressAsync(AddressUpsertDTO dto)
         {
-            var item = _mapper.Map<Address>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new AddressAggregate(item, _eventCollector);
-            aggregate.CreateAddress(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateAddress(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateAddress(item);
+            }
 
-        public async Task UpdateAddressAsync(AddressUpdateDTO dto)
-        {
-            var item = _mapper.Map<Address>(dto);
-            var aggregate = new AddressAggregate(item, _eventCollector);
-            aggregate.UpdateAddress(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateAddressTypeAsync(AddressTypeUpdateDTO dto)
@@ -108,6 +111,9 @@ namespace ECommerce.Application.Services
                 // Update the address
                 await SetAddressTypeAsync(address, dto.AdderessType);
 
+                // Save changes
+                await _repository.SaveChangesAsync();
+
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
             }
@@ -128,7 +134,8 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(item, _eventCollector);
             aggregate.DeleteAddress();
 
-            await _repository.DeleteAsync(aggregate.Entity);
+            _repository.Delete(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteAddressAsync(Guid id)
@@ -137,7 +144,8 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(item, _eventCollector);
             aggregate.DeleteAddress();
 
-            await _repository.DeleteAsync(aggregate.Entity);
+            _repository.Delete(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         private async Task SetAddressTypeAsync(Address address, eAddressType addressType)
@@ -145,7 +153,8 @@ namespace ECommerce.Application.Services
             var aggregate = new AddressAggregate(address, _eventCollector);
             aggregate.UpdateAddressType(addressType);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
     }
 }

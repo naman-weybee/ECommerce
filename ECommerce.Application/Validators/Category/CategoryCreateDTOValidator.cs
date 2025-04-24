@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Category
 {
-    public class CategoryCreateDTOValidator : AbstractValidator<CategoryCreateDTO>
+    public class CategoryCreateDTOValidator : AbstractValidator<CategoryUpsertDTO>
     {
         public CategoryCreateDTOValidator()
         {

@@ -47,22 +47,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<CountryDTO>(item);
         }
 
-        public async Task CreateCountryAsync(CountryCreateDTO dto)
+        public async Task UpsertCountryAsync(CountryUpsertDTO dto)
         {
-            var item = _mapper.Map<Country>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new CountryAggregate(item, _eventCollector);
-            aggregate.CreateCountry(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateCountry(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateCountry(item!);
+            }
 
-        public async Task UpdateCountryAsync(CountryUpdateDTO dto)
-        {
-            var item = _mapper.Map<Country>(dto);
-            var aggregate = new CountryAggregate(item, _eventCollector);
-            aggregate.UpdateCountry(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCountryAsync(Guid id)
@@ -71,7 +74,8 @@ namespace ECommerce.Application.Services
             var aggregate = new CountryAggregate(item, _eventCollector);
             aggregate.DeleteCountry();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

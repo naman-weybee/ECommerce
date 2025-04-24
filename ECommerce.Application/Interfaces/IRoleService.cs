@@ -13,9 +13,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<RoleDTO> GetSpecificRoleByUserAsync(Guid id, Guid userId);
 
-        Task CreateRoleAsync(RoleCreateDTO dto);
-
-        Task UpdateRoleAsync(RoleUpdateDTO dto);
+        Task UpsertRoleAsync(RoleUpsertDTO dto);
 
         Task DeleteRoleAsync(Guid id);
     }

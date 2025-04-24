@@ -22,12 +22,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> Register([FromBody] UserUpsertDTO dto)
         {
             await _service.RegisterAsync(dto);
             _controllerHelper.SetResponse(_response, "Verification email sent.");
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost("Login")]
@@ -36,7 +36,7 @@ namespace ECommerce.API.Controllers
             var data = await _service.LoginAsync(dto);
             _controllerHelper.SetResponse(_response, data);
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost("RevokeRefreshToken")]
@@ -45,7 +45,7 @@ namespace ECommerce.API.Controllers
             await _service.RevokeRefreshTokenAsync(dto);
             _controllerHelper.SetResponse(_response, "Refresh Token Revoked Successfully.");
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost("ReCreateAccessToken")]
@@ -54,7 +54,7 @@ namespace ECommerce.API.Controllers
             var data = await _service.ReCreateAccessTokenAsync(dto);
             _controllerHelper.SetResponse(_response, data);
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpGet("VerifyEmail")]

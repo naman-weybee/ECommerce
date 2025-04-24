@@ -13,9 +13,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<CartItemDTO> GetSpecificCartItemByUserAsync(Guid id, Guid userId);
 
-        Task CreateCartItemAsync(CartItemCreateDTO dto);
-
-        Task UpdateCartItemAsync(CartItemUpdateDTO dto);
+        Task UpsertCartItemAsync(CartItemUpsertDTO dto);
 
         Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto);
 

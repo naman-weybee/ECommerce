@@ -1,7 +1,9 @@
 namespace ECommerce.Application.DTOs.City
 {
-    public class CityCreateDTO
+    public class CityUpsertDTO
     {
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public Guid StateId { get; set; }

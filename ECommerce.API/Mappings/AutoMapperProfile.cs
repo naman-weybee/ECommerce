@@ -23,55 +23,61 @@ namespace ECommerce.API.Mappings
     {
         public AutoMapperProfile()
         {
-            ConfigureMappings<Product, ProductDTO, ProductCreateDTO, ProductUpdateDTO>();
-            ConfigureMappings<ProductAggregate, ProductDTO, ProductCreateDTO, ProductUpdateDTO>();
+            ConfigureMappings<Product, ProductDTO, ProductUpsertDTO>();
+            ConfigureMappings<ProductAggregate, ProductDTO, ProductUpsertDTO>();
 
-            ConfigureMappings<Category, CategoryDTO, CategoryCreateDTO, CategoryUpdateDTO>();
-            ConfigureMappings<CategoryAggregate, CategoryDTO, CategoryCreateDTO, CategoryUpdateDTO>();
+            ConfigureMappings<Category, CategoryDTO, CategoryUpsertDTO>();
+            ConfigureMappings<CategoryAggregate, CategoryDTO, CategoryUpsertDTO>();
 
             ConfigureMappings<Order, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
             ConfigureMappings<OrderAggregate, OrderDTO, OrderCreateDTO, OrderUpdateDTO>();
 
-            ConfigureMappings<OrderItem, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
-            ConfigureMappings<OrderItemAggregate, OrderItemDTO, OrderItemCreateDTO, OrderItemUpdateDTO>();
+            ConfigureMappings<OrderItem, OrderItemDTO, OrderItemUpsertDTO, OrderItemUpdateDTO>();
+            ConfigureMappings<OrderItemAggregate, OrderItemDTO, OrderItemUpsertDTO, OrderItemUpdateDTO>();
 
-            ConfigureMappings<User, UserDTO, UserCreateDTO, UserUpdateDTO>();
-            ConfigureMappings<UserAggregate, UserDTO, UserCreateDTO, UserUpdateDTO>();
+            ConfigureMappings<User, UserDTO, UserUpsertDTO>();
+            ConfigureMappings<UserAggregate, UserDTO, UserUpsertDTO>();
 
-            ConfigureMappings<Address, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
-            ConfigureMappings<AddressAggregate, AddressDTO, AddressCreateDTO, AddressUpdateDTO>();
+            ConfigureMappings<Address, AddressDTO, AddressUpsertDTO>();
+            ConfigureMappings<AddressAggregate, AddressDTO, AddressUpsertDTO>();
 
             ConfigureMappings<Product, ProductDTO, ProductStockChangeDTO, ProductPriceChangeDTO>();
 
-            ConfigureMappings<CartItem, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
-            ConfigureMappings<CartItemAggregate, CartItemDTO, CartItemCreateDTO, CartItemUpdateDTO>();
+            ConfigureMappings<CartItem, CartItemDTO, CartItemUpsertDTO>();
+            ConfigureMappings<CartItemAggregate, CartItemDTO, CartItemUpsertDTO>();
 
-            ConfigureMappings<Gender, GenderDTO, GenderCreateDTO, GenderUpdateDTO>();
-            ConfigureMappings<GenderAggregate, GenderDTO, GenderCreateDTO, GenderUpdateDTO>();
+            ConfigureMappings<Gender, GenderDTO, GenderUpsertDTO>();
+            ConfigureMappings<GenderAggregate, GenderDTO, GenderUpsertDTO>();
 
-            ConfigureMappings<Role, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
-            ConfigureMappings<RoleAggregate, RoleDTO, RoleCreateDTO, RoleUpdateDTO>();
+            ConfigureMappings<Role, RoleDTO, RoleUpsertDTO>();
+            ConfigureMappings<RoleAggregate, RoleDTO, RoleUpsertDTO>();
 
-            ConfigureMappings<RefreshToken, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
-            ConfigureMappings<RefreshTokenAggregate, RefreshTokenDTO, RefreshTokenCreateDTO, RefreshTokenUpdateDTO>();
+            ConfigureMappings<RefreshToken, RefreshTokenDTO, RefreshTokenUpsertDTO>();
+            ConfigureMappings<RefreshTokenAggregate, RefreshTokenDTO, RefreshTokenUpsertDTO>();
 
-            ConfigureMappings<Country, CountryDTO, CountryCreateDTO, CountryUpdateDTO>();
-            ConfigureMappings<CountryAggregate, CountryDTO, CountryCreateDTO, CountryUpdateDTO>();
+            ConfigureMappings<Country, CountryDTO, CountryUpsertDTO>();
+            ConfigureMappings<CountryAggregate, CountryDTO, CountryUpsertDTO>();
 
-            ConfigureMappings<State, StateDTO, StateCreateDTO, StateUpdateDTO>();
-            ConfigureMappings<StateAggregate, StateDTO, StateCreateDTO, StateUpdateDTO>();
+            ConfigureMappings<State, StateDTO, StateUpsertDTO>();
+            ConfigureMappings<StateAggregate, StateDTO, StateUpsertDTO>();
 
-            ConfigureMappings<City, CityDTO, CityCreateDTO, CityUpdateDTO>();
-            ConfigureMappings<CityAggregate, CityDTO, CityCreateDTO, CityUpdateDTO>();
+            ConfigureMappings<City, CityDTO, CityUpsertDTO>();
+            ConfigureMappings<CityAggregate, CityDTO, CityUpsertDTO>();
 
             ConfigureMappings<OTP, OTPDTO, OTPCreateDTO, OTPUpdateDTO>();
             ConfigureMappings<OTPAggregate, OTPDTO, OTPCreateDTO, OTPUpdateDTO>();
         }
 
-        private void ConfigureMappings<TSource, TDTO, TCreateDTO, TUpdateDTO>()
+        private void ConfigureMappings<TSource, TDTO, TUpsertDTO>()
         {
             CreateMap<TSource, TDTO>().ReverseMap();
-            CreateMap<TSource, TCreateDTO>().ReverseMap();
+            CreateMap<TSource, TUpsertDTO>().ReverseMap();
+        }
+
+        private void ConfigureMappings<TSource, TDTO, TUpsertDTO, TUpdateDTO>()
+        {
+            CreateMap<TSource, TDTO>().ReverseMap();
+            CreateMap<TSource, TUpsertDTO>().ReverseMap();
             CreateMap<TSource, TUpdateDTO>().ReverseMap();
         }
     }

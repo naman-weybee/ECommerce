@@ -47,24 +47,13 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateState([FromBody] StateCreateDTO dto)
+        public async Task<IActionResult> UpsertState([FromBody] StateUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateStateAsync(dto);
-            _response.Data = new { Message = "New State Added Successfully." };
+            await _service.UpsertStateAsync(dto);
+            _response.Data = new { Message = "State Saved Successfully." };
             _response.Success = true;
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateState([FromBody] StateUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.State, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateStateAsync(dto);
-            _controllerHelper.SetResponse(_response, "State Modified Successfully.");
 
             return StatusCode(200, _response);
         }

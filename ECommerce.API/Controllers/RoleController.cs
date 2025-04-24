@@ -42,23 +42,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole([FromBody] RoleCreateDTO dto)
+        public async Task<IActionResult> UpsertRole([FromBody] RoleUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateRoleAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Role Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateRoleAsync(dto);
-            _controllerHelper.SetResponse(_response, "Role Modified Successfully.");
+            await _service.UpsertRoleAsync(dto);
+            _controllerHelper.SetResponse(_response, "Role Saved Successfully.");
 
             return StatusCode(200, _response);
         }

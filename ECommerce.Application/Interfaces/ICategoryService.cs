@@ -9,11 +9,9 @@ namespace ECommerce.Application.Interfaces
 
         Task<CategoryDTO> GetCategoryByIdAsync(Guid id, bool isInclude = false);
 
-        Task CreateCategoryAsync(CategoryCreateDTO dto);
+        Task UpsertCategoryAsync(CategoryUpsertDTO dto);
 
-        Task UpdateCategoryAsync(CategoryUpdateDTO dto);
-
-        Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto);
+        Task AddSubCategoryAsync(Guid id, CategoryUpsertDTO dto);
 
         Task RemoveSubCategoryAsync(Guid id);
 

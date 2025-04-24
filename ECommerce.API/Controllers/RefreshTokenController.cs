@@ -58,25 +58,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRefreshToken()
+        public async Task<IActionResult> UpsertRefreshToken()
         {
-            var dto = new RefreshTokenCreateDTO() { UserId = _userId };
+            var dto = new RefreshTokenUpsertDTO() { UserId = _userId };
 
-            var data = await _service.CreateRefreshTokenAsync(dto);
+            var data = await _service.UpsertRefreshTokenAsync(dto);
             _controllerHelper.SetResponse(_response, data);
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateRefreshToken([FromBody] RefreshTokenUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasCreateOrUpdatePermission);
-
-            dto.UserId = _userId;
-
-            await _service.UpdateRefreshTokenAsync(dto);
-            _controllerHelper.SetResponse(_response, "Refresh Token Modified Successfully.");
 
             return StatusCode(200, _response);
         }

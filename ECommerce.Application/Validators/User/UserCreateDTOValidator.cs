@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.User
 {
-    public class UserCreateDTOValidator : AbstractValidator<UserCreateDTO>
+    public class UserCreateDTOValidator : AbstractValidator<UserUpsertDTO>
     {
         public UserCreateDTOValidator()
         {

@@ -44,7 +44,7 @@ namespace ECommerce.API.Controllers
             await _service.CreateOTPAsync(dto);
             _controllerHelper.SetResponse(_response, "New OTP Generated Successfully.");
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpPut]

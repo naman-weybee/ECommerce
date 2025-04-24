@@ -71,22 +71,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<RoleDTO>(item);
         }
 
-        public async Task CreateRoleAsync(RoleCreateDTO dto)
+        public async Task UpsertRoleAsync(RoleUpsertDTO dto)
         {
-            var item = _mapper.Map<Role>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new RoleAggregate(item, _eventCollector);
-            aggregate.CreateRole(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateRole(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateRole(item);
+            }
 
-        public async Task UpdateRoleAsync(RoleUpdateDTO dto)
-        {
-            var item = _mapper.Map<Role>(dto);
-            var aggregate = new RoleAggregate(item, _eventCollector);
-            aggregate.UpdateRole(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteRoleAsync(Guid id)
@@ -95,7 +98,8 @@ namespace ECommerce.Application.Services
             var aggregate = new RoleAggregate(item, _eventCollector);
             aggregate.DeleteRole();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

@@ -53,22 +53,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<StateDTO>(item);
         }
 
-        public async Task CreateStateAsync(StateCreateDTO dto)
+        public async Task UpsertStateAsync(StateUpsertDTO dto)
         {
-            var item = _mapper.Map<State>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new StateAggregate(item, _eventCollector);
-            aggregate.CreateState(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateState(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateState(item);
+            }
 
-        public async Task UpdateStateAsync(StateUpdateDTO dto)
-        {
-            var item = _mapper.Map<State>(dto);
-            var aggregate = new StateAggregate(item, _eventCollector);
-            aggregate.UpdateState(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteStateAsync(Guid id)
@@ -77,7 +80,8 @@ namespace ECommerce.Application.Services
             var aggregate = new StateAggregate(item, _eventCollector);
             aggregate.DeleteState();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

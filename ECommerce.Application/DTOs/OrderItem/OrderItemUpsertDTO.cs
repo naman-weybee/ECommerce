@@ -1,12 +1,14 @@
-using ECommerce.Domain.ValueObjects;
+﻿using ECommerce.Domain.ValueObjects;
 
-namespace ECommerce.Application.DTOs.CartItem
+namespace ECommerce.Application.DTOs
 {
-    public class CartItemUpdateDTO
+    public class OrderItemUpsertDTO
     {
         public Guid Id { get; set; }
 
         public Guid UserId { get; set; }
+
+        public Guid OrderId { get; set; }
 
         public Guid ProductId { get; set; }
 

@@ -60,23 +60,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAddress([FromBody] AddressCreateDTO dto)
+        public async Task<IActionResult> UpsertAddress([FromBody] AddressUpsertDTO dto)
         {
             dto.UserId = _userId;
 
-            await _service.CreateAddressAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Address Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateAddress([FromBody] AddressUpdateDTO dto)
-        {
-            dto.UserId = _userId;
-
-            await _service.UpdateAddressAsync(dto);
-            _controllerHelper.SetResponse(_response, "Address Modified Successfully.");
+            await _service.UpsertAddressAsync(dto);
+            _controllerHelper.SetResponse(_response, "Address Saved Successfully.");
 
             return StatusCode(200, _response);
         }

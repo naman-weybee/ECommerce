@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Country
 {
-    public class CountryCreateDTOValidator : AbstractValidator<CountryCreateDTO>
+    public class CountryCreateDTOValidator : AbstractValidator<CountryUpsertDTO>
     {
         public CountryCreateDTOValidator()
         {

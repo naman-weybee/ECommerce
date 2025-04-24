@@ -147,6 +147,9 @@ namespace ECommerce.Application.Services
                 // Clear Cart
                 await ClearCart(user.Id);
 
+                // Save changes
+                await _repository.SaveChangesAsync();
+
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
 
@@ -167,7 +170,8 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrder(aggregate.Order);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
@@ -189,7 +193,8 @@ namespace ECommerce.Application.Services
                 await UpdateProductStock(orderItems, true);
             }
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
 
             // Send Email to User
             await _emailTemplates.SendOrderEmailAsync(item.UserId, item.Id, aggregate.EventType);
@@ -201,7 +206,8 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.DeleteOrder();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
 
         private async Task<List<CartItemDTO>> GetUserCartItems(Guid userId)
@@ -257,7 +263,7 @@ namespace ECommerce.Application.Services
         {
             foreach (var cartItem in cartItems)
             {
-                var orderItem = new OrderItemCreateDTO
+                var orderItem = new OrderItemUpsertDTO
                 {
                     OrderId = orderId,
                     ProductId = cartItem.ProductId,
@@ -265,7 +271,7 @@ namespace ECommerce.Application.Services
                     UnitPrice = cartItem.UnitPrice
                 };
 
-                await _orderItemService.CreateOrderItemAsync(orderItem);
+                await _orderItemService.UpsertOrderItemAsync(orderItem);
             }
         }
 

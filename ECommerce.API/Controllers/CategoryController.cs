@@ -38,29 +38,18 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDTO dto)
+        public async Task<IActionResult> UpsertCategory([FromBody] CategoryUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateCategoryAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Category Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateCategoryAsync(dto);
-            _controllerHelper.SetResponse(_response, "Category Modified Successfully.");
+            await _service.UpsertCategoryAsync(dto);
+            _controllerHelper.SetResponse(_response, "Category Saved Successfully.");
 
             return StatusCode(200, _response);
         }
 
         [HttpPut("AddSubCategory/{id}")]
-        public async Task<IActionResult> AddSubCategory(Guid id, [FromBody] CategoryCreateDTO dto)
+        public async Task<IActionResult> AddSubCategory(Guid id, [FromBody] CategoryUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Category, eUserPermission.HasCreateOrUpdatePermission);
 

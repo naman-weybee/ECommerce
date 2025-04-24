@@ -60,23 +60,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCartItem([FromBody] CartItemCreateDTO dto)
+        public async Task<IActionResult> UpsertCartItem([FromBody] CartItemUpsertDTO dto)
         {
             dto.UserId = _userId;
 
-            await _service.CreateCartItemAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Cart Item Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCartItem([FromBody] CartItemUpdateDTO dto)
-        {
-            dto.UserId = _userId;
-
-            await _service.UpdateCartItemAsync(dto);
-            _controllerHelper.SetResponse(_response, "Cart Item Modified Successfully.");
+            await _service.UpsertCartItemAsync(dto);
+            _controllerHelper.SetResponse(_response, "Cart Item Saved Successfully.");
 
             return StatusCode(200, _response);
         }

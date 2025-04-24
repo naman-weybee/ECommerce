@@ -47,23 +47,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCity([FromBody] CityCreateDTO dto)
+        public async Task<IActionResult> UpsertCity([FromBody] CityUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateCityAsync(dto);
-            _controllerHelper.SetResponse(_response, "New City Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCity([FromBody] CityUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.City, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateCityAsync(dto);
-            _controllerHelper.SetResponse(_response, "City Modified Successfully.");
+            await _service.UpsertCityAsync(dto);
+            _controllerHelper.SetResponse(_response, "City Saved Successfully.");
 
             return StatusCode(200, _response);
         }

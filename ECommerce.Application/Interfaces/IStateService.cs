@@ -11,9 +11,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<StateDTO> GetStateByIdAsync(Guid id);
 
-        Task CreateStateAsync(StateCreateDTO dto);
-
-        Task UpdateStateAsync(StateUpdateDTO dto);
+        Task UpsertStateAsync(StateUpsertDTO dto);
 
         Task DeleteStateAsync(Guid id);
     }

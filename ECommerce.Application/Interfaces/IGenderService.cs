@@ -9,9 +9,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<GenderDTO> GetGenderByIdAsync(Guid id);
 
-        Task CreateGenderAsync(GenderCreateDTO dto);
-
-        Task UpdateGenderAsync(GenderUpdateDTO dto);
+        Task UpsertGenderAsync(GenderUpsertDTO dto);
 
         Task DeleteGenderAsync(Guid id);
     }

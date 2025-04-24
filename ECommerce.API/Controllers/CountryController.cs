@@ -38,23 +38,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCountry([FromBody] CountryCreateDTO dto)
+        public async Task<IActionResult> UpsertCountry([FromBody] CountryUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateCountryAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Country Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateCountry([FromBody] CountryUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Country, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateCountryAsync(dto);
-            _controllerHelper.SetResponse(_response, "Country Modified Successfully.");
+            await _service.UpsertCountryAsync(dto);
+            _controllerHelper.SetResponse(_response, "Country Saved Successfully.");
 
             return StatusCode(200, _response);
         }

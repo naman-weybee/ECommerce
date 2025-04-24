@@ -2,8 +2,10 @@
 
 namespace ECommerce.Application.DTOs.Product
 {
-    public class ProductCreateDTO
+    public class ProductUpsertDTO
     {
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public string? Description { get; set; }

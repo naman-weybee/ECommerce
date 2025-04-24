@@ -13,9 +13,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<AddressDTO> GetSpecificAddressByUserAsync(Guid id, Guid userId);
 
-        Task CreateAddressAsync(AddressCreateDTO dto);
-
-        Task UpdateAddressAsync(AddressUpdateDTO dto);
+        Task UpsertAddressAsync(AddressUpsertDTO dto);
 
         Task UpdateAddressTypeAsync(AddressTypeUpdateDTO dto);
 

@@ -11,9 +11,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<CityDTO> GetCityByIdAsync(Guid id);
 
-        Task CreateCityAsync(CityCreateDTO dto);
-
-        Task UpdateCityAsync(CityUpdateDTO dto);
+        Task UpsertCityAsync(CityUpsertDTO dto);
 
         Task DeleteCityAsync(Guid id);
     }

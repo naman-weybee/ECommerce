@@ -38,23 +38,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGender([FromBody] GenderCreateDTO dto)
+        public async Task<IActionResult> UpsertGender([FromBody] GenderUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Gender, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateGenderAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Gender Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateGender([FromBody] GenderUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Gender, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateGenderAsync(dto);
-            _controllerHelper.SetResponse(_response, "Gender Modified Successfully.");
+            await _service.UpsertGenderAsync(dto);
+            _controllerHelper.SetResponse(_response, "Gender Saved Successfully.");
 
             return StatusCode(200, _response);
         }

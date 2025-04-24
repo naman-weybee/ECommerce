@@ -46,22 +46,25 @@ namespace ECommerce.Application.Services
             return item.Stock;
         }
 
-        public async Task CreateProductAsync(ProductCreateDTO dto)
+        public async Task UpsertProductAsync(ProductUpsertDTO dto)
         {
-            var item = _mapper.Map<Product>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new ProductAggregate(item, _eventCollector);
-            aggregate.CreateProduct(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateProduct(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateProduct(item);
+            }
 
-        public async Task UpdateProductAsync(ProductUpdateDTO dto)
-        {
-            var item = _mapper.Map<Product>(dto);
-            var aggregate = new ProductAggregate(item, _eventCollector);
-            aggregate.UpdateProduct(aggregate.Product);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease)
@@ -74,7 +77,8 @@ namespace ECommerce.Application.Services
             else
                 aggregate.DecreaseStock(quantity);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task ProductPriceChangeAsync(ProductPriceChangeDTO dto)
@@ -83,7 +87,8 @@ namespace ECommerce.Application.Services
             var aggregate = new ProductAggregate(item, _eventCollector);
             aggregate.ChangePrice(dto.Price);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteProductAsync(Guid id)
@@ -92,7 +97,8 @@ namespace ECommerce.Application.Services
             var aggregate = new ProductAggregate(item, _eventCollector);
             aggregate.DeleteProduct();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

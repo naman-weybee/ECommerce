@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Gender
 {
-    public class GenderCreateDTOValidator : AbstractValidator<GenderCreateDTO>
+    public class GenderCreateDTOValidator : AbstractValidator<GenderUpsertDTO>
     {
         public GenderCreateDTOValidator()
         {

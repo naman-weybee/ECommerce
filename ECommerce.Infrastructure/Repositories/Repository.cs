@@ -23,32 +23,17 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
-
-            if (entity != null)
-                return entity;
-
-            throw new InvalidOperationException($"Data for Id = {id} is not available.");
+            return (await _context.Set<TEntity>().FindAsync(id))!;
         }
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity> query)
         {
-            var entity = await query.SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id));
-
-            if (entity != null)
-                return entity;
-
-            throw new InvalidOperationException($"Data for Id = {id} is not available.");
+            return (await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id)))!;
         }
 
         public virtual async Task<TEntity> GetByPropertyAsync(IQueryable<TEntity> query)
         {
-            var entity = await query.FirstAsync();
-
-            if (entity != null)
-                return entity;
-
-            throw new InvalidOperationException("Data is not available.");
+            return (await query.FirstOrDefaultAsync())!;
         }
 
         public async Task<List<TEntity>> GetAllAsync()
@@ -99,36 +84,23 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task InsertAsync(TEntity entity)
         {
-            DbSet.Add(entity);
-            await _context.SaveChangesAsync();
+            await DbSet.AddAsync(entity);
         }
 
-        public virtual async Task UpdateAsync(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             DbSet.Update(entity);
-            await _context.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAsync(TEntity entity)
+        public virtual void Delete(TEntity entity)
         {
             if (entity != null)
-            {
                 DbSet.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
             else
-            {
                 throw new InvalidOperationException("Data is not Available...!");
-            }
         }
 
-        public virtual async Task SaveAsync(TEntity entity)
-        {
-            DbSet.Update(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public virtual Task<int> SaveChanges()
+        public virtual Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
         }

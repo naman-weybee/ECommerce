@@ -16,40 +16,35 @@ namespace ECommerce.Application.ServiceHelper
 
         public async Task<List<TEntity>> GetAllAsync(RequestParams? requestParams = null, IQueryable<TEntity>? query = null)
         {
-            switch ((requestParams, query))
+            return (requestParams, query) switch
             {
-                case (not null, not null):
-                    return (await _repository.GetAllAsync(requestParams!, query))?.ToList()!;
+                (not null, not null) =>
+                    (await _repository.GetAllAsync(requestParams!, query))?.ToList()!,
 
-                case (not null, null):
-                    return (await _repository.GetAllAsync(requestParams!))?.ToList()!;
+                (not null, null) =>
+                    (await _repository.GetAllAsync(requestParams!))?.ToList()!,
 
-                case (null, not null):
-                    return await _repository.GetAllAsync(query);
+                (null, not null) =>
+                    await _repository.GetAllAsync(query),
 
-                default:
-                    return await _repository.GetAllAsync();
-            }
+                _ =>
+                    await _repository.GetAllAsync(),
+            };
         }
 
         public async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity>? query = null)
         {
-            switch (query)
+            return query switch
             {
-                case (not null):
-                    return await _repository.GetByIdAsync(id, query);
+                (not null) =>
+                    await _repository.GetByIdAsync(id, query),
 
-                default:
-                    return await _repository.GetByIdAsync(id);
-            }
+                _ =>
+                    await _repository.GetByIdAsync(id),
+            };
         }
 
         public async Task<TEntity> GetByQueryAsync(IQueryable<TEntity> query)
-        {
-            return await _repository.GetByPropertyAsync(query);
-        }
-
-        public async Task<TEntity> DeleteAsync(IQueryable<TEntity> query)
         {
             return await _repository.GetByPropertyAsync(query);
         }

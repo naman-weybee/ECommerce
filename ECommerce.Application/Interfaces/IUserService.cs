@@ -13,11 +13,9 @@ namespace ECommerce.Application.Interfaces
 
         Task<UserDTO> GetUserByEmailAsync(string email, bool useQuery = false);
 
-        Task CreateUserAsync(UserCreateDTO dto);
+        Task UpsertUserAsync(UserUpsertDTO dto);
 
         Task PasswordResetAsync(PasswordResetDTO dto);
-
-        Task UpdateUserAsync(UserUpdateDTO dto);
 
         Task VerifyEmailAsync(string token);
 

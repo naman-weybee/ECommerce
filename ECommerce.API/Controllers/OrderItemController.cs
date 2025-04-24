@@ -49,25 +49,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrderItem([FromBody] OrderItemCreateDTO dto)
+        public async Task<IActionResult> UpsertOrderItem([FromBody] OrderItemUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateOrderItemAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Order Item Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateOrderItem([FromBody] OrderItemUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.OrderItem, eUserPermission.HasCreateOrUpdatePermission);
-
-            dto.UserId = _userId;
-
-            await _service.UpdateOrderItemAsync(dto);
-            _controllerHelper.SetResponse(_response, "Order Item Modified Successfully.");
+            await _service.UpsertOrderItemAsync(dto);
+            _controllerHelper.SetResponse(_response, "Order Saved Successfully.");
 
             return StatusCode(200, _response);
         }

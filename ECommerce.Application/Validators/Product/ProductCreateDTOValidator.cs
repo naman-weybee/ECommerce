@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Product
 {
-    public class ProductCreateDTOValidator : AbstractValidator<ProductCreateDTO>
+    public class ProductCreateDTOValidator : AbstractValidator<ProductUpsertDTO>
     {
         public ProductCreateDTOValidator()
         {

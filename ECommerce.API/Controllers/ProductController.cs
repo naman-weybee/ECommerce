@@ -38,23 +38,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDTO dto)
+        public async Task<IActionResult> UpsertProduct([FromBody] ProductUpsertDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.CreateProductAsync(dto);
-            _controllerHelper.SetResponse(_response, "New Product Added Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Product, eUserPermission.HasCreateOrUpdatePermission);
-
-            await _service.UpdateProductAsync(dto);
-            _controllerHelper.SetResponse(_response, "Product Modified Successfully.");
+            await _service.UpsertProductAsync(dto);
+            _controllerHelper.SetResponse(_response, "Product Saved Successfully.");
 
             return StatusCode(200, _response);
         }

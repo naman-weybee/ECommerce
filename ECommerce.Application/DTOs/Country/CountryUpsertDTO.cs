@@ -1,6 +1,6 @@
 namespace ECommerce.Application.DTOs.Country
 {
-    public class CountryUpdateDTO
+    public class CountryUpsertDTO
     {
         public Guid Id { get; set; }
 

@@ -22,11 +22,11 @@ namespace ECommerce.Shared.Repositories
 
         Task InsertAsync(TEntity entity);
 
-        Task UpdateAsync(TEntity entity);
+        void Update(TEntity entity);
 
-        Task DeleteAsync(TEntity entity);
+        void Delete(TEntity entity);
 
-        Task SaveAsync(TEntity entity);
+        Task<int> SaveChangesAsync();
 
         IQueryable<TEntity> GetQuery();
     }

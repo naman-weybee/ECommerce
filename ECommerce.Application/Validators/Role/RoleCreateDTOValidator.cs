@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Role
 {
-    public class RoleCreateDTOValidator : AbstractValidator<RoleCreateDTO>
+    public class RoleCreateDTOValidator : AbstractValidator<RoleUpsertDTO>
     {
         public RoleCreateDTOValidator()
         {

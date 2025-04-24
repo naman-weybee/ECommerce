@@ -6,7 +6,7 @@ namespace ECommerce.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task RegisterAsync(UserCreateDTO dto);
+        Task RegisterAsync(UserUpsertDTO dto);
 
         Task<UserTokenDTO> LoginAsync(UserLoginDTO dto);
 

@@ -2,7 +2,7 @@ using ECommerce.Domain.Enums;
 
 namespace ECommerce.Application.DTOs.Address
 {
-    public class AddressUpdateDTO
+    public class AddressUpsertDTO
     {
         public Guid Id { get; set; }
 

@@ -27,9 +27,9 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
-        public void UpdateOrderItem(OrderItem orderItem)
+        public void UpdateOrderItem(OrderItem orderItem, Money unitPrice)
         {
-            OrderItem.UpdateOrderItem(orderItem.Id, orderItem.OrderId, orderItem.ProductId, orderItem.Quantity, orderItem.UnitPrice);
+            OrderItem.UpdateOrderItem(orderItem.Id, orderItem.OrderId, orderItem.ProductId, orderItem.Quantity, unitPrice);
 
             EventType = eEventType.OrderItemUpdated;
             RaiseDomainEvent();

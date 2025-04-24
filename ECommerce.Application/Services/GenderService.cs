@@ -38,22 +38,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<GenderDTO>(item);
         }
 
-        public async Task CreateGenderAsync(GenderCreateDTO dto)
+        public async Task UpsertGenderAsync(GenderUpsertDTO dto)
         {
-            var item = _mapper.Map<Gender>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new GenderAggregate(item, _eventCollector);
-            aggregate.CreateGender(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateGender(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateGender(item!);
+            }
 
-        public async Task UpdateGenderAsync(GenderUpdateDTO dto)
-        {
-            var item = _mapper.Map<Gender>(dto);
-            var aggregate = new GenderAggregate(item, _eventCollector);
-            aggregate.UpdateGender(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteGenderAsync(Guid id)
@@ -62,7 +65,8 @@ namespace ECommerce.Application.Services
             var aggregate = new GenderAggregate(item, _eventCollector);
             aggregate.DeleteGender();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

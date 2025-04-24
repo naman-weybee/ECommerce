@@ -58,24 +58,27 @@ namespace ECommerce.Application.Services
             return _mapper.Map<RefreshTokenDTO>(item);
         }
 
-        public async Task<RefreshTokenDTO> CreateRefreshTokenAsync(RefreshTokenCreateDTO dto)
+        public async Task<RefreshTokenDTO> UpsertRefreshTokenAsync(RefreshTokenUpsertDTO dto)
         {
-            var item = _mapper.Map<RefreshToken>(dto);
-            var aggregate = new RefreshTokenAggregate(item, _eventCollector);
-            aggregate.CreateRefreshToken(item.UserId);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
 
-            await _repository.InsertAsync(aggregate.Entity);
+            item = _mapper.Map(dto, item)!;
+            var aggregate = new RefreshTokenAggregate(item, _eventCollector);
+
+            if (isNew)
+            {
+                aggregate.CreateRefreshToken(item.Id);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateRefreshToken(item);
+            }
+
+            await _repository.SaveChangesAsync();
 
             return await GetRefreshTokenByIdAsync(aggregate.RefreshToken.Id);
-        }
-
-        public async Task UpdateRefreshTokenAsync(RefreshTokenUpdateDTO dto)
-        {
-            var item = _mapper.Map<RefreshToken>(dto);
-            var aggregate = new RefreshTokenAggregate(item, _eventCollector);
-            aggregate.UpdateRefreshToken(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task DeleteRefreshTokenAsync(Guid id, Guid userId)
@@ -87,7 +90,8 @@ namespace ECommerce.Application.Services
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.DeleteRefreshToken();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenDTO dto)
@@ -99,7 +103,8 @@ namespace ECommerce.Application.Services
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.RevokeToken();
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace ECommerce.Application.Services
             _mapper = mapper;
         }
 
-        public async Task RegisterAsync(UserCreateDTO dto)
+        public async Task RegisterAsync(UserUpsertDTO dto)
         {
             var query = _userRepository.GetQuery();
 
@@ -41,7 +41,7 @@ namespace ECommerce.Application.Services
 
             dto.Password = _md5Service.ComputeMD5Hash(dto.Password);
 
-            await _userService.CreateUserAsync(dto);
+            await _userService.UpsertUserAsync(dto);
         }
 
         public async Task<UserTokenDTO> LoginAsync(UserLoginDTO dto)
@@ -88,7 +88,7 @@ namespace ECommerce.Application.Services
             var accessToken = await _accessTokenService.CreateAccessTokenAsync(_mapper.Map<User>(dto))
                 ?? throw new InvalidOperationException("Access Token is not generated.");
 
-            var refreshToken = await _refreshTokenService.CreateRefreshTokenAsync(new RefreshTokenCreateDTO { UserId = dto.Id })
+            var refreshToken = await _refreshTokenService.UpsertRefreshTokenAsync(new RefreshTokenUpsertDTO { UserId = dto.Id })
                 ?? throw new InvalidOperationException("Refresh Token is not generated.");
 
             return new UserTokenDTO()

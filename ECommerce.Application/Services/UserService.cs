@@ -80,19 +80,31 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDTO>(item);
         }
 
-        public async Task CreateUserAsync(UserCreateDTO dto)
+        public async Task UpsertUserAsync(UserUpsertDTO dto)
         {
             // Begin Transaction
             await _transactionManagerService.BeginTransactionAsync();
 
             try
             {
-                var item = _mapper.Map<User>(dto);
+                var item = await _repository.GetByIdAsync(dto.Id);
+                bool isNew = item == null;
 
+                item = _mapper.Map(dto, item)!;
                 var aggregate = new UserAggregate(item, _eventCollector);
-                aggregate.CreateUser(item);
 
-                await _repository.InsertAsync(aggregate.Entity);
+                if (isNew)
+                {
+                    aggregate.CreateUser(item);
+                    await _repository.InsertAsync(aggregate.Entity);
+                }
+                else
+                {
+                    aggregate.UpdateUser(item);
+                }
+
+                // Save changes
+                await _repository.SaveChangesAsync();
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
@@ -106,15 +118,6 @@ namespace ECommerce.Application.Services
                 await _transactionManagerService.RollbackTransactionAsync();
                 throw;
             }
-        }
-
-        public async Task UpdateUserAsync(UserUpdateDTO dto)
-        {
-            var item = _mapper.Map<User>(dto);
-            var aggregate = new UserAggregate(item, _eventCollector);
-            aggregate.UpdateUser(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
         }
 
         public async Task PasswordResetAsync(PasswordResetDTO dto)
@@ -140,7 +143,8 @@ namespace ECommerce.Application.Services
                 var aggregate = new UserAggregate(user, _eventCollector);
                 aggregate.UpdateUser(user);
 
-                await _repository.UpdateAsync(aggregate.Entity);
+                _repository.Update(aggregate.Entity);
+                await _repository.SaveChangesAsync();
 
                 // Mark OTP as used
                 await _otpService.SetOTPIsUsedAsync(otp.Id);
@@ -162,7 +166,8 @@ namespace ECommerce.Application.Services
             var aggregate = new UserAggregate(item, _eventCollector);
             aggregate.DeleteUser();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task VerifyEmailAsync(string token)
@@ -179,7 +184,8 @@ namespace ECommerce.Application.Services
             var aggregate = new UserAggregate(user, _eventCollector);
             aggregate.EmailVerified();
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
     }
 }

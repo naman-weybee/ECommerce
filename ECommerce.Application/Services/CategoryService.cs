@@ -47,25 +47,28 @@ namespace ECommerce.Application.Services
             return _mapper.Map<CategoryDTO>(item);
         }
 
-        public async Task CreateCategoryAsync(CategoryCreateDTO dto)
+        public async Task UpsertCategoryAsync(CategoryUpsertDTO dto)
         {
-            var item = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(item, _eventCollector);
-            aggregate.CreateCategory(item);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
 
-            await _repository.InsertAsync(aggregate.Entity);
+            item = _mapper.Map(dto, item)!;
+            var aggregate = new CategoryAggregate(item, _eventCollector);
+
+            if (isNew)
+            {
+                aggregate.CreateCategory(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateCategory(item!);
+            }
+
+            await _repository.SaveChangesAsync();
         }
 
-        public async Task UpdateCategoryAsync(CategoryUpdateDTO dto)
-        {
-            var item = _mapper.Map<Category>(dto);
-            var aggregate = new CategoryAggregate(item, _eventCollector);
-            aggregate.UpdateCategory(aggregate.Category);
-
-            await _repository.UpdateAsync(aggregate.Entity);
-        }
-
-        public async Task AddSubCategoryAsync(Guid id, CategoryCreateDTO dto)
+        public async Task AddSubCategoryAsync(Guid id, CategoryUpsertDTO dto)
         {
             var item = await _serviceHelper.GetByIdAsync(id);
             var aggregate = new CategoryAggregate(item, _eventCollector);
@@ -73,7 +76,8 @@ namespace ECommerce.Application.Services
             var subCategory = _mapper.Map<Category>(dto);
             aggregate.AddSubCategory(subCategory);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task RemoveSubCategoryAsync(Guid id)
@@ -85,7 +89,8 @@ namespace ECommerce.Application.Services
             var aggregate = new CategoryAggregate(item, _eventCollector);
             aggregate.RemoveSubCategory();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCategoryAsync(Guid id)
@@ -94,7 +99,8 @@ namespace ECommerce.Application.Services
             var aggregate = new CategoryAggregate(item, _eventCollector);
             aggregate.DeleteCategory();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

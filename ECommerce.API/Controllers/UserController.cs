@@ -64,12 +64,12 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO dto)
+        public async Task<IActionResult> UpsertUser([FromBody] UserUpsertDTO dto)
         {
-            await _service.CreateUserAsync(dto);
-            _controllerHelper.SetResponse(_response, "User Created Successfully.");
+            await _service.UpsertUserAsync(dto);
+            _controllerHelper.SetResponse(_response, "User Saved Successfully.");
 
-            return StatusCode(201, _response);
+            return StatusCode(200, _response);
         }
 
         [HttpPost("PasswordReset")]
@@ -77,17 +77,6 @@ namespace ECommerce.API.Controllers
         {
             await _service.PasswordResetAsync(dto);
             _controllerHelper.SetResponse(_response, "Password Reset Successfully.");
-
-            return StatusCode(201, _response);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDTO dto)
-        {
-            dto.Id = _userId;
-
-            await _service.UpdateUserAsync(dto);
-            _controllerHelper.SetResponse(_response, "User Modified Successfully.");
 
             return StatusCode(200, _response);
         }

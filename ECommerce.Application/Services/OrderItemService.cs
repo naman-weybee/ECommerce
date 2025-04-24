@@ -59,30 +59,28 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OrderItemDTO>(item);
         }
 
-        public async Task CreateOrderItemAsync(OrderItemCreateDTO dto)
+        public async Task UpsertOrderItemAsync(OrderItemUpsertDTO dto)
         {
-            var item = _mapper.Map<OrderItem>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new OrderItemAggregate(item, _eventCollector);
-            aggregate.CreateOrderItem(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateOrderItem(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                var product = await _productService.GetProductByIdAsync(dto.ProductId);
+                dto.UnitPrice = new Money(dto.Quantity * product.Price.Amount);
 
-        public async Task UpdateOrderItemAsync(OrderItemUpdateDTO dto)
-        {
-            var orderItem = await GetOrderItemByIdAsync(dto.Id);
-            var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
+                aggregate.UpdateOrderItem(item!, dto.UnitPrice);
+            }
 
-            var order = await _orderRepository.GetQuery()
-                .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
-
-            dto.UnitPrice = new Money(dto.Quantity * product.Price.Amount);
-
-            var item = _mapper.Map<OrderItem>(dto);
-            var aggregate = new OrderItemAggregate(item, _eventCollector);
-            aggregate.UpdateOrderItem(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateQuantityAsync(OrderItemQuantityUpdateDTO dto)
@@ -105,13 +103,16 @@ namespace ECommerce.Application.Services
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
                 aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
-                await _repository.UpdateAsync(aggregate.Entity);
+                _repository.Update(aggregate.Entity);
 
                 // Update Product Stock
                 await UpdateOrderItemProductStockAsync(product.Id, orderItem.Quantity, dto.Quantity);
 
                 // Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
+
+                // Save changes
+                await _repository.SaveChangesAsync();
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
@@ -130,7 +131,8 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.UpdateUnitPrice(dto.UnitPrice);
 
-            await _repository.UpdateAsync(aggregate.Entity);
+            _repository.Update(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteOrderItemAsync(Guid id)
@@ -139,7 +141,8 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.DeleteOrderItem();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
 
         private async Task UpdateOrderTotalAmountAsync(Guid orderId, Guid userId)
@@ -150,7 +153,8 @@ namespace ECommerce.Application.Services
             var aggregate = new OrderAggregate(item!, _eventCollector);
             aggregate.UpdateTotalAmount();
 
-            await _orderRepository.UpdateAsync(aggregate.Entity);
+            _orderRepository.Update(aggregate.Entity);
+            await _orderRepository.SaveChangesAsync();
         }
 
         private async Task ValidateProductStockAsync(Guid productId, int oldQuantity, int newQuantity)

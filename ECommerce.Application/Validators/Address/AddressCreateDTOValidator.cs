@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Address
 {
-    public class AddressCreateDTOValidator : AbstractValidator<AddressCreateDTO>
+    public class AddressCreateDTOValidator : AbstractValidator<AddressUpsertDTO>
     {
         public AddressCreateDTOValidator()
         {

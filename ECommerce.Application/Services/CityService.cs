@@ -48,22 +48,25 @@ namespace ECommerce.Application.Services
             return _mapper.Map<CityDTO>(item);
         }
 
-        public async Task CreateCityAsync(CityCreateDTO dto)
+        public async Task UpsertCityAsync(CityUpsertDTO dto)
         {
-            var item = _mapper.Map<City>(dto);
+            var item = await _repository.GetByIdAsync(dto.Id);
+            bool isNew = item == null;
+
+            item = _mapper.Map(dto, item)!;
             var aggregate = new CityAggregate(item, _eventCollector);
-            aggregate.CreateCity(item);
 
-            await _repository.InsertAsync(aggregate.Entity);
-        }
+            if (isNew)
+            {
+                aggregate.CreateCity(item);
+                await _repository.InsertAsync(aggregate.Entity);
+            }
+            else
+            {
+                aggregate.UpdateCity(item!);
+            }
 
-        public async Task UpdateCityAsync(CityUpdateDTO dto)
-        {
-            var item = _mapper.Map<City>(dto);
-            var aggregate = new CityAggregate(item, _eventCollector);
-            aggregate.UpdateCity(item);
-
-            await _repository.UpdateAsync(aggregate.Entity);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCityAsync(Guid id)
@@ -72,7 +75,8 @@ namespace ECommerce.Application.Services
             var aggregate = new CityAggregate(item, _eventCollector);
             aggregate.DeleteCity();
 
-            await _repository.DeleteAsync(item);
+            _repository.Delete(item);
+            await _repository.SaveChangesAsync();
         }
     }
 }

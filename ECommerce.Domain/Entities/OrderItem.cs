@@ -36,8 +36,6 @@ namespace ECommerce.Domain.Entities
             UnitPrice = unitPrice;
         }
 
-        public Money TotalAmount => UnitPrice.Multiply(Quantity);
-
         public void UpdateQuantity(int newQuantity, Money newProductPrice)
         {
             Quantity = newQuantity;

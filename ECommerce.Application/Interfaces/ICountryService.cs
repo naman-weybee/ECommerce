@@ -9,9 +9,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<CountryDTO> GetCountryByIdAsync(Guid id, bool useQuery = false);
 
-        Task CreateCountryAsync(CountryCreateDTO dto);
-
-        Task UpdateCountryAsync(CountryUpdateDTO dto);
+        Task UpsertCountryAsync(CountryUpsertDTO dto);
 
         Task DeleteCountryAsync(Guid id);
     }
