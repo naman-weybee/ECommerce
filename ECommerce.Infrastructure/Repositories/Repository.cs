@@ -33,8 +33,6 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity> query)
         {
-            query = _context.Set<TEntity>().AsQueryable();
-
             var entity = await query.SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id));
 
             if (entity != null)

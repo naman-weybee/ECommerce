@@ -85,7 +85,7 @@ namespace ECommerce.Infrastructure.Data
                 {
                     var parameter = Expression.Parameter(e.ClrType);
                     var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "IsDeleted"), Expression.Constant(false)), parameter);
-                    modelBuilder.Entity(e.ClrType).HasQueryFilter(deletedCheck);
+                    modelBuilder.Entity(e.ClrType).HasQueryFilter(deletedCheck).ToTable(tb => tb.UseSqlOutputClause(false));
                 });
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
