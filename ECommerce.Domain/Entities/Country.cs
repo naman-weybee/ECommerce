@@ -15,14 +15,14 @@ namespace ECommerce.Domain.Entities
         {
             Id = Guid.NewGuid();
             Name = name;
-            States = states ?? new List<State>();
+            States = states ?? [];
         }
 
         public void UpdateCountry(Guid id, string name, ICollection<State> states)
         {
             Id = id;
             Name = name;
-            States = states ?? new List<State>();
+            States = states ?? [];
 
             StatusUpdated();
         }

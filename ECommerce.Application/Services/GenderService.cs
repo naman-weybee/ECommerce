@@ -48,12 +48,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateGender(item);
+                aggregate.CreateGender();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateGender(item!);
+                aggregate.UpdateGender();
             }
 
             await _repository.SaveChangesAsync();

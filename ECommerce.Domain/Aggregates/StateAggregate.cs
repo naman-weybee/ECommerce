@@ -15,21 +15,21 @@ namespace ECommerce.Domain.Aggregates
             : base(entity, eventCollector)
         {
             State = entity;
-            State.Cities ??= new List<City>();
+            Entity.Cities ??= [];
             _eventCollector = eventCollector;
         }
 
-        public void CreateState(State state)
+        public void CreateState()
         {
-            State.CreateState(state.Name, state.CountryId, state.Cities);
+            Entity.CreateState(Entity.Name, Entity.CountryId, Entity.Cities);
 
             EventType = eEventType.StateCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateState(State state)
+        public void UpdateState()
         {
-            State.UpdateState(state.Id, state.Name, state.CountryId, state.Cities);
+            Entity.UpdateState(Entity.Id, Entity.Name, Entity.CountryId, Entity.Cities);
 
             EventType = eEventType.StateUpdated;
             RaiseDomainEvent();
@@ -43,7 +43,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new StateEvent(State.Id, State.Name, State.CountryId, EventType);
+            var domainEvent = new StateEvent(Entity.Id, Entity.Name, Entity.CountryId, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

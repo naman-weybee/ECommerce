@@ -57,12 +57,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateCategory(item);
+                aggregate.CreateCategory();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateCategory(item!);
+                aggregate.UpdateCategory();
             }
 
             await _repository.SaveChangesAsync();

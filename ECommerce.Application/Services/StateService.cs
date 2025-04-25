@@ -63,12 +63,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateState(item);
+                aggregate.CreateState();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateState(item);
+                aggregate.UpdateState();
             }
 
             await _repository.SaveChangesAsync();

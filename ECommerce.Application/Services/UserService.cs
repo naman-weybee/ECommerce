@@ -95,12 +95,12 @@ namespace ECommerce.Application.Services
 
                 if (isNew)
                 {
-                    aggregate.CreateUser(item);
+                    aggregate.CreateUser();
                     await _repository.InsertAsync(aggregate.Entity);
                 }
                 else
                 {
-                    aggregate.UpdateUser(item);
+                    aggregate.UpdateUser();
                 }
 
                 // Save changes
@@ -128,11 +128,11 @@ namespace ECommerce.Application.Services
             try
             {
                 var otp = await _otpRepository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Token == dto.Token && x.Type == eOTPType.PasswordReset && !x.IsUsed && x.TokenExpiredDate >= DateTime.UtcNow)
+                    .FirstOrDefaultAsync(x => x.Token == dto.Token && x.Type == eOTPType.PasswordReset && !x.IsUsed && x.TokenExpiredDate >= DateTime.UtcNow)
                     ?? throw new InvalidOperationException("Invalid Token.");
 
                 var user = await _repository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Id == otp.UserId)
+                    .FirstOrDefaultAsync(x => x.Id == otp.UserId)
                     ?? throw new InvalidOperationException("User not found.");
 
                 var newPassword = _mD5Service.ComputeMD5Hash(dto.NewPassword);
@@ -141,7 +141,7 @@ namespace ECommerce.Application.Services
 
                 user.Password = newPassword;
                 var aggregate = new UserAggregate(user, _eventCollector);
-                aggregate.UpdateUser(user);
+                aggregate.UpdateUser();
 
                 _repository.Update(aggregate.Entity);
                 await _repository.SaveChangesAsync();

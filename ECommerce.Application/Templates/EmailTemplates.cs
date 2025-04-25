@@ -34,7 +34,7 @@ namespace ECommerce.Application.Templates
             // Get User
             var user = await GetUserByIdAsync(userId);
 
-            var verificationLink = $"https://{Constants.MyIpv4}/api/v1/Auth/verify-email?token={Uri.EscapeDataString(user.EmailVerificationToken!)}";
+            var verificationLink = $"https://{Constants.GetMyIpv4()}/api/v1/Auth/verifyemail?token={Uri.EscapeDataString(user.EmailVerificationToken!)}";
 
             var dto = new EmailSendDTO()
             {
@@ -212,7 +212,7 @@ namespace ECommerce.Application.Templates
         private async Task<UserDTO> GetUserByIdAsync(Guid userId)
         {
             var item = await _userRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Id == userId);
+                .FirstOrDefaultAsync(x => x.Id == userId);
 
             return _mapper.Map<UserDTO>(item);
         }
@@ -220,7 +220,7 @@ namespace ECommerce.Application.Templates
         private async Task<UserDTO> GetUserByEmailIdAsync(string email)
         {
             var item = await _userRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Email == email);
+                .FirstOrDefaultAsync(x => x.Email == email);
 
             return _mapper.Map<UserDTO>(item);
         }
@@ -228,7 +228,7 @@ namespace ECommerce.Application.Templates
         private async Task<OrderDTO> GetOrderByIdAsync(Guid orderId)
         {
             var item = await _orderRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Id == orderId);
+                .FirstOrDefaultAsync(x => x.Id == orderId);
 
             return _mapper.Map<OrderDTO>(item);
         }
@@ -236,7 +236,7 @@ namespace ECommerce.Application.Templates
         private async Task<OTPDTO> GetUserByOTPIdAsync(Guid otpId)
         {
             var item = await _otpRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Id == otpId);
+                .FirstOrDefaultAsync(x => x.Id == otpId);
 
             return _mapper.Map<OTPDTO>(item);
         }

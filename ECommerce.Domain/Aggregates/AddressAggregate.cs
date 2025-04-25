@@ -18,17 +18,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateAddress(Address address)
+        public void CreateAddress()
         {
-            Address.CreateAddress(address.UserId, address.FirstName, address.LastName, address.CountryId, address.StateId, address.CityId, address.PostalCode, address.AdderessType, address.AddressLine, address.PhoneNumber);
+            Entity.CreateAddress(Entity.UserId, Entity.FirstName, Entity.LastName, Entity.CountryId, Entity.StateId, Entity.CityId, Entity.PostalCode, Entity.AdderessType, Entity.AddressLine, Entity.PhoneNumber);
 
             EventType = eEventType.AddressCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateAddress(Address address)
+        public void UpdateAddress()
         {
-            Address.UpdateAddress(address.Id, address.UserId, address.FirstName, address.LastName, address.CountryId, address.StateId, address.CityId, address.PostalCode, address.AdderessType, address.AddressLine, address.PhoneNumber);
+            Entity.UpdateAddress(Entity.Id, Entity.UserId, Entity.FirstName, Entity.LastName, Entity.CountryId, Entity.StateId, Entity.CityId, Entity.PostalCode, Entity.AdderessType, Entity.AddressLine, Entity.PhoneNumber);
 
             EventType = eEventType.AddressUpdated;
             RaiseDomainEvent();
@@ -57,19 +57,19 @@ namespace ECommerce.Domain.Aggregates
         private void SetAsDefaultAddress()
         {
             EventType = eEventType.SetAsDefaultAddress;
-            Address.UpdateAddressType(eAddressType.Default);
+            Entity.UpdateAddressType(eAddressType.Default);
         }
 
         private void SetAsBillingAddress()
         {
             EventType = eEventType.SetAsBillingAddress;
-            Address.UpdateAddressType(eAddressType.Billing);
+            Entity.UpdateAddressType(eAddressType.Billing);
         }
 
         private void SetAsShippingAddress()
         {
             EventType = eEventType.SetAsShippingAddress;
-            Address.UpdateAddressType(eAddressType.Shipping);
+            Entity.UpdateAddressType(eAddressType.Shipping);
         }
 
         public void DeleteAddress()
@@ -80,7 +80,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new AddressEvent(Address.Id, Address.UserId, Address.FirstName, Address.LastName, Address.CountryId, Address.StateId, Address.CityId, Address.PostalCode, Address.AdderessType, Address.AddressLine, Address.PhoneNumber, EventType);
+            var domainEvent = new AddressEvent(Entity.Id, Entity.UserId, Entity.FirstName, Entity.LastName, Entity.CountryId, Entity.StateId, Entity.CityId, Entity.PostalCode, Entity.AdderessType, Entity.AddressLine, Entity.PhoneNumber, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

@@ -71,12 +71,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateCartItem(item, product.Price);
+                aggregate.CreateCartItem(product.Price);
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateCartItem(item, product.Price);
+                aggregate.UpdateCartItem(product.Price);
             }
 
             await _repository.SaveChangesAsync();

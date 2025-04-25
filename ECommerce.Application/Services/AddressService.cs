@@ -71,12 +71,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateAddress(item);
+                aggregate.CreateAddress();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateAddress(item);
+                aggregate.UpdateAddress();
             }
 
             await _repository.SaveChangesAsync();

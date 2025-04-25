@@ -18,17 +18,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateUser(User user)
+        public void CreateUser()
         {
-            User.CreateUser(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            Entity.CreateUser(Entity.FirstName, Entity.LastName, Entity.Email, Entity.Password, Entity.PhoneNumber, Entity.RoleId, Entity.DateOfBirth, Entity.GenderId, Entity.IsActive, Entity.IsEmailVerified, Entity.IsPhoneNumberVerified, Entity.IsSubscribedToNotifications);
 
             EventType = eEventType.UserCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser()
         {
-            User.UpdateUser(user.Id, user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.RoleId, user.DateOfBirth, user.GenderId, user.IsActive, user.IsEmailVerified, user.IsPhoneNumberVerified, user.IsSubscribedToNotifications);
+            Entity.UpdateUser(Entity.Id, Entity.FirstName, Entity.LastName, Entity.Email, Entity.Password, Entity.PhoneNumber, Entity.RoleId, Entity.DateOfBirth, Entity.GenderId, Entity.IsActive, Entity.IsEmailVerified, Entity.IsPhoneNumberVerified, Entity.IsSubscribedToNotifications);
 
             EventType = eEventType.UserUpdated;
             RaiseDomainEvent();
@@ -36,7 +36,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangeEmail(string email)
         {
-            User.ChangeEmail(email);
+            Entity.ChangeEmail(email);
 
             EventType = eEventType.UserEmailChanged;
             RaiseDomainEvent();
@@ -44,7 +44,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangePhoneNumber(string phoneNumber)
         {
-            User.ChangePhoneNumber(phoneNumber);
+            Entity.ChangePhoneNumber(phoneNumber);
 
             EventType = eEventType.UserPhoneNumberChanged;
             RaiseDomainEvent();
@@ -52,7 +52,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangePassword(string password)
         {
-            User.ChangePassword(password);
+            Entity.ChangePassword(password);
 
             EventType = eEventType.UserPasswordChanged;
             RaiseDomainEvent();
@@ -60,7 +60,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangeRole(Guid roleId)
         {
-            User.ChangeRole(roleId);
+            Entity.ChangeRole(roleId);
 
             EventType = eEventType.UserRoleChanged;
             RaiseDomainEvent();
@@ -68,7 +68,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangeIsActiveStatus(bool isActive)
         {
-            User.ChangeIsActiveStatus(isActive);
+            Entity.ChangeIsActiveStatus(isActive);
 
             EventType = eEventType.UserIsActiveStatusChanged;
             RaiseDomainEvent();
@@ -76,7 +76,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void EmailVerified()
         {
-            User.EmailVerified();
+            Entity.EmailVerified();
 
             EventType = eEventType.UserEmailVarified;
             RaiseDomainEvent();
@@ -84,7 +84,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangeIsPhoneNumberVerifiedStatus(bool isPhoneNumberVerified)
         {
-            User.ChangeIsPhoneNumberVerifiedStatus(isPhoneNumberVerified);
+            Entity.ChangeIsPhoneNumberVerifiedStatus(isPhoneNumberVerified);
 
             EventType = eEventType.UserIsPhoneNumberVerifiedStatusChanged;
             RaiseDomainEvent();
@@ -92,7 +92,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void ChangeIsSubscribedToNotificationsStatus(bool isSubscribedToNotifications)
         {
-            User.ChangeIsSubscribedToNotificationsStatus(isSubscribedToNotifications);
+            Entity.ChangeIsSubscribedToNotificationsStatus(isSubscribedToNotifications);
 
             EventType = eEventType.UserIsSubscribedToNotificationsStatusChanged;
             RaiseDomainEvent();
@@ -106,7 +106,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new UserEvent(User.Id, User.FirstName, User.LastName, User.Email, User.PhoneNumber, User.Password, User.RoleId, User.IsActive, User.IsEmailVerified, User.IsPhoneNumberVerified, User.IsSubscribedToNotifications, EventType);
+            var domainEvent = new UserEvent(Entity.Id, Entity.FirstName, Entity.LastName, Entity.Email, Entity.PhoneNumber, Entity.Password, Entity.RoleId, Entity.IsActive, Entity.IsEmailVerified, Entity.IsPhoneNumberVerified, Entity.IsSubscribedToNotifications, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

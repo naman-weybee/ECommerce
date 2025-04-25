@@ -6,7 +6,7 @@ namespace ECommerce.Infrastructure.Services
     {
         private readonly IMediator _mediator;
 
-        private readonly List<INotification> _domainEvents = new List<INotification>();
+        private readonly List<INotification> _domainEvents = [];
 
         public DomainEventCollector(IMediator mediator)
         {

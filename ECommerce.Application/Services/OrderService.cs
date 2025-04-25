@@ -168,7 +168,7 @@ namespace ECommerce.Application.Services
         {
             var item = _mapper.Map<Order>(dto);
             var aggregate = new OrderAggregate(item, _eventCollector);
-            aggregate.UpdateOrder(aggregate.Order);
+            aggregate.UpdateOrder();
 
             _repository.Update(aggregate.Entity);
             await _repository.SaveChangesAsync();
@@ -245,7 +245,7 @@ namespace ECommerce.Application.Services
 
             var order = _mapper.Map<Order>(orderDto);
             var aggregate = new OrderAggregate(order, _eventCollector);
-            aggregate.CreateOrder(order);
+            aggregate.CreateOrder();
 
             await _repository.InsertAsync(aggregate.Entity);
         }

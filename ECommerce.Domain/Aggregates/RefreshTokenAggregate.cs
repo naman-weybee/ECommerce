@@ -20,15 +20,15 @@ namespace ECommerce.Domain.Aggregates
 
         public void CreateRefreshToken(Guid userId)
         {
-            RefreshToken.CreateRefreshToken(userId);
+            Entity.CreateRefreshToken(userId);
 
             EventType = eEventType.RefreshTokenCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateRefreshToken(RefreshToken refreshToken)
+        public void UpdateRefreshToken()
         {
-            RefreshToken.UpdateRefreshToken(refreshToken.Id, refreshToken.UserId, refreshToken.Token, refreshToken.IsRevoked, refreshToken.ExpiredDate);
+            Entity.UpdateRefreshToken(Entity.Id, Entity.UserId, Entity.Token, Entity.IsRevoked, Entity.ExpiredDate);
 
             EventType = eEventType.RefreshTokenUpdated;
             RaiseDomainEvent();
@@ -36,7 +36,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void RevokeToken()
         {
-            RefreshToken.RevokeToken();
+            Entity.RevokeToken();
 
             EventType = eEventType.RefreshTokenRevoked;
             RaiseDomainEvent();
@@ -50,7 +50,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new RefreshTokenEvent(RefreshToken.Id, RefreshToken.UserId, RefreshToken.Token, RefreshToken.ExpiredDate, EventType);
+            var domainEvent = new RefreshTokenEvent(Entity.Id, Entity.UserId, Entity.Token, Entity.ExpiredDate, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

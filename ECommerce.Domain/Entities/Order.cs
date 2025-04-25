@@ -48,7 +48,7 @@ namespace ECommerce.Domain.Entities
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            OrderItems = orderItems ?? new List<OrderItem>();
+            OrderItems = orderItems ?? [];
         }
 
         public void UpdateOrder(Guid id, Guid userId, Guid billingAddressId, Guid shippingAddressId, eOrderStatus status, Money totalAmount, string paymentMethod, ICollection<OrderItem> orderItems)
@@ -60,7 +60,7 @@ namespace ECommerce.Domain.Entities
             OrderStatus = status;
             TotalAmount = totalAmount;
             PaymentMethod = paymentMethod;
-            OrderItems = orderItems ?? new List<OrderItem>();
+            OrderItems = orderItems ?? [];
 
             StatusUpdated();
         }

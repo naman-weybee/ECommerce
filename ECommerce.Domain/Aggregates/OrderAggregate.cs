@@ -15,21 +15,21 @@ namespace ECommerce.Domain.Aggregates
              : base(entity, eventCollector)
         {
             Order = entity;
-            Order.OrderItems ??= new List<OrderItem>();
+            Entity.OrderItems ??= [];
             _eventCollector = eventCollector;
         }
 
-        public void CreateOrder(Order order)
+        public void CreateOrder()
         {
-            Order.CreateOrder(order.Id, order.UserId, order.BillingAddressId, order.ShippingAddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
+            Entity.CreateOrder(Entity.Id, Entity.UserId, Entity.BillingAddressId, Entity.ShippingAddressId, Entity.OrderStatus, Entity.TotalAmount, Entity.PaymentMethod, Entity.OrderItems);
 
             EventType = eEventType.OrderPlaced;
             RaiseDomainEvent();
         }
 
-        public void UpdateOrder(Order order)
+        public void UpdateOrder()
         {
-            Order.UpdateOrder(order.Id, order.UserId, order.BillingAddressId, order.ShippingAddressId, order.OrderStatus, order.TotalAmount, order.PaymentMethod, order.OrderItems);
+            Entity.UpdateOrder(Entity.Id, Entity.UserId, Entity.BillingAddressId, Entity.ShippingAddressId, Entity.OrderStatus, Entity.TotalAmount, Entity.PaymentMethod, Entity.OrderItems);
 
             EventType = eEventType.OrderUpdated;
             RaiseDomainEvent();
@@ -45,7 +45,7 @@ namespace ECommerce.Domain.Aggregates
             if (item.UnitPrice.Amount <= 0)
                 throw new ArgumentException("Unit price must be greater than zero.", nameof(item.UnitPrice.Amount));
 
-            Order.AddOrderItem(item);
+            Entity.AddOrderItem(item);
 
             EventType = eEventType.OrderItemAddedInOrder;
             RaiseDomainEvent();
@@ -55,10 +55,10 @@ namespace ECommerce.Domain.Aggregates
         {
             ValidateOrderForModification();
 
-            var item = Order.OrderItems.FirstOrDefault(o => o.Id == orderItemId)
+            var item = Entity.OrderItems.FirstOrDefault(o => o.Id == orderItemId)
                 ?? throw new InvalidOperationException("Order item not found.");
 
-            Order.RemoveOrderItem(item);
+            Entity.RemoveOrderItem(item);
 
             EventType = eEventType.OrderItemRemovedFromOrder;
             RaiseDomainEvent();
@@ -66,7 +66,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void UpdateOrderStatus(eOrderStatus newStatus)
         {
-            if (!Order.OrderItems.Any())
+            if (!Entity.OrderItems.Any())
                 throw new InvalidOperationException("Cannot change order status of an order without items.");
 
             switch (newStatus)
@@ -94,7 +94,7 @@ namespace ECommerce.Domain.Aggregates
         public void UpdatePaymentMethod(string newPaymentMethod)
         {
             ValidateOrderForModification();
-            Order.UpdatePaymentMethod(newPaymentMethod);
+            Entity.UpdatePaymentMethod(newPaymentMethod);
 
             EventType = eEventType.OrderPaymentMethodUpdated;
             RaiseDomainEvent();
@@ -103,7 +103,7 @@ namespace ECommerce.Domain.Aggregates
         public void UpdateOrderBillingAddress(Guid billingAddressId)
         {
             ValidateOrderForModification();
-            Order.UpdateOrderBillingAddress(billingAddressId);
+            Entity.UpdateOrderBillingAddress(billingAddressId);
 
             EventType = eEventType.OrderBillingAddressUpdated;
             RaiseDomainEvent();
@@ -112,7 +112,7 @@ namespace ECommerce.Domain.Aggregates
         public void UpdateOrderShippingAddress(Guid shippingAddressId)
         {
             ValidateOrderForModification();
-            Order.UpdateOrderShippingAddress(shippingAddressId);
+            Entity.UpdateOrderShippingAddress(shippingAddressId);
 
             EventType = eEventType.OrderShippingAddressUpdated;
             RaiseDomainEvent();
@@ -122,7 +122,7 @@ namespace ECommerce.Domain.Aggregates
         {
             ValidateOrderForModification();
 
-            Order.UpdateTotalAmount();
+            Entity.UpdateTotalAmount();
 
             EventType = eEventType.OrderTotalAmountUpdated;
             RaiseDomainEvent();
@@ -130,44 +130,44 @@ namespace ECommerce.Domain.Aggregates
 
         private void ValidateOrderForModification()
         {
-            if (Order.OrderStatus == eOrderStatus.Canceled)
-                throw new InvalidOperationException("Cannot modify a canceled order.");
+            if (Entity.OrderStatus == eOrderStatus.Canceled)
+                throw new InvalidOperationException("Cannot modify a canceled Entity.");
         }
 
         private void OrderPlacedEvent()
         {
-            if (Order.OrderStatus != eOrderStatus.Pending)
+            if (Entity.OrderStatus != eOrderStatus.Pending)
                 throw new InvalidOperationException("Order can only be Placed if it is Pending.");
 
             EventType = eEventType.OrderPlaced;
-            Order.UpdateOrderStatus(eOrderStatus.Placed);
+            Entity.UpdateOrderStatus(eOrderStatus.Placed);
         }
 
         private void OrderShippedEvent()
         {
-            if (Order.OrderStatus != eOrderStatus.Placed)
+            if (Entity.OrderStatus != eOrderStatus.Placed)
                 throw new InvalidOperationException("Order can only be Shipped if it is Placed.");
 
             EventType = eEventType.OrderShipped;
-            Order.UpdateOrderStatus(eOrderStatus.Shipped);
+            Entity.UpdateOrderStatus(eOrderStatus.Shipped);
         }
 
         private void OrderDeliveredEvent()
         {
-            if (Order.OrderStatus != eOrderStatus.Shipped)
+            if (Entity.OrderStatus != eOrderStatus.Shipped)
                 throw new InvalidOperationException("Order can only be Delivered if it is Shipped.");
 
             EventType = eEventType.OrderDelivered;
-            Order.UpdateOrderStatus(eOrderStatus.Delivered);
+            Entity.UpdateOrderStatus(eOrderStatus.Delivered);
         }
 
         private void OrderCanceledEvent()
         {
-            if (Order.OrderStatus == eOrderStatus.Delivered || Order.OrderStatus == eOrderStatus.Canceled)
+            if (Entity.OrderStatus == eOrderStatus.Delivered || Entity.OrderStatus == eOrderStatus.Canceled)
                 throw new InvalidOperationException("Canceled status is not allowed for Delivered or already Canceled orders.");
 
             EventType = eEventType.OrderCanceled;
-            Order.UpdateOrderStatus(eOrderStatus.Canceled);
+            Entity.UpdateOrderStatus(eOrderStatus.Canceled);
         }
 
         public void DeleteOrder()
@@ -178,7 +178,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new OrderEvent(Order.Id, Order.UserId, Order.BillingAddressId, Order.ShippingAddressId, Order.TotalAmount.Amount, EventType);
+            var domainEvent = new OrderEvent(Entity.Id, Entity.UserId, Entity.BillingAddressId, Entity.ShippingAddressId, Entity.TotalAmount.Amount, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

@@ -18,17 +18,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateCity(City city)
+        public void CreateCity()
         {
-            City.CreateCity(city.Name, city.StateId);
+            Entity.CreateCity(Entity.Name, Entity.StateId);
 
             EventType = eEventType.CityCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateCity(City city)
+        public void UpdateCity()
         {
-            City.UpdateCity(city.Id, city.Name, city.StateId);
+            Entity.UpdateCity(Entity.Id, Entity.Name, Entity.StateId);
 
             EventType = eEventType.CityUpdated;
             RaiseDomainEvent();
@@ -42,7 +42,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new CityEvent(City.Id, City.Name, City.StateId, EventType);
+            var domainEvent = new CityEvent(Entity.Id, Entity.Name, Entity.StateId, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

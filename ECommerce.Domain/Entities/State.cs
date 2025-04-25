@@ -22,7 +22,7 @@ namespace ECommerce.Domain.Entities
             Id = Guid.NewGuid();
             Name = name;
             CountryId = countryId;
-            Cities = cities ?? new List<City>();
+            Cities = cities ?? [];
         }
 
         public void UpdateState(Guid id, string name, Guid countryId, ICollection<City> cities)
@@ -30,7 +30,7 @@ namespace ECommerce.Domain.Entities
             Id = id;
             Name = name;
             CountryId = countryId;
-            Cities = cities ?? new List<City>();
+            Cities = cities ?? [];
 
             StatusUpdated();
         }

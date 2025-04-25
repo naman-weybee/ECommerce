@@ -18,17 +18,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateOTP(OTP otp)
+        public void CreateOTP()
         {
-            OTP.CreateOTP(otp.UserId, otp.Type);
+            Entity.CreateOTP(Entity.UserId, Entity.Type);
 
             EventType = eEventType.OTPGenerated;
             RaiseDomainEvent();
         }
 
-        public void UpdateOTP(OTP otp)
+        public void UpdateOTP()
         {
-            OTP.UpdateOTP(otp.Id, otp.UserId, otp.Code, otp.Type, otp.IsUsed, otp.Token, otp.OTPExpiredDate, otp.TokenExpiredDate);
+            Entity.UpdateOTP(Entity.Id, Entity.UserId, Entity.Code, Entity.Type, Entity.IsUsed, Entity.Token, Entity.OTPExpiredDate, Entity.TokenExpiredDate);
 
             EventType = eEventType.OTPUpdated;
             RaiseDomainEvent();
@@ -36,7 +36,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void VerifyOTP()
         {
-            OTP.VerifyOTP();
+            Entity.VerifyOTP();
 
             EventType = eEventType.OTPVerified;
             RaiseDomainEvent();
@@ -44,7 +44,7 @@ namespace ECommerce.Domain.Aggregates
 
         public void MarkAsUsed()
         {
-            OTP.MarkAsUsed();
+            Entity.MarkAsUsed();
 
             EventType = eEventType.OTPUsed;
             RaiseDomainEvent();
@@ -58,7 +58,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new OTPEvent(OTP.Id, OTP.UserId, OTP.Code, OTP.Type, OTP.IsUsed, OTP.Token, OTP.OTPExpiredDate, OTP.TokenExpiredDate, EventType);
+            var domainEvent = new OTPEvent(Entity.Id, Entity.UserId, Entity.Code, Entity.Type, Entity.IsUsed, Entity.Token, Entity.OTPExpiredDate, Entity.TokenExpiredDate, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

@@ -18,17 +18,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateGender(Gender gender)
+        public void CreateGender()
         {
-            Gender.CreateGender(gender.Name);
+            Entity.CreateGender(Entity.Name);
 
             EventType = eEventType.GenderCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateGender(Gender gender)
+        public void UpdateGender()
         {
-            Gender.UpdateGender(gender.Id, gender.Name);
+            Entity.UpdateGender(Entity.Id, Entity.Name);
 
             EventType = eEventType.GenderUpdated;
             RaiseDomainEvent();
@@ -42,7 +42,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new GenderEvent(Gender.Id, Gender.Name, EventType);
+            var domainEvent = new GenderEvent(Entity.Id, Entity.Name, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

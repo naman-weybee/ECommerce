@@ -19,28 +19,28 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateProduct(Product product)
+        public void CreateProduct()
         {
-            Product.CreateProduct(product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.SKU, product.Description, product.Brand);
+            Entity.CreateProduct(Entity.CategoryId, Entity.Name, Entity.Price, Entity.Currency, Entity.Stock, Entity.SKU, Entity.Description, Entity.Brand);
 
             EventType = eEventType.ProductCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateProduct(Product product)
+        public void UpdateProduct()
         {
-            Product.UpdateProduct(product.Id, product.CategoryId, product.Name, product.Price, product.Currency, product.Stock, product.SKU, product.Description, product.Brand);
+            Entity.UpdateProduct(Entity.Id, Entity.CategoryId, Entity.Name, Entity.Price, Entity.Currency, Entity.Stock, Entity.SKU, Entity.Description, Entity.Brand);
 
             EventType = eEventType.ProductUpdated;
             RaiseDomainEvent();
 
-            if (Product.Stock == 0)
+            if (Entity.Stock == 0)
                 ProductStockDepletedEvent();
         }
 
         public void IncreaseStock(int quantity)
         {
-            Product.IncreaseStock(quantity);
+            Entity.IncreaseStock(quantity);
 
             EventType = eEventType.ProductStockIncreased;
             RaiseDomainEvent();
@@ -48,15 +48,15 @@ namespace ECommerce.Domain.Aggregates
 
         public void DecreaseStock(int quantity)
         {
-            if (quantity > Product.Stock)
+            if (quantity > Entity.Stock)
                 throw new InvalidOperationException("Not enough stock available.");
 
-            Product.DecreaseStock(quantity);
+            Entity.DecreaseStock(quantity);
 
             EventType = eEventType.ProductStockDecreased;
             RaiseDomainEvent();
 
-            if (Product.Stock == 0)
+            if (Entity.Stock == 0)
                 ProductStockDepletedEvent();
         }
 
@@ -65,7 +65,7 @@ namespace ECommerce.Domain.Aggregates
             if (newPrice <= 0)
                 throw new ArgumentException("New price must be greater than zero.");
 
-            Product.ChangePrice(newPrice);
+            Entity.ChangePrice(newPrice);
 
             EventType = eEventType.ProductPriceChanged;
             RaiseDomainEvent();
@@ -85,7 +85,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new ProductEvent(Product.Id, Product.Name, Product.SKU, Product.Price.Amount, Product.Stock, EventType);
+            var domainEvent = new ProductEvent(Entity.Id, Entity.Name, Entity.SKU, Entity.Price.Amount, Entity.Stock, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

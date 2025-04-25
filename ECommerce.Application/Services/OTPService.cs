@@ -66,7 +66,7 @@ namespace ECommerce.Application.Services
         public async Task CreateOTPAsync(OTPCreateFromEmailDTO dto)
         {
             var user = await _userRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
+                .FirstOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
                 ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
             var otp = new OTPCreateDTO()
@@ -77,7 +77,7 @@ namespace ECommerce.Application.Services
 
             var item = _mapper.Map<OTP>(otp);
             var aggregate = new OTPAggregate(item, _eventCollector);
-            aggregate.CreateOTP(item);
+            aggregate.CreateOTP();
 
             await _repository.InsertAsync(aggregate.Entity);
 
@@ -88,7 +88,7 @@ namespace ECommerce.Application.Services
         public async Task<OTPTokenDTO> VerifyOTPAsync(OTPVerifyDTO dto)
         {
             var user = await _userRepository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
+                .FirstOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
                 ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
             var otp = await ValidateOTP(user.Id, dto)
@@ -108,7 +108,7 @@ namespace ECommerce.Application.Services
         {
             var item = _mapper.Map<OTP>(dto);
             var aggregate = new OTPAggregate(item, _eventCollector);
-            aggregate.UpdateOTP(item);
+            aggregate.UpdateOTP();
 
             _repository.Update(aggregate.Entity);
             await _repository.SaveChangesAsync();
@@ -117,7 +117,7 @@ namespace ECommerce.Application.Services
         public async Task SetOTPIsUsedAsync(Guid otpId)
         {
             var otp = await _repository.GetQuery()
-                .SingleOrDefaultAsync(x => x.Id == otpId)
+                .FirstOrDefaultAsync(x => x.Id == otpId)
                 ?? throw new InvalidOperationException("OTP not found.");
 
             var item = _mapper.Map<OTP>(otp);

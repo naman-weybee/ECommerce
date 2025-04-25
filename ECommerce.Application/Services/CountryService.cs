@@ -57,12 +57,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateCountry(item);
+                aggregate.CreateCountry();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateCountry(item!);
+                aggregate.UpdateCountry();
             }
 
             await _repository.SaveChangesAsync();

@@ -56,12 +56,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateProduct(item);
+                aggregate.CreateProduct();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateProduct(item);
+                aggregate.UpdateProduct();
             }
 
             await _repository.SaveChangesAsync();

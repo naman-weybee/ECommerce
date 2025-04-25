@@ -19,17 +19,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateOrderItem(OrderItem orderItem)
+        public void CreateOrderItem()
         {
-            OrderItem.CreateOrderItem(orderItem.OrderId, orderItem.ProductId, orderItem.Quantity, orderItem.UnitPrice);
+            Entity.CreateOrderItem(Entity.OrderId, Entity.ProductId, Entity.Quantity, Entity.UnitPrice);
 
             EventType = eEventType.OrderItemCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateOrderItem(OrderItem orderItem, Money unitPrice)
+        public void UpdateOrderItem(Money unitPrice)
         {
-            OrderItem.UpdateOrderItem(orderItem.Id, orderItem.OrderId, orderItem.ProductId, orderItem.Quantity, unitPrice);
+            Entity.UpdateOrderItem(Entity.Id, Entity.OrderId, Entity.ProductId, Entity.Quantity, unitPrice);
 
             EventType = eEventType.OrderItemUpdated;
             RaiseDomainEvent();
@@ -40,7 +40,7 @@ namespace ECommerce.Domain.Aggregates
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
 
-            OrderItem.UpdateQuantity(newQuantity, newProductPrice);
+            Entity.UpdateQuantity(newQuantity, newProductPrice);
 
             EventType = eEventType.OrderItemQuantityUpdated;
             RaiseDomainEvent();
@@ -51,7 +51,7 @@ namespace ECommerce.Domain.Aggregates
             if (newUnitPrice.Amount <= 0)
                 throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
 
-            OrderItem.UpdateUnitPrice(newUnitPrice);
+            Entity.UpdateUnitPrice(newUnitPrice);
 
             EventType = eEventType.OrderItemUnitPriceUpdated;
             RaiseDomainEvent();
@@ -65,7 +65,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new OrderItemEvent(OrderItem.Id, OrderItem.OrderId, OrderItem.ProductId, EventType);
+            var domainEvent = new OrderItemEvent(Entity.Id, Entity.OrderId, Entity.ProductId, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

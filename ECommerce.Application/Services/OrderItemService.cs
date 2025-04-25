@@ -69,7 +69,7 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateOrderItem(item);
+                aggregate.CreateOrderItem();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
@@ -77,7 +77,7 @@ namespace ECommerce.Application.Services
                 var product = await _productService.GetProductByIdAsync(dto.ProductId);
                 dto.UnitPrice = new Money(dto.Quantity * product.Price.Amount);
 
-                aggregate.UpdateOrderItem(item!, dto.UnitPrice);
+                aggregate.UpdateOrderItem(dto.UnitPrice);
             }
 
             await _repository.SaveChangesAsync();
@@ -98,7 +98,7 @@ namespace ECommerce.Application.Services
                 var item = _mapper.Map<OrderItem>(orderItem);
                 var product = await _productService.GetProductByIdAsync(orderItem.ProductId);
                 var order = await _orderRepository.GetQuery()
-                    .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
+                    .Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == orderItem.OrderId && x.UserId == dto.UserId);
 
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
                 aggregate.UpdateQuantity(dto.Quantity, product.Price);
@@ -148,7 +148,7 @@ namespace ECommerce.Application.Services
         private async Task UpdateOrderTotalAmountAsync(Guid orderId, Guid userId)
         {
             var item = await _orderRepository.GetQuery()
-                .Include(x => x.OrderItems).SingleOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
+                .Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
 
             var aggregate = new OrderAggregate(item!, _eventCollector);
             aggregate.UpdateTotalAmount();

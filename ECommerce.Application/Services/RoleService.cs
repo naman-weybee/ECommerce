@@ -37,7 +37,7 @@ namespace ECommerce.Application.Services
         public async Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId)
         {
             var user = await _userRepository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Id == userId)
+                    .FirstOrDefaultAsync(x => x.Id == userId)
                     ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
             var query = _repository.GetQuery()
@@ -60,7 +60,7 @@ namespace ECommerce.Application.Services
         public async Task<RoleDTO> GetSpecificRoleByUserAsync(Guid id, Guid userId)
         {
             var user = await _userRepository.GetQuery()
-                    .SingleOrDefaultAsync(x => x.Id == userId)
+                    .FirstOrDefaultAsync(x => x.Id == userId)
                     ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
             var query = _repository.GetQuery()
@@ -81,12 +81,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateRole(item);
+                aggregate.CreateRole();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateRole(item);
+                aggregate.UpdateRole();
             }
 
             await _repository.SaveChangesAsync();

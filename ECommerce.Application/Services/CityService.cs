@@ -58,12 +58,12 @@ namespace ECommerce.Application.Services
 
             if (isNew)
             {
-                aggregate.CreateCity(item);
+                aggregate.CreateCity();
                 await _repository.InsertAsync(aggregate.Entity);
             }
             else
             {
-                aggregate.UpdateCity(item!);
+                aggregate.UpdateCity();
             }
 
             await _repository.SaveChangesAsync();

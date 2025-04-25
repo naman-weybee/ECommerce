@@ -19,17 +19,17 @@ namespace ECommerce.Domain.Aggregates
             _eventCollector = eventCollector;
         }
 
-        public void CreateCartItem(CartItem cartItem, Money productPrice)
+        public void CreateCartItem(Money productPrice)
         {
-            CartItem.CreateCartItem(cartItem.UserId, cartItem.ProductId, cartItem.Quantity, productPrice);
+            Entity.CreateCartItem(Entity.UserId, Entity.ProductId, Entity.Quantity, productPrice);
 
             EventType = eEventType.CartItemCreated;
             RaiseDomainEvent();
         }
 
-        public void UpdateCartItem(CartItem cartItem, Money productPrice)
+        public void UpdateCartItem(Money productPrice)
         {
-            CartItem.UpdateCartItem(cartItem.Id, cartItem.UserId, cartItem.ProductId, cartItem.Quantity, productPrice);
+            Entity.UpdateCartItem(Entity.Id, Entity.UserId, Entity.ProductId, Entity.Quantity, productPrice);
 
             EventType = eEventType.CartItemUpdated;
             RaiseDomainEvent();
@@ -40,7 +40,7 @@ namespace ECommerce.Domain.Aggregates
             if (newQuantity <= 0)
                 throw new ArgumentException("Quantity must be greater than zero.", nameof(newQuantity));
 
-            CartItem.UpdateQuantity(newQuantity, productPrice);
+            Entity.UpdateQuantity(newQuantity, productPrice);
 
             EventType = eEventType.OrderItemQuantityUpdated;
             RaiseDomainEvent();
@@ -51,7 +51,7 @@ namespace ECommerce.Domain.Aggregates
             if (newUnitPrice.Amount <= 0)
                 throw new ArgumentException("Unit price must be greater than zero.", nameof(newUnitPrice));
 
-            CartItem.UpdateUnitPrice(newUnitPrice);
+            Entity.UpdateUnitPrice(newUnitPrice);
 
             EventType = eEventType.OrderItemUnitPriceUpdated;
             RaiseDomainEvent();
@@ -65,7 +65,7 @@ namespace ECommerce.Domain.Aggregates
 
         private void RaiseDomainEvent()
         {
-            var domainEvent = new CartItemEvent(CartItem.Id, CartItem.UserId, CartItem.ProductId, EventType);
+            var domainEvent = new CartItemEvent(Entity.Id, Entity.UserId, Entity.ProductId, EventType);
             RaiseDomainEvent(domainEvent);
         }
     }

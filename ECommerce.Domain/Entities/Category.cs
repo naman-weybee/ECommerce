@@ -28,8 +28,8 @@ namespace ECommerce.Domain.Entities
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;
-            Products = products ?? new List<Product>();
-            SubCategories = categories ?? new List<Category>();
+            Products = products ?? [];
+            SubCategories = categories ?? [];
         }
 
         public void UpdateCategory(Guid id, string name, string? description, ICollection<Product> products, ICollection<Category> categories, Guid? parentCategoryId = null)
@@ -38,8 +38,8 @@ namespace ECommerce.Domain.Entities
             Name = name;
             Description = description;
             ParentCategoryId = parentCategoryId;
-            Products = products ?? new List<Product>();
-            SubCategories = categories ?? new List<Category>();
+            Products = products ?? [];
+            SubCategories = categories ?? [];
 
             StatusUpdated();
         }
