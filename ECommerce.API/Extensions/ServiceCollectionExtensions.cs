@@ -6,6 +6,7 @@ using ECommerce.API.Mappings;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.ServiceHelper;
 using ECommerce.Application.Services;
+using ECommerce.Application.Services.CacheServices;
 using ECommerce.Application.Templates;
 using ECommerce.Application.Validators.Base;
 using ECommerce.Domain.DomainServices.Interfaces;
@@ -14,6 +15,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Events;
 using ECommerce.Domain.ValueObjects.JsonConverters;
 using ECommerce.Infrastructure.Data;
+using ECommerce.Infrastructure.ExternalServices;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Interfaces;
@@ -82,8 +84,13 @@ namespace ECommerce.API.Extensions
 
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IProductDomainService, ProductService>();
+
+            services.AddSingleton<ICacheService, MemoryCacheService>();
+            services.AddScoped<ILocationHierarchyCacheService, LocationHierarchyCacheService>();
 
             services.AddScoped<IRepository<Product>, Repository<Product>>();
             services.AddScoped<IRepository<Category>, Repository<Category>>();
@@ -138,6 +145,7 @@ namespace ECommerce.API.Extensions
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITransactionManagerService, TransactionManagerService>();
+            services.AddScoped<IDBService, DBService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

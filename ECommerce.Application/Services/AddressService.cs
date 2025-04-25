@@ -14,14 +14,16 @@ namespace ECommerce.Application.Services
     {
         private readonly IRepository<Address> _repository;
         private readonly IServiceHelper<Address> _serviceHelper;
+        private readonly ILocationHierarchyCacheService _locationHierarchyCacheService;
         private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public AddressService(IRepository<Address> repository, IServiceHelper<Address> serviceHelper, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
+        public AddressService(IRepository<Address> repository, IServiceHelper<Address> serviceHelper, ILocationHierarchyCacheService locationHierarchyCacheService, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _serviceHelper = serviceHelper;
+            _locationHierarchyCacheService = locationHierarchyCacheService;
             _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
@@ -63,6 +65,9 @@ namespace ECommerce.Application.Services
 
         public async Task UpsertAddressAsync(AddressUpsertDTO dto)
         {
+            if (!await _locationHierarchyCacheService.IsValidLocationAsync(dto.CountryId, dto.StateId, dto.CityId))
+                throw new InvalidOperationException($"Invalid location hierarchy: CountryId = {dto.CountryId}, StateId = {dto.StateId}, CityId = {dto.CityId}.");
+
             var item = await _repository.GetByIdAsync(dto.Id);
             bool isNew = item == null;
 

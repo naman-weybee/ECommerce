@@ -11,11 +11,13 @@ namespace ECommerce.API.Controllers
     {
         private readonly IAddressService _service;
         private readonly IControllerHelper _controllerHelper;
+        private readonly IDBService _dbService;
 
-        public AddressController(IHTTPHelper httpHelper, IAddressService service, IControllerHelper controllerHelper)
+        public AddressController(IHTTPHelper httpHelper, IAddressService service, IDBService databaseService, IControllerHelper controllerHelper)
             : base(httpHelper)
         {
             _service = service;
+            _dbService = databaseService;
             _controllerHelper = controllerHelper;
         }
 
@@ -63,9 +65,11 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> UpsertAddress([FromBody] AddressUpsertDTO dto)
         {
             dto.UserId = _userId;
-
-            await _service.UpsertAddressAsync(dto);
-            _controllerHelper.SetResponse(_response, "Address Saved Successfully.");
+            await using (_dbService.Begin())
+            {
+                await _service.UpsertAddressAsync(dto);
+                _controllerHelper.SetResponse(_response, "Address Saved Successfully.");
+            }
 
             return StatusCode(200, _response);
         }
@@ -74,9 +78,11 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> UpdateAddressType([FromBody] AddressTypeUpdateDTO dto)
         {
             dto.UserId = _userId;
-
-            await _service.UpdateAddressTypeAsync(dto);
-            _controllerHelper.SetResponse(_response, "Address Type Updated Successfully.");
+            await using (_dbService.Begin())
+            {
+                await _service.UpdateAddressTypeAsync(dto);
+                _controllerHelper.SetResponse(_response, "Address Type Updated Successfully.");
+            }
 
             return StatusCode(200, _response);
         }
@@ -84,8 +90,11 @@ namespace ECommerce.API.Controllers
         [HttpDelete("DeleteAddressByUser/{id}")]
         public async Task<IActionResult> DeleteAddressByUser(Guid id)
         {
-            await _service.DeleteAddressByUserAsync(id, _userId);
-            _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
+            await using (_dbService.Begin())
+            {
+                await _service.DeleteAddressByUserAsync(id, _userId);
+                _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
+            }
 
             return StatusCode(200, _response);
         }
@@ -95,8 +104,11 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Address, eUserPermission.HasFullPermission);
 
-            await _service.DeleteAddressAsync(id);
-            _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
+            await using (_dbService.Begin())
+            {
+                await _service.DeleteAddressAsync(id);
+                _controllerHelper.SetResponse(_response, $"Address with Id = {id} is Deleted Successfully.");
+            }
 
             return StatusCode(200, _response);
         }
