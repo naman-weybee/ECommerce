@@ -38,7 +38,18 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IHTTPHelper, HTTPHelper>();
             services.AddScoped<IControllerHelper, ControllerHelper>();
 
-            services.AddScoped<ExecutionFilter>();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(new ApiControllerAttribute());
+                options.Conventions.Add(new RoutePrefixConvention("api/v1"));
+                options.Filters.Add<ExecutionFilter>();
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.Converters.Add(new MoneyJsonConverter());
+                options.SerializerSettings.Converters.Add(new CurrencyJsonConverter());
+            });
 
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -125,19 +136,6 @@ namespace ECommerce.API.Extensions
             services.AddScoped<IServiceHelper<OTP>, ServiceHelper<OTP>>();
 
             services.AddScoped<IDomainEventCollector, DomainEventCollector>();
-
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(new ApiControllerAttribute());
-                options.Conventions.Add(new RoutePrefixConvention("api/v1"));
-                options.Filters.Add<ExecutionFilter>();
-            })
-            .AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                options.SerializerSettings.Converters.Add(new MoneyJsonConverter());
-                options.SerializerSettings.Converters.Add(new CurrencyJsonConverter());
-            });
 
             return services;
         }

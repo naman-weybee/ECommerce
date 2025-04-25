@@ -83,8 +83,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateAddress();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateAddressTypeAsync(AddressTypeUpdateDTO dto)
@@ -101,23 +99,20 @@ namespace ECommerce.Application.Services
                     ?? throw new InvalidOperationException($"No Address found for User Id = {dto.UserId}.");
 
                 // Get the address to update
-                var address = addresses.SingleOrDefault(x => x.UserId == dto.UserId && x.Id == dto.Id)
+                var address = addresses.FirstOrDefault(x => x.UserId == dto.UserId && x.Id == dto.Id)
                     ?? throw new InvalidOperationException($"Address with Id = {dto.Id} for User Id = {dto.UserId} does not exist.");
 
                 // Check if the address type is default
                 if (dto.AdderessType == eAddressType.Default)
                 {
-                    var previousDefaultAddress = addresses.SingleOrDefault(x => x.UserId == dto.UserId && x.AdderessType == eAddressType.Default && x.Id != dto.Id);
+                    var previousDefaultAddress = addresses.FirstOrDefault(x => x.UserId == dto.UserId && x.AdderessType == eAddressType.Default && x.Id != dto.Id);
 
                     if (previousDefaultAddress != null)
-                        await SetAddressTypeAsync(previousDefaultAddress, eAddressType.Billing);
+                        SetAddressType(previousDefaultAddress, eAddressType.Billing);
                 }
 
                 // Update the address
-                await SetAddressTypeAsync(address, dto.AdderessType);
-
-                // Save changes
-                await _repository.SaveChangesAsync();
+                SetAddressType(address, dto.AdderessType);
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
@@ -140,7 +135,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteAddress();
 
             _repository.Delete(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteAddressAsync(Guid id)
@@ -150,16 +144,12 @@ namespace ECommerce.Application.Services
             aggregate.DeleteAddress();
 
             _repository.Delete(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
-        private async Task SetAddressTypeAsync(Address address, eAddressType addressType)
+        private void SetAddressType(Address address, eAddressType addressType)
         {
             var aggregate = new AddressAggregate(address, _eventCollector);
             aggregate.UpdateAddressType(addressType);
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
     }
 }

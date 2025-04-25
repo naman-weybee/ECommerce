@@ -10,9 +10,6 @@ namespace ECommerce.Application.Validators.Address
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Address ID is required.");
 
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required");
-
             RuleFor(x => x.AdderessType)
                 .IsInEnum().WithMessage("Adderess Type is required");
         }

@@ -1,4 +1,5 @@
 ﻿using ECommerce.API.Helper;
+using ECommerce.Infrastructure.ExternalServices;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,10 +10,12 @@ namespace ECommerce.API.Filters
     public class ExecutionFilter : IActionFilter, IExceptionFilter
     {
         private readonly ILogger<ExecutionFilter> _logger;
+        private readonly DBService _dbService;
 
-        public ExecutionFilter(ILogger<ExecutionFilter> logger)
+        public ExecutionFilter(ILogger<ExecutionFilter> logger, DBService dbService)
         {
             _logger = logger;
+            _dbService = dbService;
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
@@ -51,6 +54,23 @@ namespace ECommerce.API.Filters
                 });
 
                 _logger.LogWarning($"[WARN] ModelState validation failed: {error}");
+            }
+        }
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            var isGetMethod = context.HttpContext.Request.Method == HttpMethods.Get;
+
+            if (!isGetMethod)
+            {
+                await using (_dbService.Begin())
+                {
+                    var resultContext = await next();
+                }
+            }
+            else
+            {
+                await next();
             }
         }
 
