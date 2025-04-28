@@ -147,9 +147,6 @@ namespace ECommerce.Application.Services
                 // Clear Cart
                 await ClearCart(user.Id);
 
-                // Save changes
-                await _repository.SaveChangesAsync();
-
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
 
@@ -164,14 +161,11 @@ namespace ECommerce.Application.Services
             }
         }
 
-        public async Task UpdateOrderAsync(OrderUpdateDTO dto)
+        public void UpdateOrder(OrderUpdateDTO dto)
         {
             var item = _mapper.Map<Order>(dto);
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrder();
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto)
@@ -193,9 +187,6 @@ namespace ECommerce.Application.Services
                 await UpdateProductStock(orderItems, true);
             }
 
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
-
             // Send Email to User
             await _emailTemplates.SendOrderEmailAsync(item.UserId, item.Id, aggregate.EventType);
         }
@@ -207,7 +198,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteOrder();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
 
         private async Task<List<CartItemDTO>> GetUserCartItems(Guid userId)

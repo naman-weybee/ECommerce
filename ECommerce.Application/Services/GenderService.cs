@@ -55,8 +55,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateGender();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteGenderAsync(Guid id)
@@ -66,7 +64,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteGender();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

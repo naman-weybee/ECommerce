@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,15 +56,23 @@ namespace ECommerce.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Gender", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderStatus",
+                columns: table => new
+                {
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderStatus", x => new { x.StatusId, x.Name });
                 });
 
             migrationBuilder.CreateTable(
@@ -91,8 +101,7 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "RoleEntities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -106,11 +115,6 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RoleEntity = table.Column<int>(type: "int", nullable: false),
-                    HasViewPermission = table.Column<bool>(type: "bit", nullable: false),
-                    HasCreateOrUpdatePermission = table.Column<bool>(type: "bit", nullable: false),
-                    HasDeletePermission = table.Column<bool>(type: "bit", nullable: false),
-                    HasFullPermission = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -171,6 +175,46 @@ namespace ECommerce.Infrastructure.Migrations
                         principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RolePermissions",
+                columns: table => new
+                {
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleEntityId = table.Column<int>(type: "int", nullable: false),
+                    HasViewPermission = table.Column<bool>(type: "bit", nullable: false),
+                    HasCreateOrUpdatePermission = table.Column<bool>(type: "bit", nullable: false),
+                    HasDeletePermission = table.Column<bool>(type: "bit", nullable: false),
+                    HasFullPermission = table.Column<bool>(type: "bit", nullable: false),
+                    RoleEntityId1 = table.Column<int>(type: "int", nullable: true),
+                    RoleId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.RoleEntityId });
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_RoleEntities_RoleEntityId",
+                        column: x => x.RoleEntityId,
+                        principalTable: "RoleEntities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_RoleEntities_RoleEntityId1",
+                        column: x => x.RoleEntityId1,
+                        principalTable: "RoleEntities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Roles_RoleId1",
+                        column: x => x.RoleId1,
+                        principalTable: "Roles",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -416,6 +460,81 @@ namespace ECommerce.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Gender",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("12345678-1234-1234-1234-123456789abc"), "Male" },
+                    { new Guid("12345678-1234-1234-1234-123456789abd"), "Female" },
+                    { new Guid("12345678-1234-1234-1234-123456789abe"), "Other" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrderStatus",
+                columns: new[] { "Name", "StatusId" },
+                values: new object[,]
+                {
+                    { "Pending", 0 },
+                    { "Placed", 1 },
+                    { "Shipped", 2 },
+                    { "Delivered", 3 },
+                    { "Canceled", 4 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RoleEntities",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 0, "Unknown" },
+                    { 1, "Full" },
+                    { 2, "Country" },
+                    { 3, "State" },
+                    { 4, "City" },
+                    { 5, "Role" },
+                    { 6, "RolePermission" },
+                    { 7, "RoleEntity" },
+                    { 8, "Gender" },
+                    { 9, "Address" },
+                    { 10, "Category" },
+                    { 11, "Product" },
+                    { 12, "User" },
+                    { 13, "CartItem" },
+                    { 14, "Order" },
+                    { 15, "OrderStatus" },
+                    { 16, "OrderItem" },
+                    { 17, "RefreshToken" },
+                    { 18, "OTP" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "CreatedDate", "DeletedDate", "IsDeleted", "Name", "UpdatedDate" },
+                values: new object[,]
+                {
+                    { new Guid("13571357-1357-1357-1357-135713571357"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Admin", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { new Guid("24682468-2468-2468-2468-246824682468"), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Guest", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RolePermissions",
+                columns: new[] { "RoleEntityId", "RoleId", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission", "HasViewPermission", "RoleEntityId1", "RoleId1" },
+                values: new object[,]
+                {
+                    { 1, new Guid("13571357-1357-1357-1357-135713571357"), false, false, true, false, null, null },
+                    { 2, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 3, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 4, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 8, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 9, new Guid("24682468-2468-2468-2468-246824682468"), true, true, false, true, null, null },
+                    { 10, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 11, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 13, new Guid("24682468-2468-2468-2468-246824682468"), true, true, false, true, null, null },
+                    { 14, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null },
+                    { 15, new Guid("24682468-2468-2468-2468-246824682468"), false, false, false, true, null, null }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Address_CityId",
                 table: "Address",
@@ -508,6 +627,11 @@ namespace ECommerce.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderStatus_StatusId_Name",
+                table: "OrderStatus",
+                columns: new[] { "StatusId", "Name" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OTP_Id_UserId",
                 table: "OTP",
                 columns: new[] { "Id", "UserId" },
@@ -543,15 +667,24 @@ namespace ECommerce.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Role_Name_RoleEntity",
-                table: "Roles",
-                columns: new[] { "Name", "RoleEntity" },
-                unique: true);
+                name: "IX_RolePermissions_RoleEntityId",
+                table: "RolePermissions",
+                column: "RoleEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Role_PermissionFlags",
+                name: "IX_RolePermissions_RoleEntityId1",
+                table: "RolePermissions",
+                column: "RoleEntityId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId1",
+                table: "RolePermissions",
+                column: "RoleId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Role_Name",
                 table: "Roles",
-                columns: new[] { "HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission" },
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -592,19 +725,25 @@ namespace ECommerce.Infrastructure.Migrations
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
+                name: "OrderStatus");
+
+            migrationBuilder.DropTable(
                 name: "OTP");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "RoleEntities");
+                name: "RolePermissions");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "RoleEntities");
 
             migrationBuilder.DropTable(
                 name: "Address");

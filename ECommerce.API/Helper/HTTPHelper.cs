@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.API.Helper.Interfaces;
-using ECommerce.Application.DTOs.Role;
+using ECommerce.Application.DTOs.RolePermission;
 using ECommerce.Application.DTOs.User;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Enums;
@@ -11,13 +11,15 @@ namespace ECommerce.API.Helper
     public class HTTPHelper : IHTTPHelper
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IRoleService _service;
+        private readonly IRoleService _roleService;
+        private readonly IRolePermissionService _rolePermissionService;
         private readonly IMapper _mapper;
 
-        public HTTPHelper(IHttpContextAccessor httpContextAccessor, IRoleService service, IMapper mapper)
+        public HTTPHelper(IHttpContextAccessor httpContextAccessor, IRoleService service, IRolePermissionService rolePermissionService, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;
-            _service = service;
+            _roleService = service;
+            _rolePermissionService = rolePermissionService;
             _mapper = mapper;
         }
 
@@ -48,32 +50,33 @@ namespace ECommerce.API.Helper
 
         public async Task ValidateUserAuthorization(eRoleEntity roleEntity, eUserPermission userPermission)
         {
-            var roles = await GetUserRoles();
+            var roles = await GetUserRolePermissons();
             if (roles.Count == 0)
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
 
             // Full Access Check
-            if (roles.Any(role => role.RoleEntity == eRoleEntity.Full && role.HasFullPermission))
+            if (roles.Any(role => role.RoleEntityId == eRoleEntity.Full && role.HasFullPermission))
                 return;
 
             // Specific Entity Access Check
-            if (!roles.Any(role => role.RoleEntity == roleEntity))
+            if (!roles.Any(role => role.RoleEntityId == roleEntity))
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
 
             // Specific Entity and Full Permission Check
-            if (roles.Any(role => role.RoleEntity == roleEntity && role.HasFullPermission))
+            if (roles.Any(role => role.RoleEntityId == roleEntity && role.HasFullPermission))
                 return;
 
             // Specific Entity and Specific Permission Check
-            if (!roles.Any(role => role.RoleEntity == roleEntity && GetPropertyValue<bool>(role, userPermission)))
+            if (!roles.Any(role => role.RoleEntityId == roleEntity && GetPropertyValue<bool>(role, userPermission)))
                 throw new UnauthorizedAccessException("Unauthorized User !!!");
         }
 
-        private async Task<List<RoleDTO>> GetUserRoles()
+        private async Task<List<RolePermissionDTO>> GetUserRolePermissons()
         {
-            var roles = await _service.GetAllRolesByUserIdAsync(GetUserId());
+            var userRole = await _roleService.GetRoleByUserIdAsync(GetUserId());
+            var rolePermissions = await _rolePermissionService.GetAllRolePermissionsByRoleAsync(userRole.Id, isSortByPermission: true);
 
-            return _mapper.Map<List<RoleDTO>>(roles);
+            return _mapper.Map<List<RolePermissionDTO>>(rolePermissions);
         }
 
         private static T GetPropertyValue<T>(object obj, Enum propertyName)

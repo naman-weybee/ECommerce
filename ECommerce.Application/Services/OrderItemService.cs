@@ -79,8 +79,6 @@ namespace ECommerce.Application.Services
 
                 aggregate.UpdateOrderItem(dto.UnitPrice);
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task UpdateQuantityAsync(OrderItemQuantityUpdateDTO dto)
@@ -111,9 +109,6 @@ namespace ECommerce.Application.Services
                 // Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
 
-                // Save changes
-                await _repository.SaveChangesAsync();
-
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
             }
@@ -125,14 +120,11 @@ namespace ECommerce.Application.Services
             }
         }
 
-        public async Task UpdateUnitPriceAsync(OrderItemUnitPriceUpdateDTO dto)
+        public void UpdateUnitPrice(OrderItemUnitPriceUpdateDTO dto)
         {
             var item = _mapper.Map<OrderItem>(dto);
             var aggregate = new OrderItemAggregate(item, _eventCollector);
             aggregate.UpdateUnitPrice(dto.UnitPrice);
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteOrderItemAsync(Guid id)
@@ -142,7 +134,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteOrderItem();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
 
         private async Task UpdateOrderTotalAmountAsync(Guid orderId, Guid userId)
@@ -152,9 +143,6 @@ namespace ECommerce.Application.Services
 
             var aggregate = new OrderAggregate(item!, _eventCollector);
             aggregate.UpdateTotalAmount();
-
-            _orderRepository.Update(aggregate.Entity);
-            await _orderRepository.SaveChangesAsync();
         }
 
         private async Task ValidateProductStockAsync(Guid productId, int oldQuantity, int newQuantity)

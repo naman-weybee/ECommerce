@@ -98,20 +98,14 @@ namespace ECommerce.Application.Services
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.VerifyOTP();
 
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
-
             return new OTPTokenDTO() { Token = aggregate.OTP.Token! };
         }
 
-        public async Task UpdateOTPAsync(OTPUpdateDTO dto)
+        public void UpdateOTP(OTPUpdateDTO dto)
         {
             var item = _mapper.Map<OTP>(dto);
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.UpdateOTP();
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task SetOTPIsUsedAsync(Guid otpId)
@@ -123,9 +117,6 @@ namespace ECommerce.Application.Services
             var item = _mapper.Map<OTP>(otp);
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.MarkAsUsed();
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteOTPAsync(Guid id)
@@ -135,7 +126,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteOTP();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

@@ -34,20 +34,15 @@ namespace ECommerce.Application.Services
             return _mapper.Map<List<RoleDTO>>(items);
         }
 
-        public async Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId)
+        public async Task<RoleDTO> GetRoleByUserIdAsync(Guid userId)
         {
             var user = await _userRepository.GetQuery()
                     .FirstOrDefaultAsync(x => x.Id == userId)
                     ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
 
-            var query = _repository.GetQuery()
-                .Where(x => x.Id == user.RoleId)
-                .OrderBy(x => x.RoleEntity)
-                .ThenBy(x => x.HasFullPermission);
+            var items = await _serviceHelper.GetByIdAsync(user.RoleId);
 
-            var items = await _serviceHelper.GetAllAsync(query: query);
-
-            return _mapper.Map<List<RoleDTO>>(items);
+            return _mapper.Map<RoleDTO>(items);
         }
 
         public async Task<RoleDTO> GetRoleByIdAsync(Guid id)
@@ -88,8 +83,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateRole();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteRoleAsync(Guid id)
@@ -99,7 +92,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteRole();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

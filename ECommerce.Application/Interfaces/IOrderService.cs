@@ -21,7 +21,7 @@ namespace ECommerce.Application.Interfaces
 
         Task CreateOrderAsync(OrderCreateFromCartDTO dto);
 
-        Task UpdateOrderAsync(OrderUpdateDTO dto);
+        void UpdateOrder(OrderUpdateDTO dto);
 
         Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto);
 

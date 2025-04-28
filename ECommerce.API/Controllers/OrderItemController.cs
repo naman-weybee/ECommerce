@@ -79,7 +79,7 @@ namespace ECommerce.API.Controllers
 
             dto.UserId = _userId;
 
-            await _service.UpdateUnitPriceAsync(dto);
+            _service.UpdateUnitPrice(dto);
             _controllerHelper.SetResponse(_response, "Unit Price Modified Successfully.");
 
             return StatusCode(200, _response);

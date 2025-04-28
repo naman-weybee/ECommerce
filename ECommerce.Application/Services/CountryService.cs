@@ -64,8 +64,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateCountry();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCountryAsync(Guid id)
@@ -75,7 +73,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteCountry();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

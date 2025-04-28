@@ -63,8 +63,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateProduct();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task ProductStockChangeAsync(Guid id, int quantity, bool isIncrease)
@@ -76,9 +74,6 @@ namespace ECommerce.Application.Services
                 aggregate.IncreaseStock(quantity);
             else
                 aggregate.DecreaseStock(quantity);
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task ProductPriceChangeAsync(ProductPriceChangeDTO dto)
@@ -86,9 +81,6 @@ namespace ECommerce.Application.Services
             var item = await _serviceHelper.GetByIdAsync(dto.Id);
             var aggregate = new ProductAggregate(item, _eventCollector);
             aggregate.ChangePrice(dto.Price);
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteProductAsync(Guid id)
@@ -98,7 +90,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteProduct();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

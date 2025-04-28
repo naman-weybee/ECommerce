@@ -76,8 +76,6 @@ namespace ECommerce.Application.Services
                 aggregate.UpdateRefreshToken();
             }
 
-            await _repository.SaveChangesAsync();
-
             return await GetRefreshTokenByIdAsync(aggregate.RefreshToken.Id);
         }
 
@@ -91,7 +89,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteRefreshToken();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenDTO dto)
@@ -102,9 +99,6 @@ namespace ECommerce.Application.Services
             var item = await _serviceHelper.GetByQueryAsync(query);
             var aggregate = new RefreshTokenAggregate(item, _eventCollector);
             aggregate.RevokeToken();
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
     }
 }

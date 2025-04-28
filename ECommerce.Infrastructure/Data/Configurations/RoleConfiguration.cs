@@ -9,13 +9,8 @@ namespace ECommerce.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder
-            .HasIndex(r => new { r.Name, r.RoleEntity })
-            .HasDatabaseName("IX_Role_Name_RoleEntity")
-            .IsUnique();
-
-            builder
-            .HasIndex(r => new { r.HasViewPermission, r.HasCreateOrUpdatePermission, r.HasDeletePermission, r.HasFullPermission })
-            .HasDatabaseName("IX_Role_PermissionFlags")
+            .HasIndex(r => r.Name)
+            .HasDatabaseName("IX_Role_Name")
             .IsUnique();
         }
     }

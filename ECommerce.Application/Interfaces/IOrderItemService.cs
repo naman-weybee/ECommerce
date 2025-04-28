@@ -15,7 +15,7 @@ namespace ECommerce.Application.Interfaces
 
         Task UpdateQuantityAsync(OrderItemQuantityUpdateDTO dto);
 
-        Task UpdateUnitPriceAsync(OrderItemUnitPriceUpdateDTO dto);
+        void UpdateUnitPrice(OrderItemUnitPriceUpdateDTO dto);
 
         Task DeleteOrderItemAsync(Guid id);
     }

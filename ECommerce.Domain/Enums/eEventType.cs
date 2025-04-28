@@ -69,6 +69,10 @@
         RoleUpdated,
         RoleDeleted,
 
+        RolePermissionCreated,     // RolePermission Events
+        RolePermissionUpdated,
+        RolePermissionDeleted,
+
         RefreshTokenCreated,     // Refresh Token Events
         RefreshTokenUpdated,
         RefreshTokenDeleted,

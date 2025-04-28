@@ -12,6 +12,7 @@ using ECommerce.Application.DTOs.OTP;
 using ECommerce.Application.DTOs.Product;
 using ECommerce.Application.DTOs.RefreshToken;
 using ECommerce.Application.DTOs.Role;
+using ECommerce.Application.DTOs.RolePermission;
 using ECommerce.Application.DTOs.State;
 using ECommerce.Application.DTOs.User;
 using ECommerce.Domain.Aggregates;
@@ -51,6 +52,9 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<Role, RoleDTO, RoleUpsertDTO>();
             ConfigureMappings<RoleAggregate, RoleDTO, RoleUpsertDTO>();
+
+            ConfigureMappings<RolePermission, RolePermissionDTO, RolePermissionUpsertDTO>();
+            ConfigureMappings<RolePermissionAggregate, RolePermissionDTO, RolePermissionUpsertDTO>();
 
             ConfigureMappings<RefreshToken, RefreshTokenDTO, RefreshTokenUpsertDTO>();
             ConfigureMappings<RefreshTokenAggregate, RefreshTokenDTO, RefreshTokenUpsertDTO>();

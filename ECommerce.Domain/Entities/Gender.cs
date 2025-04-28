@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.Domain.Entities
 {
-    public class Gender : Base
+    public class Gender
     {
         public Guid Id { get; set; }
 
@@ -19,7 +19,6 @@ namespace ECommerce.Domain.Entities
         {
             Id = id;
             Name = name;
-            StatusUpdated();
         }
     }
 }

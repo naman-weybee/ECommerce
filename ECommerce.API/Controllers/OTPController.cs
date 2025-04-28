@@ -50,7 +50,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateOTP([FromBody] OTPUpdateDTO dto)
         {
-            await _service.UpdateOTPAsync(dto);
+            _service.UpdateOTP(dto);
             _controllerHelper.SetResponse(_response, "OTP Modified Successfully.");
 
             return StatusCode(200, _response);

@@ -8,6 +8,7 @@
         State,
         City,
         Role,
+        RolePermission,
         RoleEntity,
         Gender,
         Address,
@@ -16,6 +17,7 @@
         User,
         CartItem,
         Order,
+        OrderStatus,
         OrderItem,
         RefreshToken,
         OTP

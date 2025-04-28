@@ -64,8 +64,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateCategory();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task AddSubCategoryAsync(Guid id, CategoryUpsertDTO dto)
@@ -75,9 +73,6 @@ namespace ECommerce.Application.Services
 
             var subCategory = _mapper.Map<Category>(dto);
             aggregate.AddSubCategory(subCategory);
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task RemoveSubCategoryAsync(Guid id)
@@ -90,7 +85,6 @@ namespace ECommerce.Application.Services
             aggregate.RemoveSubCategory();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCategoryAsync(Guid id)
@@ -100,7 +94,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteCategory();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

@@ -97,7 +97,7 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasCreateOrUpdatePermission);
 
-            await _service.UpdateOrderAsync(dto);
+            _service.UpdateOrder(dto);
             _controllerHelper.SetResponse(_response, "Order Modified Successfully.");
 
             return StatusCode(200, _response);

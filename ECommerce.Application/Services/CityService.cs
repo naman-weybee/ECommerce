@@ -65,8 +65,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateCity();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteCityAsync(Guid id)
@@ -76,7 +74,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteCity();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

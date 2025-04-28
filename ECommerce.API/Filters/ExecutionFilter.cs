@@ -1,5 +1,5 @@
 ﻿using ECommerce.API.Helper;
-using ECommerce.Infrastructure.ExternalServices;
+using ECommerce.Application.Interfaces;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -10,9 +10,9 @@ namespace ECommerce.API.Filters
     public class ExecutionFilter : IActionFilter, IExceptionFilter
     {
         private readonly ILogger<ExecutionFilter> _logger;
-        private readonly DBService _dbService;
+        private readonly IDBService _dbService;
 
-        public ExecutionFilter(ILogger<ExecutionFilter> logger, DBService dbService)
+        public ExecutionFilter(ILogger<ExecutionFilter> logger, IDBService dbService)
         {
             _logger = logger;
             _dbService = dbService;

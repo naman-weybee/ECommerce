@@ -70,8 +70,6 @@ namespace ECommerce.Application.Services
             {
                 aggregate.UpdateState();
             }
-
-            await _repository.SaveChangesAsync();
         }
 
         public async Task DeleteStateAsync(Guid id)
@@ -81,7 +79,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteState();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
     }
 }

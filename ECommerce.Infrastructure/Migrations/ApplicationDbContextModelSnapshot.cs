@@ -261,22 +261,10 @@ namespace ECommerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -286,7 +274,65 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.ToTable("Gender");
 
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("12345678-1234-1234-1234-123456789abc"),
+                            Name = "Male"
+                        },
+                        new
+                        {
+                            Id = new Guid("12345678-1234-1234-1234-123456789abd"),
+                            Name = "Female"
+                        },
+                        new
+                        {
+                            Id = new Guid("12345678-1234-1234-1234-123456789abe"),
+                            Name = "Other"
+                        });
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.HelperEntities.OrderStatus", b =>
+                {
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("StatusId", "Name");
+
+                    b.HasIndex("StatusId", "Name")
+                        .HasDatabaseName("IX_OrderStatus_StatusId_Name");
+
+                    b.ToTable("OrderStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            StatusId = 0,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            StatusId = 1,
+                            Name = "Placed"
+                        },
+                        new
+                        {
+                            StatusId = 2,
+                            Name = "Shipped"
+                        },
+                        new
+                        {
+                            StatusId = 3,
+                            Name = "Delivered"
+                        },
+                        new
+                        {
+                            StatusId = 4,
+                            Name = "Canceled"
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OTP", b =>
@@ -567,18 +613,6 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("HasCreateOrUpdatePermission")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasDeletePermission")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasFullPermission")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasViewPermission")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -587,34 +621,42 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("RoleEntity")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name", "RoleEntity")
+                    b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_Role_Name_RoleEntity");
-
-                    b.HasIndex("HasViewPermission", "HasCreateOrUpdatePermission", "HasDeletePermission", "HasFullPermission")
-                        .IsUnique()
-                        .HasDatabaseName("IX_Role_PermissionFlags");
+                        .HasDatabaseName("IX_Role_Name");
 
                     b.ToTable("Roles");
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("13571357-1357-1357-1357-135713571357"),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Name = "Admin",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = new Guid("24682468-2468-2468-2468-246824682468"),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsDeleted = false,
+                            Name = "Guest",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.RoleEntity", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -628,6 +670,241 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasDatabaseName("IX_RoleEntity_Name");
 
                     b.ToTable("RoleEntities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 0,
+                            Name = "Unknown"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            Name = "Full"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Country"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "State"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "City"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Role"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "RolePermission"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "RoleEntity"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Gender"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Address"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Category"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "Product"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "User"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "CartItem"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "Order"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "OrderStatus"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "OrderItem"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "RefreshToken"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "OTP"
+                        });
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RoleEntityId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasCreateOrUpdatePermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasDeletePermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasFullPermission")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasViewPermission")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("RoleEntityId1")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("RoleId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RoleId", "RoleEntityId");
+
+                    b.HasIndex("RoleEntityId");
+
+                    b.HasIndex("RoleEntityId1");
+
+                    b.HasIndex("RoleId1");
+
+                    b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = new Guid("13571357-1357-1357-1357-135713571357"),
+                            RoleEntityId = 1,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = true,
+                            HasViewPermission = false
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 2,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 3,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 4,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 8,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 10,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 11,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 14,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 15,
+                            HasCreateOrUpdatePermission = false,
+                            HasDeletePermission = false,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 9,
+                            HasCreateOrUpdatePermission = true,
+                            HasDeletePermission = true,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        },
+                        new
+                        {
+                            RoleId = new Guid("24682468-2468-2468-2468-246824682468"),
+                            RoleEntityId = 13,
+                            HasCreateOrUpdatePermission = true,
+                            HasDeletePermission = true,
+                            HasFullPermission = false,
+                            HasViewPermission = true
+                        });
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>
@@ -892,6 +1169,33 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("ECommerce.Domain.Entities.RoleEntity", "RoleEntity")
+                        .WithMany()
+                        .HasForeignKey("RoleEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Domain.Entities.RoleEntity", null)
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleEntityId1");
+
+                    b.HasOne("ECommerce.Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ECommerce.Domain.Entities.Role", null)
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId1");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("RoleEntity");
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>
                 {
                     b.HasOne("ECommerce.Domain.Entities.Country", "Country")
@@ -912,7 +1216,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("ECommerce.Domain.Entities.Role", "Role")
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -941,7 +1245,12 @@ namespace ECommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Role", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("RolePermissions");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.State", b =>

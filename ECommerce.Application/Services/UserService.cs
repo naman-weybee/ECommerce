@@ -103,9 +103,6 @@ namespace ECommerce.Application.Services
                     aggregate.UpdateUser();
                 }
 
-                // Save changes
-                await _repository.SaveChangesAsync();
-
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
 
@@ -143,9 +140,6 @@ namespace ECommerce.Application.Services
                 var aggregate = new UserAggregate(user, _eventCollector);
                 aggregate.UpdateUser();
 
-                _repository.Update(aggregate.Entity);
-                await _repository.SaveChangesAsync();
-
                 // Mark OTP as used
                 await _otpService.SetOTPIsUsedAsync(otp.Id);
 
@@ -167,7 +161,6 @@ namespace ECommerce.Application.Services
             aggregate.DeleteUser();
 
             _repository.Delete(item);
-            await _repository.SaveChangesAsync();
         }
 
         public async Task VerifyEmailAsync(string token)
@@ -183,9 +176,6 @@ namespace ECommerce.Application.Services
 
             var aggregate = new UserAggregate(user, _eventCollector);
             aggregate.EmailVerified();
-
-            _repository.Update(aggregate.Entity);
-            await _repository.SaveChangesAsync();
         }
     }
 }

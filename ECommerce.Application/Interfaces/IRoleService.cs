@@ -7,7 +7,7 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<RoleDTO>> GetAllRolesAsync(RequestParams? requestParams = null);
 
-        Task<List<RoleDTO>> GetAllRolesByUserIdAsync(Guid userId);
+        Task<RoleDTO> GetRoleByUserIdAsync(Guid userId);
 
         Task<RoleDTO> GetRoleByIdAsync(Guid id);
 

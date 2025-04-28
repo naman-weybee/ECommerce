@@ -11,7 +11,7 @@ namespace ECommerce.Application.Interfaces
 
         Task CreateOTPAsync(OTPCreateFromEmailDTO dto);
 
-        Task UpdateOTPAsync(OTPUpdateDTO dto);
+        void UpdateOTP(OTPUpdateDTO dto);
 
         Task<OTPTokenDTO> VerifyOTPAsync(OTPVerifyDTO dto);
 

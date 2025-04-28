@@ -1,4 +1,6 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.Entities.HelperEntities;
+using ECommerce.Infrastructure.Data.Seeders;
 using ECommerce.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -44,11 +46,16 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<RoleEntity> RoleEntities { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         public DbSet<User> Users { get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        // Helper Entities
+        public DbSet<OrderStatus> OrderStatus { get; set; }
+
+        public DbSet<RoleEntity> RoleEntities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -91,6 +98,8 @@ namespace ECommerce.Infrastructure.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
+
+            SeedManager.SeedAll(modelBuilder);
         }
     }
 }
