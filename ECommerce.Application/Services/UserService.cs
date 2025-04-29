@@ -103,13 +103,17 @@ namespace ECommerce.Application.Services
                     aggregate.UpdateUser();
                 }
 
+                // Save
+                await _repository.SaveChangesAsync();
+
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
 
-                // Send Email to User
-                await _emailTemplates.SendVerificationEmailAsync(aggregate.User.Id);
+                // Send Email to User if Newly Registered
+                if (isNew)
+                    await _emailTemplates.SendVerificationEmailAsync(aggregate.User.Id);
             }
-            catch (Exception)
+            catch
             {
                 // Rollback transaction on error
                 await _transactionManagerService.RollbackTransactionAsync();

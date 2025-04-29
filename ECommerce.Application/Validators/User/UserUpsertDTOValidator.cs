@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.User
 {
-    public class UserCreateDTOValidator : AbstractValidator<UserUpsertDTO>
+    public class UserUpsertDTOValidator : AbstractValidator<UserUpsertDTO>
     {
-        public UserCreateDTOValidator()
+        public UserUpsertDTOValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required.")
