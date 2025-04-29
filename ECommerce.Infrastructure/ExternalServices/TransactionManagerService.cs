@@ -25,7 +25,7 @@ namespace ECommerce.Application.Services
             if (_transaction != null)
             {
                 await _transaction.CommitAsync();
-                await _transaction.DisposeAsync();
+                await DisposeTransactionAsync();
             }
         }
 
@@ -34,7 +34,7 @@ namespace ECommerce.Application.Services
             if (_transaction != null)
             {
                 await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
+                await DisposeTransactionAsync();
             }
         }
 
@@ -42,6 +42,11 @@ namespace ECommerce.Application.Services
         {
             _transaction?.Dispose();
             _context.Dispose();
+        }
+
+        private async Task DisposeTransactionAsync()
+        {
+            await _transaction.DisposeAsync();
         }
     }
 }
