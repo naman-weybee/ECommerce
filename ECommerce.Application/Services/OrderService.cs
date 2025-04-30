@@ -147,6 +147,9 @@ namespace ECommerce.Application.Services
                 // Clear Cart
                 await ClearCart(user.Id);
 
+                // Save
+                await _repository.SaveChangesAsync();
+
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
 

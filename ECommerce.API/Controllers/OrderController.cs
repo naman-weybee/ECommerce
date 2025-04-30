@@ -1,4 +1,5 @@
-﻿using ECommerce.API.Helper.Interfaces;
+﻿using ECommerce.API.Attributes;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Order;
 using ECommerce.Application.DTOs.OrderItem;
@@ -81,6 +82,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [BypassDbTransection]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateFromCartDTO dto)
         {

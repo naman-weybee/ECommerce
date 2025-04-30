@@ -15,6 +15,8 @@ namespace ECommerce.Application.Interfaces
 
         Task UpsertUserAsync(UserUpsertDTO dto);
 
+        Task ReSendEmailVerificationAsync(Guid userId);
+
         Task PasswordResetAsync(PasswordResetDTO dto);
 
         Task VerifyEmailAsync(string token);

@@ -114,6 +114,9 @@ namespace ECommerce.Application.Services
                 // Update the address
                 SetAddressType(address, dto.AdderessType);
 
+                // Save
+                await _repository.SaveChangesAsync();
+
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();
             }

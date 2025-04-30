@@ -87,11 +87,6 @@ namespace ECommerce.Infrastructure.Repositories
             await DbSet.AddAsync(entity);
         }
 
-        public virtual void Update(TEntity entity)
-        {
-            DbSet.Update(entity);
-        }
-
         public virtual void Delete(TEntity entity)
         {
             if (entity != null)

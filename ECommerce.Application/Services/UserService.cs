@@ -121,6 +121,16 @@ namespace ECommerce.Application.Services
             }
         }
 
+        public async Task ReSendEmailVerificationAsync(Guid userId)
+        {
+            var item = await _repository.GetByIdAsync(userId);
+
+            if (string.IsNullOrEmpty(item.EmailVerificationToken) || item.IsEmailVerified)
+                throw new InvalidOperationException("User Email is already Verified");
+
+            await _emailTemplates.SendVerificationEmailAsync(item.Id);
+        }
+
         public async Task PasswordResetAsync(PasswordResetDTO dto)
         {
             // Begin Transaction

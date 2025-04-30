@@ -101,13 +101,14 @@ namespace ECommerce.Application.Services
                 var aggregate = new OrderItemAggregate(item, _eventCollector);
                 aggregate.UpdateQuantity(dto.Quantity, product.Price);
 
-                _repository.Update(aggregate.Entity);
-
                 // Update Product Stock
                 await UpdateOrderItemProductStockAsync(product.Id, orderItem.Quantity, dto.Quantity);
 
                 // Update Total Amount of Order
                 await UpdateOrderTotalAmountAsync(orderItem.OrderId, dto.UserId);
+
+                // Save
+                await _repository.SaveChangesAsync();
 
                 // Commit transaction
                 await _transactionManagerService.CommitTransactionAsync();

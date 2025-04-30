@@ -1,7 +1,9 @@
-﻿using ECommerce.API.Helper;
+﻿using ECommerce.API.Attributes;
+using ECommerce.API.Helper;
 using ECommerce.Application.Interfaces;
 using ECommerce.Shared.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Text;
 
@@ -60,8 +62,9 @@ namespace ECommerce.API.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var isGetMethod = context.HttpContext.Request.Method == HttpMethods.Get;
+            var dbBypass = context.ActionDescriptor is ControllerActionDescriptor cad && cad.MethodInfo.IsDefined(typeof(BypassDbTransection), inherit: true);
 
-            if (!isGetMethod)
+            if (!isGetMethod || !dbBypass)
             {
                 await using (_dbService.Begin())
                 {

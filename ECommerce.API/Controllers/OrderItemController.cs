@@ -1,3 +1,4 @@
+using ECommerce.API.Attributes;
 using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
@@ -59,6 +60,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [BypassDbTransection]
         [HttpPut("UpdateQuantity")]
         public async Task<IActionResult> UpdateQuantity([FromBody] OrderItemQuantityUpdateDTO dto)
         {
