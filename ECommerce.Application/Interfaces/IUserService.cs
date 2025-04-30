@@ -1,4 +1,6 @@
+using ECommerce.Application.DTOs.Auth;
 using ECommerce.Application.DTOs.User;
+using ECommerce.Domain.Entities;
 using ECommerce.Shared.RequestModel;
 
 namespace ECommerce.Application.Interfaces
@@ -11,11 +13,11 @@ namespace ECommerce.Application.Interfaces
 
         Task<UserDTO> GetUserByIdAsync(Guid id, bool useQuery = false);
 
-        Task<UserDTO> GetUserByEmailAsync(string email, bool useQuery = false);
+        Task<UserDTO> GetUserByEmailAsync(string email);
 
         Task UpsertUserAsync(UserUpsertDTO dto);
 
-        Task ReSendEmailVerificationAsync(Guid userId);
+        Task SendVerificationEmailAsync(User entity);
 
         Task PasswordResetAsync(PasswordResetDTO dto);
 

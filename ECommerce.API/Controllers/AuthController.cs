@@ -57,7 +57,16 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("VerifyEmail")]
+        [HttpPut("ReSendEmailVerification")]
+        public async Task<IActionResult> ReSendEmailVerification([FromBody] ResendEmailVerificationDTO dto)
+        {
+            await _service.ReSendEmailVerificationAsync(dto);
+            _controllerHelper.SetResponse(_response, "Verification Email ReSent Successfully.");
+
+            return StatusCode(200, _response);
+        }
+
+        [HttpPut("VerifyEmail")]
         public async Task<IActionResult> VerifyEmail(string token)
         {
             await _service.VerifyEmailAsync(token);

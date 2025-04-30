@@ -54,6 +54,7 @@
         UserAddressChanged,
         UserIsActiveStatusChanged,
         UserEmailVarified,
+        ResendEmailVerificationToken,
         UserIsPhoneNumberVerifiedStatusChanged,
         UserIsSubscribedToNotificationsStatusChanged,
 

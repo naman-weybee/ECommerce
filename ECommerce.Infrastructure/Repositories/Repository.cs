@@ -33,7 +33,7 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task<TEntity> GetByPropertyAsync(IQueryable<TEntity> query)
         {
-            return (await query.FirstOrDefaultAsync())!;
+            return (await query?.FirstOrDefaultAsync()!)!;
         }
 
         public async Task<List<TEntity>> GetAllAsync()

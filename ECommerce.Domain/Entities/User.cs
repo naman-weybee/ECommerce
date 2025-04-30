@@ -129,5 +129,11 @@ namespace ECommerce.Domain.Entities
             IsSubscribedToNotifications = isSubscribedToNotifications;
             StatusUpdated();
         }
+
+        public void ResendEmailVerificationToken()
+        {
+            EmailVerificationToken = Guid.NewGuid().ToString();
+            StatusUpdated();
+        }
     }
 }

@@ -64,7 +64,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [BypassDbTransection]
+        [BypassDbTransaction]
         [HttpPost]
         public async Task<IActionResult> UpsertUser([FromBody] UserUpsertDTO dto)
         {
@@ -74,16 +74,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("ReSendEmailVerification")]
-        public async Task<IActionResult> ReSendEmailVerification()
-        {
-            await _service.ReSendEmailVerificationAsync(_userId);
-            _controllerHelper.SetResponse(_response, "Verification Email ReSend Successfully.");
-
-            return StatusCode(200, _response);
-        }
-
-        [BypassDbTransection]
+        [BypassDbTransaction]
         [HttpPost("PasswordReset")]
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDTO dto)
         {

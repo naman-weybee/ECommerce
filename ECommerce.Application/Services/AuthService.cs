@@ -98,6 +98,18 @@ namespace ECommerce.Application.Services
             };
         }
 
+        public async Task ReSendEmailVerificationAsync(ResendEmailVerificationDTO dto)
+        {
+            var item = await _userRepository.GetQuery()
+                .FirstOrDefaultAsync(x => x.Email == dto.Email)
+                ?? throw new InvalidOperationException($"No User found with Email {dto.Email}");
+
+            if (string.IsNullOrEmpty(item.EmailVerificationToken) || item.IsEmailVerified)
+                throw new InvalidOperationException("User Email is already Verified");
+
+            await _userService.SendVerificationEmailAsync(item);
+        }
+
         public async Task VerifyEmailAsync(string token)
         {
             await _userService.VerifyEmailAsync(token);

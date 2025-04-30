@@ -69,11 +69,10 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDTO>(item);
         }
 
-        public async Task<UserDTO> GetUserByEmailAsync(string email, bool useQuery = false)
+        public async Task<UserDTO> GetUserByEmailAsync(string email)
         {
-            var query = useQuery
-                ? _repository.GetQuery().Where(x => x.Email == email)!
-                : null!;
+            var query = _repository.GetQuery()
+                .Where(x => x.Email == email);
 
             var item = await _serviceHelper.GetByQueryAsync(query);
 
@@ -111,7 +110,7 @@ namespace ECommerce.Application.Services
 
                 // Send Email to User if Newly Registered
                 if (isNew)
-                    await _emailTemplates.SendVerificationEmailAsync(aggregate.User.Id);
+                    await SendVerificationEmailAsync(aggregate.Entity);
             }
             catch
             {
@@ -121,14 +120,17 @@ namespace ECommerce.Application.Services
             }
         }
 
-        public async Task ReSendEmailVerificationAsync(Guid userId)
+        public async Task SendVerificationEmailAsync(User entity)
         {
-            var item = await _repository.GetByIdAsync(userId);
+            var isTokenExist = !string.IsNullOrEmpty(entity.Email);
 
-            if (string.IsNullOrEmpty(item.EmailVerificationToken) || item.IsEmailVerified)
-                throw new InvalidOperationException("User Email is already Verified");
+            if (isTokenExist && !entity.IsEmailVerified)
+            {
+                var aggregate = new UserAggregate(entity, _eventCollector);
+                aggregate.ResendEmailVerificationToken();
+            }
 
-            await _emailTemplates.SendVerificationEmailAsync(item.Id);
+            await _emailTemplates.SendVerificationEmailAsync(entity.Id);
         }
 
         public async Task PasswordResetAsync(PasswordResetDTO dto)
@@ -184,9 +186,6 @@ namespace ECommerce.Application.Services
 
             var user = await _serviceHelper.GetByQueryAsync(query)
                 ?? throw new InvalidOperationException("Invalid token.");
-
-            user.EmailVerificationToken = null;
-            user.IsEmailVerified = true;
 
             var aggregate = new UserAggregate(user, _eventCollector);
             aggregate.EmailVerified();

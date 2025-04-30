@@ -74,6 +74,14 @@ namespace ECommerce.Domain.Aggregates
             RaiseDomainEvent();
         }
 
+        public void ResendEmailVerificationToken()
+        {
+            Entity.ResendEmailVerificationToken();
+
+            EventType = eEventType.ResendEmailVerificationToken;
+            RaiseDomainEvent();
+        }
+
         public void EmailVerified()
         {
             Entity.EmailVerified();

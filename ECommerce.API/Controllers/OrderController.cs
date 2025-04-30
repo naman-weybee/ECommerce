@@ -82,7 +82,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [BypassDbTransection]
+        [BypassDbTransaction]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreateFromCartDTO dto)
         {

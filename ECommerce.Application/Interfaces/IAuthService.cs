@@ -16,6 +16,8 @@ namespace ECommerce.Application.Interfaces
 
         Task<UserTokenDTO> GenerateUserTokenAsync(UserDTO dto);
 
+        Task ReSendEmailVerificationAsync(ResendEmailVerificationDTO dto);
+
         Task VerifyEmailAsync(string token);
     }
 }

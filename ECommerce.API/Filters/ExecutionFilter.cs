@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ECommerce.API.Filters
 {
-    public class ExecutionFilter : IActionFilter, IExceptionFilter
+    public class ExecutionFilter : IActionFilter, IAsyncActionFilter, IExceptionFilter
     {
         private readonly ILogger<ExecutionFilter> _logger;
         private readonly IDBService _dbService;
@@ -62,7 +62,7 @@ namespace ECommerce.API.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var isGetMethod = context.HttpContext.Request.Method == HttpMethods.Get;
-            var dbBypass = context.ActionDescriptor is ControllerActionDescriptor cad && cad.MethodInfo.IsDefined(typeof(BypassDbTransection), inherit: true);
+            var dbBypass = context.ActionDescriptor is ControllerActionDescriptor cad && cad.MethodInfo.IsDefined(typeof(BypassDbTransaction), inherit: true);
 
             if (!isGetMethod || !dbBypass)
             {

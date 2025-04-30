@@ -71,7 +71,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [BypassDbTransection]
+        [BypassDbTransaction]
         [HttpPut("UpdateAddressType")]
         public async Task<IActionResult> UpdateAddressType([FromBody] AddressTypeUpdateDTO dto)
         {
