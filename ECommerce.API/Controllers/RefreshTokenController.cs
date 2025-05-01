@@ -31,7 +31,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet("GetAllRefreshTokensByUser")]
-        public async Task<IActionResult> GetRefreshTokensForUser([FromQuery] RequestParams requestParams)
+        public async Task<IActionResult> GetAllRefreshTokensByUser([FromQuery] RequestParams requestParams)
         {
             var data = await _service.GetAllRefreshTokensByUserAsync(_userId, requestParams);
             _controllerHelper.SetResponse(_response, data, requestParams);
@@ -48,10 +48,12 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetSpecificRefreshTokenByUser/{id}")]
-        public async Task<IActionResult> GetSpecificRefreshTokenByUser(Guid id)
+        [HttpGet("GetUserSpecificRefreshTokenById/{id}/{userId}")]
+        public async Task<IActionResult> GetUserSpecificRefreshTokenById(Guid id, Guid userId)
         {
-            var data = await _service.GetSpecificRefreshTokenByUserAsync(id, _userId);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.RefreshToken, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetUserSpecificRefreshTokenByIdAsync(id, userId);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

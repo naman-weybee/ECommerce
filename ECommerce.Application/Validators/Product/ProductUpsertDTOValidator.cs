@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Product
 {
-    public class ProductCreateDTOValidator : AbstractValidator<ProductUpsertDTO>
+    public class ProductUpsertDTOValidator : AbstractValidator<ProductUpsertDTO>
     {
-        public ProductCreateDTOValidator()
+        public ProductUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Product name is required.")

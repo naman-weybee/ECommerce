@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Services;
 using ECommerce.Shared.Repositories;
 using ECommerce.Shared.RequestModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services
 {
@@ -82,19 +83,15 @@ namespace ECommerce.Application.Services
 
         public async Task UpdateQuantityAsync(CartItemQuantityUpdateDTO dto)
         {
-            var cartItem = await GetSpecificCartItemByUserAsync(dto.Id, dto.UserId);
+            var cartItem = await _repository.GetQuery()
+                .FirstOrDefaultAsync(x => x.Id == dto.Id && x.UserId == dto.UserId)
+                ?? throw new InvalidOperationException($"No Cartitem Found for Id = {dto.Id}");
+
             var product = await _productService.GetProductByIdAsync(cartItem.ProductId);
 
             var item = _mapper.Map<CartItem>(cartItem);
             var aggregate = new CartItemAggregate(item, _eventCollector);
             aggregate.UpdateQuantity(dto.Quantity, product.Price);
-        }
-
-        public void UpdateUnitPrice(CartItemUnitPriceUpdateDTO dto)
-        {
-            var item = _mapper.Map<CartItem>(dto);
-            var aggregate = new CartItemAggregate(item, _eventCollector);
-            aggregate.UpdateUnitPrice(dto.UnitPrice);
         }
 
         public async Task DeleteCartItemByUserAsync(Guid id, Guid userId)

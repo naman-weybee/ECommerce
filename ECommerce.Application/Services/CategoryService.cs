@@ -28,7 +28,7 @@ namespace ECommerce.Application.Services
         public async Task<List<CategoryDTO>> GetAllCategoriesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
             var query = useQuery
-                ? _repository.GetQuery().Include(c => c.Products)!
+                ? _repository.GetQuery().Include(c => c.SubCategories).ThenInclude(c => c.Products)!
                 : null!;
 
             var items = await _serviceHelper.GetAllAsync(requestParams, query);
@@ -39,7 +39,7 @@ namespace ECommerce.Application.Services
         public async Task<CategoryDTO> GetCategoryByIdAsync(Guid id, bool useQuery = false)
         {
             var query = useQuery
-                ? _repository.GetQuery().Include(c => c.Products)!
+                ? _repository.GetQuery().Include(c => c.SubCategories).ThenInclude(c => c.Products)!
                 : null!;
 
             var item = await _serviceHelper.GetByIdAsync(id, query);

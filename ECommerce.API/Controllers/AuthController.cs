@@ -1,4 +1,5 @@
-﻿using ECommerce.API.Helper.Interfaces;
+﻿using ECommerce.API.Attributes;
+using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs.Auth;
 using ECommerce.Application.DTOs.RefreshToken;
 using ECommerce.Application.DTOs.User;
@@ -48,6 +49,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [BypassDbTransaction]
         [HttpPost("ReCreateAccessToken")]
         public async Task<IActionResult> ReCreateAccessToken([FromBody] AccessTokenCreateDTO dto)
         {

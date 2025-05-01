@@ -81,19 +81,6 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpPut("UpdateUnitPrice")]
-        public async Task<IActionResult> UpdateUnitPrice([FromBody] CartItemUnitPriceUpdateDTO dto)
-        {
-            await _httpHelper.ValidateUserAuthorization(eRoleEntity.CartItem, eUserPermission.HasFullPermission);
-
-            dto.UserId = _userId;
-
-            _service.UpdateUnitPrice(dto);
-            _controllerHelper.SetResponse(_response, "Unit Price Modified Successfully.");
-
-            return StatusCode(200, _response);
-        }
-
         [HttpDelete("DeleteCartItemByUser/{id}")]
         public async Task<IActionResult> DeleteCartItemByUser(Guid id)
         {

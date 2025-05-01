@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.City
 {
-    public class CityCreateDTOValidator : AbstractValidator<CityUpsertDTO>
+    public class CityUpsertDTOValidator : AbstractValidator<CityUpsertDTO>
     {
-        public CityCreateDTOValidator()
+        public CityUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("City name is required.")

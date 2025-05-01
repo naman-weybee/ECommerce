@@ -17,11 +17,11 @@ namespace ECommerce.Application.Interfaces
 
         Task<OrderDTO> GetOrderByIdAsync(Guid id, bool useQuery = false);
 
-        Task<OrderDTO> GetSpecificOrderByUserAsync(Guid id, Guid userId, bool useQuery = false);
+        Task<OrderDTO> GetUserSpecificOrderByIdAsync(Guid id, Guid userId, bool useQuery = false);
 
         Task CreateOrderAsync(OrderCreateFromCartDTO dto);
 
-        void UpdateOrder(OrderUpdateDTO dto);
+        Task UpdateOrderAsync(OrderUpdateDTO dto);
 
         Task UpdateOrderStatusAsync(OrderUpdateStatusDTO dto);
 

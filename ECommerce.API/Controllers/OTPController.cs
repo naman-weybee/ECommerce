@@ -1,3 +1,4 @@
+using ECommerce.API.Attributes;
 using ECommerce.API.Helper.Interfaces;
 using ECommerce.Application.DTOs.OTP;
 using ECommerce.Application.Interfaces;
@@ -38,6 +39,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
+        [BypassDbTransaction]
         [HttpPost]
         public async Task<IActionResult> CreateOTP([FromBody] OTPCreateFromEmailDTO dto)
         {
@@ -50,7 +52,7 @@ namespace ECommerce.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateOTP([FromBody] OTPUpdateDTO dto)
         {
-            _service.UpdateOTP(dto);
+            await _service.UpdateOTPAsync(dto);
             _controllerHelper.SetResponse(_response, "OTP Modified Successfully.");
 
             return StatusCode(200, _response);

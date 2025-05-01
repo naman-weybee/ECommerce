@@ -31,8 +31,8 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetOrderItemsByOrder")]
-        public async Task<IActionResult> GetOrderItemsByOrder([FromQuery] RequestParams requestParams, [FromQuery] Guid orderId)
+        [HttpGet("GetOrderItemsByOrder/{orderId}")]
+        public async Task<IActionResult> GetOrderItemsByOrder([FromQuery] RequestParams requestParams, Guid orderId)
         {
             var data = await _service.GetOrderItemsByOrderAsync(orderId, requestParams);
             _controllerHelper.SetResponse(_response, data, requestParams);

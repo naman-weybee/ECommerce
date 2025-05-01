@@ -11,7 +11,7 @@ namespace ECommerce.Application.Interfaces
 
         Task<RefreshTokenDTO> GetRefreshTokenByIdAsync(Guid id);
 
-        Task<RefreshTokenDTO> GetSpecificRefreshTokenByUserAsync(Guid id, Guid userId);
+        Task<RefreshTokenDTO> GetUserSpecificRefreshTokenByIdAsync(Guid id, Guid userId);
 
         Task<RefreshTokenDTO> UpsertRefreshTokenAsync(RefreshTokenUpsertDTO dto);
 

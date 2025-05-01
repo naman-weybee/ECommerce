@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Address
 {
-    public class AddressCreateDTOValidator : AbstractValidator<AddressUpsertDTO>
+    public class AddressUpsertDTOValidator : AbstractValidator<AddressUpsertDTO>
     {
-        public AddressCreateDTOValidator()
+        public AddressUpsertDTOValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("First Name is required")

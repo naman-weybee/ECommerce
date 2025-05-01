@@ -84,13 +84,13 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpDelete("DeleteCurrentUser")]
-        public async Task<IActionResult> DeleteUser()
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUser(Guid userId)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.User, eUserPermission.HasDeletePermission);
 
-            await _service.DeleteUserAsync(_userId);
-            _controllerHelper.SetResponse(_response, $"User with Id = {_userId} is Deleted Successfully.");
+            await _service.DeleteUserAsync(userId);
+            _controllerHelper.SetResponse(_response, $"User with Id = {userId} is Deleted Successfully.");
 
             return StatusCode(200, _response);
         }

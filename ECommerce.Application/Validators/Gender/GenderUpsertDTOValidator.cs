@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Gender
 {
-    public class GenderCreateDTOValidator : AbstractValidator<GenderUpsertDTO>
+    public class GenderUpsertDTOValidator : AbstractValidator<GenderUpsertDTO>
     {
-        public GenderCreateDTOValidator()
+        public GenderUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Gender name is required.")

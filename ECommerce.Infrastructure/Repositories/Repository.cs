@@ -23,27 +23,27 @@ namespace ECommerce.Infrastructure.Repositories
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            return (await _context.Set<TEntity>().FindAsync(id))!;
+            return (await _context.Set<TEntity>().FindAsync(id)) ?? null!;
         }
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id, IQueryable<TEntity> query)
         {
-            return (await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id)))!;
+            return (await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id").Equals(id))) ?? null!;
         }
 
         public virtual async Task<TEntity> GetByPropertyAsync(IQueryable<TEntity> query)
         {
-            return (await query?.FirstOrDefaultAsync()!)!;
+            return (await query?.FirstOrDefaultAsync()!) ?? null!;
         }
 
         public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _context.Set<TEntity>()?.ToListAsync()!;
+            return await _context.Set<TEntity>()?.ToListAsync()! ?? null!;
         }
 
         public async Task<List<TEntity>> GetAllAsync(IQueryable<TEntity> query)
         {
-            return await query?.ToListAsync()!;
+            return await query?.ToListAsync()! ?? null!;
         }
 
         public async Task<IPagedList<TEntity>> GetAllAsync(RequestParams requestParams)

@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.CartItem
 {
-    public class CartItemCreateDTOValidator : AbstractValidator<CartItemUpsertDTO>
+    public class CartItemUpsertDTOValidator : AbstractValidator<CartItemUpsertDTO>
     {
-        public CartItemCreateDTOValidator()
+        public CartItemUpsertDTOValidator()
         {
             RuleFor(x => x.ProductId)
                 .NotEmpty().WithMessage("Product ID is required.");

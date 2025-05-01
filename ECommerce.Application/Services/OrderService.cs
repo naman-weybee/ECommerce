@@ -51,7 +51,7 @@ namespace ECommerce.Application.Services
                 ? _repository.GetQuery().Include(c => c.OrderItems)!
                 : null!;
 
-            var items = await _serviceHelper.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<OrderDTO>>(items);
         }
@@ -104,7 +104,7 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OrderDTO>(item);
         }
 
-        public async Task<OrderDTO> GetSpecificOrderByUserAsync(Guid id, Guid userId, bool useQuery = false)
+        public async Task<OrderDTO> GetUserSpecificOrderByIdAsync(Guid id, Guid userId, bool useQuery = false)
         {
             var query = useQuery
                 ? _repository.GetQuery().Where(x => x.UserId == userId).Include(c => c.OrderItems)!
@@ -164,9 +164,12 @@ namespace ECommerce.Application.Services
             }
         }
 
-        public void UpdateOrder(OrderUpdateDTO dto)
+        public async Task UpdateOrderAsync(OrderUpdateDTO dto)
         {
-            var item = _mapper.Map<Order>(dto);
+            var order = await _serviceHelper.GetByIdAsync(dto.Id)
+                ?? throw new InvalidOperationException($"No Order Found for Id = {dto.Id}");
+
+            var item = _mapper.Map(dto, order);
             var aggregate = new OrderAggregate(item, _eventCollector);
             aggregate.UpdateOrder();
         }

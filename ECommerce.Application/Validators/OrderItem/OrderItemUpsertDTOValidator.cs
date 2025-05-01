@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.OrderItem
 {
-    public class OrderItemCreateDTOValidator : AbstractValidator<OrderItemUpsertDTO>
+    public class OrderItemUpsertDTOValidator : AbstractValidator<OrderItemUpsertDTO>
     {
-        public OrderItemCreateDTOValidator()
+        public OrderItemUpsertDTOValidator()
         {
             RuleFor(x => x.OrderId)
                 .NotEmpty().WithMessage("Order ID is required.");

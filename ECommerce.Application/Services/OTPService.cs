@@ -16,15 +16,17 @@ namespace ECommerce.Application.Services
         private readonly IServiceHelper<OTP> _serviceHelper;
         private readonly IRepository<User> _userRepository;
         private readonly IEmailTemplates _emailTemplates;
+        private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
         private readonly IDomainEventCollector _eventCollector;
 
-        public OTPService(IRepository<OTP> repository, IServiceHelper<OTP> serviceHelper, IRepository<User> userRepository, IEmailTemplates emailTemplates, IMapper mapper, IDomainEventCollector eventCollector)
+        public OTPService(IRepository<OTP> repository, IServiceHelper<OTP> serviceHelper, IRepository<User> userRepository, IEmailTemplates emailTemplates, ITransactionManagerService transactionManagerService, IMapper mapper, IDomainEventCollector eventCollector)
         {
             _repository = repository;
             _serviceHelper = serviceHelper;
             _userRepository = userRepository;
             _emailTemplates = emailTemplates;
+            _transactionManagerService = transactionManagerService;
             _mapper = mapper;
             _eventCollector = eventCollector;
         }
@@ -43,14 +45,12 @@ namespace ECommerce.Application.Services
             return _mapper.Map<OTPDTO>(item);
         }
 
-        public async Task<OTPDTO> ValidateOTP(Guid userId, OTPVerifyDTO dto)
+        public async Task<OTP> ValidateOTP(Guid userId, OTPVerifyDTO dto)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId && x.Code == dto.Code && !x.IsUsed && x.OTPExpiredDate >= DateTime.UtcNow);
 
-            var item = await _serviceHelper.GetByQueryAsync(query);
-
-            return _mapper.Map<OTPDTO>(item);
+            return await _serviceHelper.GetByQueryAsync(query);
         }
 
         public async Task<OTPDTO> GetSpecificOTPByUserAsync(Guid id, Guid userId)
@@ -65,24 +65,42 @@ namespace ECommerce.Application.Services
 
         public async Task CreateOTPAsync(OTPCreateFromEmailDTO dto)
         {
-            var user = await _userRepository.GetQuery()
-                .FirstOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
-                ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
+            // Begin Transaction
+            await _transactionManagerService.BeginTransactionAsync();
 
-            var otp = new OTPCreateDTO()
+            try
             {
-                UserId = user.Id,
-                Type = dto.Type
-            };
+                var user = await _userRepository.GetQuery()
+                        .FirstOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
+                        ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
-            var item = _mapper.Map<OTP>(otp);
-            var aggregate = new OTPAggregate(item, _eventCollector);
-            aggregate.CreateOTP();
+                var otp = new OTPCreateDTO()
+                {
+                    UserId = user.Id,
+                    Type = dto.Type
+                };
 
-            await _repository.InsertAsync(aggregate.Entity);
+                var item = _mapper.Map<OTP>(otp);
+                var aggregate = new OTPAggregate(item, _eventCollector);
+                aggregate.CreateOTP();
 
-            //Send Email to User
-            await _emailTemplates.SendOTPEmailAsync(aggregate.OTP.Id, dto.Email, dto.Type);
+                await _repository.InsertAsync(aggregate.Entity);
+
+                // Save
+                await _repository.SaveChangesAsync();
+
+                // Commit transaction
+                await _transactionManagerService.CommitTransactionAsync();
+
+                //Send Email to User
+                await _emailTemplates.SendOTPEmailAsync(aggregate.OTP.Id, dto.Email, dto.Type);
+            }
+            catch (Exception)
+            {
+                // Rollback transaction on error
+                await _transactionManagerService.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<OTPTokenDTO> VerifyOTPAsync(OTPVerifyDTO dto)
@@ -91,7 +109,8 @@ namespace ECommerce.Application.Services
                 .FirstOrDefaultAsync(x => x.Email == dto.Email && x.IsEmailVerified)
                 ?? throw new InvalidOperationException($"User with Email = {dto.Email} is not registered.");
 
-            var otp = await ValidateOTP(user.Id, dto)
+            var otp = await _repository.GetQuery()
+               .FirstOrDefaultAsync(x => x.UserId == user.Id && x.Code == dto.Code && !x.IsUsed && x.OTPExpiredDate >= DateTime.UtcNow)
                 ?? throw new InvalidOperationException("Invalid OTP.");
 
             var item = _mapper.Map<OTP>(otp);
@@ -101,9 +120,12 @@ namespace ECommerce.Application.Services
             return new OTPTokenDTO() { Token = aggregate.OTP.Token! };
         }
 
-        public void UpdateOTP(OTPUpdateDTO dto)
+        public async Task UpdateOTPAsync(OTPUpdateDTO dto)
         {
-            var item = _mapper.Map<OTP>(dto);
+            var otp = await GetOTPByIdAsync(dto.Id)
+                ?? throw new InvalidOperationException("Invalid OTP");
+
+            var item = _mapper.Map<OTP>(otp);
             var aggregate = new OTPAggregate(item, _eventCollector);
             aggregate.UpdateOTP();
         }

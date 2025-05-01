@@ -73,10 +73,12 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpGet("GetSpecificOrderByUser/{id}")]
-        public async Task<IActionResult> GetSpecificOrderByUser(Guid id)
+        [HttpGet("GetUserSpecificOrderById/{id}/{userId}")]
+        public async Task<IActionResult> GetUserSpecificOrderById(Guid id, Guid userId)
         {
-            var data = await _service.GetSpecificOrderByUserAsync(id, _userId, true);
+            await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasFullPermission);
+
+            var data = await _service.GetUserSpecificOrderByIdAsync(id, userId, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
@@ -99,7 +101,9 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Order, eUserPermission.HasCreateOrUpdatePermission);
 
-            _service.UpdateOrder(dto);
+            dto.UserId = _userId;
+
+            await _service.UpdateOrderAsync(dto);
             _controllerHelper.SetResponse(_response, "Order Modified Successfully.");
 
             return StatusCode(200, _response);

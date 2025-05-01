@@ -17,9 +17,10 @@ namespace ECommerce.Application.Services
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IAccessTokenService _accessTokenService;
         private readonly IMD5Service _md5Service;
+        private readonly ITransactionManagerService _transactionManagerService;
         private readonly IMapper _mapper;
 
-        public AuthService(IRepository<User> userRepository, IRepository<RefreshToken> refreshTokenRepository, IUserService userService, IRefreshTokenService refreshTokenService, IAccessTokenService accessTokenService, IMD5Service md5Service, IMapper mapper)
+        public AuthService(IRepository<User> userRepository, IRepository<RefreshToken> refreshTokenRepository, IUserService userService, IRefreshTokenService refreshTokenService, IAccessTokenService accessTokenService, IMD5Service md5Service, ITransactionManagerService transactionManagerService, IMapper mapper)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
@@ -27,6 +28,7 @@ namespace ECommerce.Application.Services
             _refreshTokenService = refreshTokenService;
             _accessTokenService = accessTokenService;
             _md5Service = md5Service;
+            _transactionManagerService = transactionManagerService;
             _mapper = mapper;
         }
 
@@ -70,17 +72,37 @@ namespace ECommerce.Application.Services
 
         public async Task<UserTokenDTO> ReCreateAccessTokenAsync(AccessTokenCreateDTO dto)
         {
-            var refreshToken = await _refreshTokenRepository.GetQuery()
-                .Where(x => x.Token == dto.RefreshToken).FirstOrDefaultAsync();
+            // Begin Transaction
+            await _transactionManagerService.BeginTransactionAsync();
 
-            if (refreshToken?.IsRevoked != false || refreshToken.ExpiredDate <= DateTime.UtcNow)
-                throw new InvalidOperationException("Token Expired.");
+            try
+            {
+                var refreshToken = await _refreshTokenRepository.GetQuery()
+                        .Where(x => x.Token == dto.RefreshToken).FirstOrDefaultAsync();
 
-            var user = await _userService.GetUserByIdAsync(refreshToken.UserId);
+                if (refreshToken?.IsRevoked != false || refreshToken.ExpiredDate <= DateTime.UtcNow)
+                    throw new InvalidOperationException("Token Expired.");
 
-            await _refreshTokenService.RevokeRefreshTokenAsync(new RevokeRefreshTokenDTO { RefreshToken = refreshToken.Token });
+                var user = await _userService.GetUserByIdAsync(refreshToken.UserId, true);
 
-            return await GenerateUserTokenAsync(user);
+                await _refreshTokenService.RevokeRefreshTokenAsync(new RevokeRefreshTokenDTO { RefreshToken = refreshToken.Token });
+
+                var token = await GenerateUserTokenAsync(user);
+
+                // Save
+                await _userRepository.SaveChangesAsync();
+
+                // Commit transaction
+                await _transactionManagerService.CommitTransactionAsync();
+
+                return token;
+            }
+            catch (Exception)
+            {
+                // Rollback transaction on error
+                await _transactionManagerService.RollbackTransactionAsync();
+                throw;
+            }
         }
 
         public async Task<UserTokenDTO> GenerateUserTokenAsync(UserDTO dto)

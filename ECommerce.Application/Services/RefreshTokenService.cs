@@ -48,7 +48,7 @@ namespace ECommerce.Application.Services
             return _mapper.Map<RefreshTokenDTO>(item);
         }
 
-        public async Task<RefreshTokenDTO> GetSpecificRefreshTokenByUserAsync(Guid id, Guid userId)
+        public async Task<RefreshTokenDTO> GetUserSpecificRefreshTokenByIdAsync(Guid id, Guid userId)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.UserId == userId);

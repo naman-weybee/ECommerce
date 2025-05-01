@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.State
 {
-    public class StateCreateDTOValidator : AbstractValidator<StateUpsertDTO>
+    public class StateUpsertDTOValidator : AbstractValidator<StateUpsertDTO>
     {
-        public StateCreateDTOValidator()
+        public StateUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("State name is required.")

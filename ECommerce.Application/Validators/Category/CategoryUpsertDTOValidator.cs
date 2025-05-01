@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Category
 {
-    public class CategoryCreateDTOValidator : AbstractValidator<CategoryUpsertDTO>
+    public class CategoryUpsertDTOValidator : AbstractValidator<CategoryUpsertDTO>
     {
-        public CategoryCreateDTOValidator()
+        public CategoryUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Category name is required.")

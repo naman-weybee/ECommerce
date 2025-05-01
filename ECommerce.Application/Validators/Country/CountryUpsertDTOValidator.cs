@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ECommerce.Application.Validators.Country
 {
-    public class CountryCreateDTOValidator : AbstractValidator<CountryUpsertDTO>
+    public class CountryUpsertDTOValidator : AbstractValidator<CountryUpsertDTO>
     {
-        public CountryCreateDTOValidator()
+        public CountryUpsertDTOValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Country name is required.")
