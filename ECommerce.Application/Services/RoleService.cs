@@ -27,32 +27,18 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<RoleDTO>> GetAllRolesAsync(RequestParams? requestParams = null)
+        public async Task<List<RoleDTO>> GetAllRolesAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var items = await _serviceHelper.GetAllAsync(requestParams);
+            var query = useQuery
+                ? _repository.GetQuery().Include(x => x.RolePermissions).ThenInclude(x => x.RoleEntity)
+                : null!;
+
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<RoleDTO>>(items);
         }
 
-        public async Task<RoleDTO> GetRoleByUserIdAsync(Guid userId)
-        {
-            var user = await _userRepository.GetQuery()
-                    .FirstOrDefaultAsync(x => x.Id == userId)
-                    ?? throw new InvalidOperationException($"User with Id = {userId} is not Exist.");
-
-            var items = await _serviceHelper.GetByIdAsync(user.RoleId);
-
-            return _mapper.Map<RoleDTO>(items);
-        }
-
-        public async Task<RoleDTO> GetRoleByIdAsync(Guid id)
-        {
-            var item = await _serviceHelper.GetByIdAsync(id);
-
-            return _mapper.Map<RoleDTO>(item);
-        }
-
-        public async Task<RoleDTO> GetSpecificRoleByUserAsync(Guid id, Guid userId)
+        public async Task<RoleDTO> GetRoleByUserIdAsync(Guid userId, bool useQuery = false)
         {
             var user = await _userRepository.GetQuery()
                     .FirstOrDefaultAsync(x => x.Id == userId)
@@ -60,6 +46,20 @@ namespace ECommerce.Application.Services
 
             var query = _repository.GetQuery()
                 .Where(x => x.Id == user.RoleId);
+
+            if (useQuery)
+                query = query.Include(x => x.RolePermissions).ThenInclude(x => x.RoleEntity);
+
+            var items = await _serviceHelper.GetByQueryAsync(query);
+
+            return _mapper.Map<RoleDTO>(items);
+        }
+
+        public async Task<RoleDTO> GetRoleByIdAsync(Guid id, bool useQuery = false)
+        {
+            var query = useQuery
+                ? _repository.GetQuery().Include(x => x.RolePermissions).ThenInclude(x => x.RoleEntity)
+                : null!;
 
             var item = await _serviceHelper.GetByIdAsync(id, query);
 

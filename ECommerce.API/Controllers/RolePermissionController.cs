@@ -24,7 +24,7 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.RolePermission, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllRolePermissionsAsync(requestParams);
+            var data = await _service.GetAllRolePermissionsAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -35,18 +35,18 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.RolePermission, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetAllRolePermissionsByRoleAsync(roleId, requestParams);
+            var data = await _service.GetAllRolePermissionsByRoleAsync(roleId, requestParams, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
         }
 
         [HttpGet("GetRolePermissionByIds")]
-        public async Task<IActionResult> GetRolePermissionByIds(RolePermissionIDsDTO dto)
+        public async Task<IActionResult> GetRolePermissionByIds([FromBody] RolePermissionIDsDTO dto)
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.RolePermission, eUserPermission.HasFullPermission);
 
-            var data = await _service.GetRolePermissionByIdsAsync(dto.RoleId, dto.RoleEntityId);
+            var data = await _service.GetRolePermissionByIdsAsync(dto.RoleId, dto.RoleEntityId, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

@@ -24,7 +24,7 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
-            var data = await _service.GetAllRolesAsync(requestParams);
+            var data = await _service.GetAllRolesAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -35,7 +35,7 @@ namespace ECommerce.API.Controllers
         {
             await _httpHelper.ValidateUserAuthorization(eRoleEntity.Role, eUserPermission.HasViewPermission);
 
-            var data = await _service.GetRoleByIdAsync(id);
+            var data = await _service.GetRoleByIdAsync(id, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

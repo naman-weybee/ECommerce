@@ -26,17 +26,24 @@ namespace ECommerce.Application.Services
             _eventCollector = eventCollector;
         }
 
-        public async Task<List<RolePermissionDTO>> GetAllRolePermissionsAsync(RequestParams? requestParams = null)
+        public async Task<List<RolePermissionDTO>> GetAllRolePermissionsAsync(RequestParams? requestParams = null, bool useQuery = false)
         {
-            var items = await _serviceHelper.GetAllAsync(requestParams);
+            var query = useQuery
+                ? _repository.GetQuery().Include(x => x.RoleEntity)
+                : null!;
+
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<RolePermissionDTO>>(items);
         }
 
-        public async Task<List<RolePermissionDTO>> GetAllRolePermissionsByRoleAsync(Guid roleId, RequestParams? requestParams = null, bool isSortByPermission = false)
+        public async Task<List<RolePermissionDTO>> GetAllRolePermissionsByRoleAsync(Guid roleId, RequestParams? requestParams = null, bool useQuery = false, bool isSortByPermission = false)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.RoleId == roleId);
+
+            if (useQuery)
+                query = query.Include(x => x.RoleEntity);
 
             if (isSortByPermission)
                 query = query.OrderByDescending(x => x.HasFullPermission).ThenBy(x => x.RoleEntityId);
@@ -46,10 +53,13 @@ namespace ECommerce.Application.Services
             return _mapper.Map<List<RolePermissionDTO>>(items);
         }
 
-        public async Task<RolePermissionDTO> GetRolePermissionByIdsAsync(Guid roleId, eRoleEntity roleEntityId)
+        public async Task<RolePermissionDTO> GetRolePermissionByIdsAsync(Guid roleId, eRoleEntity roleEntityId, bool useQuery = false)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.RoleId == roleId && x.RoleEntityId == roleEntityId);
+
+            if (useQuery)
+                query = query.Include(x => x.RoleEntity);
 
             var item = await _serviceHelper.GetByQueryAsync(query);
 

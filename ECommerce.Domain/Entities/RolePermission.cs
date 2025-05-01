@@ -16,8 +16,6 @@ namespace ECommerce.Domain.Entities
 
         public bool HasFullPermission { get; set; }
 
-        public virtual Role Role { get; set; }
-
         public virtual RoleEntity RoleEntity { get; set; }
 
         public void CreateRolePermission(Guid roleId, eRoleEntity roleEntityId, bool hasViewPermission, bool hasCreateOrUpdatePermission, bool hasDeletePermission, bool hasFullPermission)

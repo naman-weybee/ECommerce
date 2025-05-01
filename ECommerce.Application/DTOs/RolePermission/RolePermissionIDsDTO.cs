@@ -7,5 +7,7 @@ namespace ECommerce.Application.DTOs.RolePermission
         public Guid RoleId { get; set; }
 
         public eRoleEntity RoleEntityId { get; set; }
+
+        public virtual RoleEntityDTO RoleEntity { get; set; }
     }
 }

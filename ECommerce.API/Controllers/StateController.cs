@@ -22,7 +22,7 @@ namespace ECommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllStates([FromQuery] RequestParams requestParams)
         {
-            var data = await _service.GetAllStatesAsync(requestParams);
+            var data = await _service.GetAllStatesAsync(requestParams, true);
             _controllerHelper.SetResponse(_response, data, requestParams);
 
             return StatusCode(200, _response);
@@ -31,7 +31,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("GetAllStatesByCountryId/{countryId}")]
         public async Task<IActionResult> GetAllStatesByCountryId(Guid countryId)
         {
-            var data = await _service.GetAllStatesByCountryIdAsync(countryId);
+            var data = await _service.GetAllStatesByCountryIdAsync(countryId, useQuery: true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);
@@ -40,7 +40,7 @@ namespace ECommerce.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStateById(Guid id)
         {
-            var data = await _service.GetStateByIdAsync(id);
+            var data = await _service.GetStateByIdAsync(id, true);
             _controllerHelper.SetResponse(_response, data);
 
             return StatusCode(200, _response);

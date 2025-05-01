@@ -7,9 +7,9 @@ namespace ECommerce.Application.Interfaces
     {
         Task<List<StateDTO>> GetAllStatesAsync(RequestParams? requestParams = null, bool useQuery = false);
 
-        Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null);
+        Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null, bool useQuery = false);
 
-        Task<StateDTO> GetStateByIdAsync(Guid id);
+        Task<StateDTO> GetStateByIdAsync(Guid id, bool useQuery = false);
 
         Task UpsertStateAsync(StateUpsertDTO dto);
 

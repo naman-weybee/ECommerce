@@ -31,24 +31,31 @@ namespace ECommerce.Application.Services
                 ? _repository.GetQuery().Include(c => c.Cities)!
                 : null!;
 
-            var items = await _serviceHelper.GetAllAsync(requestParams);
+            var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<StateDTO>>(items);
         }
 
-        public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null)
+        public async Task<List<StateDTO>> GetAllStatesByCountryIdAsync(Guid countryId, RequestParams? requestParams = null, bool useQuery = false)
         {
             var query = _repository.GetQuery()
                 .Where(x => x.CountryId == countryId);
+
+            if (useQuery)
+                query = query.Include(x => x.Cities);
 
             var items = await _serviceHelper.GetAllAsync(requestParams, query);
 
             return _mapper.Map<List<StateDTO>>(items);
         }
 
-        public async Task<StateDTO> GetStateByIdAsync(Guid id)
+        public async Task<StateDTO> GetStateByIdAsync(Guid id, bool useQuery = false)
         {
-            var item = await _serviceHelper.GetByIdAsync(id);
+            var query = useQuery
+                ? _repository.GetQuery().Include(c => c.Cities)!
+                : null!;
+
+            var item = await _serviceHelper.GetByIdAsync(id, query);
 
             return _mapper.Map<StateDTO>(item);
         }

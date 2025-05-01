@@ -10,18 +10,6 @@ namespace ECommerce.Infrastructure.Data.Configurations
         {
             builder
             .HasKey(rp => new { rp.RoleId, rp.RoleEntityId });
-
-            builder
-            .HasOne(rp => rp.Role)
-            .WithMany()
-            .HasForeignKey(rp => rp.RoleId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-            builder
-            .HasOne(rp => rp.RoleEntity)
-            .WithMany()
-            .HasForeignKey(rp => rp.RoleEntityId)
-            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

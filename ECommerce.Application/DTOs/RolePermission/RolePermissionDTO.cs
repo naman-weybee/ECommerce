@@ -15,5 +15,7 @@ namespace ECommerce.Application.DTOs.RolePermission
         public bool HasDeletePermission { get; set; }
 
         public bool HasFullPermission { get; set; }
+
+        public virtual RoleEntityDTO RoleEntity { get; set; }
     }
 }
