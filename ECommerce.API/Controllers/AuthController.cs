@@ -66,7 +66,7 @@ namespace ECommerce.API.Controllers
             return StatusCode(200, _response);
         }
 
-        [HttpPut("VerifyEmail")]
+        [HttpPut("VerifyEmail/{token}")]
         public async Task<IActionResult> VerifyEmail(string token)
         {
             await _service.VerifyEmailAsync(token);

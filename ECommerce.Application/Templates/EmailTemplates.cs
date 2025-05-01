@@ -34,7 +34,7 @@ namespace ECommerce.Application.Templates
             // Get User
             var user = await GetUserByIdAsync(userId);
 
-            var verificationLink = $"https://{Constants.GetMyIpv4()}/api/v1/Auth/verifyemail?token={Uri.EscapeDataString(user.EmailVerificationToken!)}";
+            var verificationLink = $"https://{Constants.GetMyIpv4()}/api/v1/Auth/verifyemail/{Uri.EscapeDataString(user.EmailVerificationToken!)}";
 
             var dto = new EmailSendDTO()
             {
