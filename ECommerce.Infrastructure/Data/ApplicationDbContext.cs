@@ -99,7 +99,7 @@ namespace ECommerce.Infrastructure.Data
 
             base.OnModelCreating(modelBuilder);
 
-            SeedManager.SeedAll(modelBuilder);
+            SeederManager.Seed();
         }
     }
 }

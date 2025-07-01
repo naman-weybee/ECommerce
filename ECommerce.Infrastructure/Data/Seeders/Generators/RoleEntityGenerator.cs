@@ -1,15 +1,14 @@
-﻿using ECommerce.Domain.Entities;
-using ECommerce.Domain.Enums;
-using ECommerce.Infrastructure.Data.Seeders.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using ECommerce.Domain.Enums;
+using ECommerce.Infrastructure.Data.Seeders.SeederEntities;
 
-namespace ECommerce.Infrastructure.Data.Seeders
+namespace ECommerce.Infrastructure.Data.Seeders.Generators
 {
-    public class RoleEntitySeeder : IEntitySeeder
+    public static class RoleEntityGenerator
     {
-        public void Seed(ModelBuilder modelBuilder)
+        public static List<RoleEntity> Generate()
         {
-            modelBuilder.Entity<RoleEntity>().HasData(
+            return
+            [
                 new() { Id = eRoleEntity.Unknown, Name = "Unknown" },
                 new() { Id = eRoleEntity.Full, Name = "Full" },
                 new() { Id = eRoleEntity.Country, Name = "Country" },
@@ -19,7 +18,7 @@ namespace ECommerce.Infrastructure.Data.Seeders
                 new() { Id = eRoleEntity.RolePermission, Name = "RolePermission" },
                 new() { Id = eRoleEntity.RoleEntity, Name = "RoleEntity" },
                 new() { Id = eRoleEntity.Gender, Name = "Gender" },
-                new() { Id = eRoleEntity.Address, Name = "Address" },
+                new() { Id = eRoleEntity.Address, Name = "Addresses" },
                 new() { Id = eRoleEntity.Category, Name = "Category" },
                 new() { Id = eRoleEntity.Product, Name = "Product" },
                 new() { Id = eRoleEntity.User, Name = "User" },
@@ -29,7 +28,7 @@ namespace ECommerce.Infrastructure.Data.Seeders
                 new() { Id = eRoleEntity.OrderItem, Name = "OrderItem" },
                 new() { Id = eRoleEntity.RefreshToken, Name = "RefreshToken" },
                 new() { Id = eRoleEntity.OTP, Name = "OTP" }
-            );
+            ];
         }
     }
 }
