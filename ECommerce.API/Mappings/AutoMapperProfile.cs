@@ -55,7 +55,7 @@ namespace ECommerce.API.Mappings
 
             ConfigureMappings<RoleEntity, RoleEntityDTO>();
             ConfigureMappings<RoleEntityAggregate, RolePermissionDTO>();
-            
+
             ConfigureMappings<RolePermission, RolePermissionDTO, RolePermissionUpsertDTO>();
             ConfigureMappings<RolePermissionAggregate, RolePermissionDTO, RolePermissionUpsertDTO>();
 
@@ -79,7 +79,7 @@ namespace ECommerce.API.Mappings
         {
             CreateMap<TSource, TDTO>().ReverseMap();
         }
-        
+
         private void ConfigureMappings<TSource, TDTO, TUpsertDTO>()
         {
             CreateMap<TSource, TDTO>().ReverseMap();
