@@ -6,10 +6,9 @@ namespace ECommerce.Infrastructure.Data.Seeders
 {
     public static class SeederManager
     {
-        public static void Seed()
+        public static void Seed(ApplicationDbContext context)
         {
-            var hasDataAlready = DbContextBulkExtensions.TableHasData("Roles");
-            if (!hasDataAlready)
+            if (context.Roles.Any())
             {
                 Console.WriteLine("Database already seeded.");
                 return;

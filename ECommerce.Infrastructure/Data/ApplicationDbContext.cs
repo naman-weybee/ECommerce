@@ -98,8 +98,6 @@ namespace ECommerce.Infrastructure.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
-
-            SeederManager.Seed();
         }
     }
 }

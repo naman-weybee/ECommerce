@@ -14,115 +14,84 @@ namespace ECommerce.Infrastructure.Data.Seeders.Generators
 
         public static List<OrderItem> Generate(int orderItemCount, List<Guid> orders, List<Addresses> addresses, List<CartItems> cartItems, List<Products> products)
         {
-            var orderItems = new List<OrderItem>();
-            var ordersToStore = new List<Order>();
-            var cartItemsToRemove = new List<CartItems>();
-            var actualCartItems = new List<CartItems>();
-            var orderItemPairs = new HashSet<(Guid OrderId, Guid CartItemId)>();
-            var activeOrders = orders?.Where(o => o != Guid.Empty)?.ToList()!;
+            var orderItems = new HashSet<OrderItem>();
+            var ordersToStore = new HashSet<Order>();
+            var actualCartItems = new HashSet<CartItems>();
+            var orderUserPairs = new HashSet<(Guid OrderId, Guid UserId)>();
+
             var activeCartItems = cartItems?.Where(ci => !ci.IsDeleted)?.ToList()!;
             var billingAddresses = addresses?.Where(a => !a.IsDeleted && a.AdderessType == eAddressType.Billing)?.ToList()!;
             var shippingAddresses = addresses?.Where(a => !a.IsDeleted && a.AdderessType == eAddressType.Shipping)?.ToList()!;
 
-            if (orderItemCount > activeOrders.Count * activeCartItems.Count)
+            if (orderItemCount > orders.Count * activeCartItems.Count)
             {
-                Console.WriteLine($"Cannot generate {orderItemCount} unique OrderItems — max possible is {activeOrders.Count * activeCartItems.Count}.");
-                orderItemCount = activeOrders.Count * activeCartItems.Count;
+                Console.WriteLine($"Cannot generate {orderItemCount} unique OrderItems — max possible is {orders.Count * activeCartItems.Count}.");
+                orderItemCount = orders.Count * activeCartItems.Count;
             }
 
-            for (int i = 0; i < orderItemCount; i++)
+            foreach (var orderId in orders!)
             {
-                var orderId = activeOrders[random.Next(activeOrders.Count)];
-                var cartItem = activeCartItems[random.Next(activeCartItems.Count)];
+                var cartUserId = activeCartItems[random.Next(activeCartItems.Count)].UserId;
+                orderUserPairs.Add((orderId, cartUserId));
+            }
 
-                if (orderItemPairs.Contains((orderId, cartItem.Id)))
+            foreach (var orderUser in orderUserPairs)
+            {
+                var orderId = orderUser.OrderId;
+                var userId = orderUser.UserId;
+
+                var userCartItems = activeCartItems.Where(ci => ci.UserId == userId).ToList();
+                foreach (var userCart in userCartItems)
                 {
-                    i--;
-                    continue;
-                }
-
-                orderItemPairs.Add((orderId, cartItem.Id));
-
-                if (!ordersToStore.Any(o => o.Id == orderId))
-                {
-                    var status = Faker.PickRandom<eOrderStatus>();
-                    var orderToStore = new Order
+                    var orderItem = new OrderItem
                     {
-                        Id = orderId,
-                        UserId = cartItem.UserId,
-                        TotalAmount = cartItem.UnitPrice * cartItem.Quantity,
-                        OrderStatus = status,
-                        OrderPlacedDate = status == eOrderStatus.Placed ? DateTime.UtcNow : null,
-                        OrderShippedDate = status == eOrderStatus.Shipped ? DateTime.UtcNow : null,
-                        OrderDeliveredDate = status == eOrderStatus.Delivered ? DateTime.UtcNow : null,
-                        OrderCanceledDate = status == eOrderStatus.Canceled ? DateTime.UtcNow : null,
-                        BillingAddressId = Faker.PickRandom(billingAddresses).Id,
-                        ShippingAddressId = Faker.PickRandom(shippingAddresses).Id,
-                        PaymentMethod = Faker.PickRandom(paymentMethods)
+                        Id = Guid.NewGuid(),
+                        OrderId = orderId,
+                        ProductId = userCart.ProductId,
+                        Quantity = userCart.Quantity,
+                        UnitPrice = userCart.UnitPrice
                     };
 
-                    ordersToStore.Add(orderToStore);
+                    userCart.IsDeleted = true;
+                    userCart.DeletedDate = DateTime.UtcNow;
+                    actualCartItems.Add(userCart);
+                    orderItems.Add(orderItem);
                 }
 
-                var product = products.First(p => p.Id == cartItem.ProductId);
-                if (product.Stock < cartItem.Quantity)
+                var status = Faker.PickRandom<eOrderStatus>();
+                var orderToStore = new Order
                 {
-                    Console.WriteLine($"Insufficient stock for Product: {product.Name}.");
-                    continue;
-                }
-
-                product.Stock -= cartItem.Quantity;
-
-                if (!cartItemsToRemove.Contains(cartItem))
-                {
-                    cartItem.DeletedDate = DateTime.UtcNow;
-                    cartItem.IsDeleted = true;
-                    cartItemsToRemove.Add(cartItem);
-                }
-
-                var orderItem = new OrderItem
-                {
-                    Id = Guid.NewGuid(),
-                    OrderId = orderId,
-                    ProductId = cartItem.ProductId,
-                    Quantity = cartItem.Quantity,
-                    UnitPrice = cartItem.UnitPrice
+                    Id = orderId,
+                    UserId = userId,
+                    TotalAmount = orderItems.Where(x => x.OrderId == orderId).Sum(x => x.UnitPrice * x.Quantity),
+                    OrderStatus = status,
+                    OrderPlacedDate = status == eOrderStatus.Placed ? DateTime.UtcNow : null,
+                    OrderShippedDate = status == eOrderStatus.Shipped ? DateTime.UtcNow : null,
+                    OrderDeliveredDate = status == eOrderStatus.Delivered ? DateTime.UtcNow : null,
+                    OrderCanceledDate = status == eOrderStatus.Canceled ? DateTime.UtcNow : null,
+                    BillingAddressId = Faker.PickRandom(billingAddresses).Id,
+                    ShippingAddressId = Faker.PickRandom(shippingAddresses).Id,
+                    PaymentMethod = Faker.PickRandom(paymentMethods)
                 };
 
-                if (orderItems.Any(x =>
-                        x.OrderId == orderItem.OrderId &&
-                        x.ProductId == orderItem.ProductId))
-                {
-                    i--;
-                    continue;
-                }
-
-                orderItems.Add(orderItem);
+                ordersToStore.Add(orderToStore);
             }
 
-            var orderTable = SeederHelper.ToDataTable(ordersToStore);
+            foreach (var cartItem in activeCartItems)
+            {
+                if (actualCartItems.Any(x => x.Id == cartItem.Id))
+                    continue;
+
+                actualCartItems.Add(cartItem);
+            }
+
+            var orderTable = SeederHelper.ToDataTable(ordersToStore?.ToList()!);
             DbContextBulkExtensions.BulkInsert(orderTable, "Orders");
 
-            foreach (var cartItemsoRemove in cartItemsToRemove)
-            {
-                if (actualCartItems.Any(x => x.Id == cartItemsoRemove.Id))
-                    continue;
-
-                actualCartItems.Add(cartItemsoRemove);
-            }
-
-            foreach (var activeCartItem in activeCartItems)
-            {
-                if (actualCartItems.Any(x => x.Id == activeCartItem.Id))
-                    continue;
-
-                actualCartItems.Add(activeCartItem);
-            }
-
-            var cartItemTable = SeederHelper.ToDataTable(actualCartItems);
+            var cartItemTable = SeederHelper.ToDataTable(actualCartItems?.ToList()!);
             DbContextBulkExtensions.BulkInsert(cartItemTable, "CartItems");
 
-            return orderItems;
+            return orderItems?.ToList()!;
         }
     }
 }

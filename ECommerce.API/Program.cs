@@ -1,5 +1,8 @@
 using ECommerce.API.Extensions;
 using ECommerce.API.Middlewares;
+using ECommerce.Infrastructure.Data;
+using ECommerce.Infrastructure.Data.Seeders;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.API
 {
@@ -21,6 +24,13 @@ namespace ECommerce.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
+                SeederManager.Seed(dbContext);
+            }
 
             if (app.Environment.IsDevelopment())
             {

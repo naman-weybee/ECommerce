@@ -24,7 +24,7 @@ namespace ECommerce.Infrastructure.Data.Seeders.Generators
                     Description = Faker.Commerce.ProductDescription(),
                     Price = Faker.Random.Double(10, 5000),
                     Currency = "USD",
-                    Stock = Faker.Random.Int(0, 1000),
+                    Stock = Faker.PickRandom(10, 1000),
                     SKU = Faker.Random.AlphaNumeric(8).ToUpper(),
                     Brand = Faker.Company.CompanyName()
                 });
