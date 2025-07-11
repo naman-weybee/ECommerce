@@ -59,20 +59,53 @@ namespace ECommerce.Infrastructure.Data.Seeders.Generators
                 }
 
                 var status = Faker.PickRandom<eOrderStatus>();
+
+                var now = DateTime.UtcNow;
+                DateTime? placedDate = null;
+                DateTime? shippedDate = null;
+                DateTime? deliveredDate = null;
+                DateTime? canceledDate = null;
+
+                switch (status)
+                {
+                    case eOrderStatus.Placed:
+                        placedDate = now;
+                        break;
+
+                    case eOrderStatus.Shipped:
+                        placedDate = now.AddDays(-2);
+                        shippedDate = now;
+                        break;
+
+                    case eOrderStatus.Delivered:
+                        placedDate = now.AddDays(-5);
+                        shippedDate = now.AddDays(-3);
+                        deliveredDate = now;
+                        break;
+
+                    case eOrderStatus.Canceled:
+                        placedDate = now.AddDays(-1);
+                        canceledDate = now;
+                        break;
+                }
+
                 var orderToStore = new Order
                 {
                     Id = orderId,
                     UserId = userId,
-                    TotalAmount = orderItems.Where(x => x.OrderId == orderId).Sum(x => x.UnitPrice * x.Quantity),
+                    TotalAmount = orderItems
+                        .Where(x => x.OrderId == orderId)
+                        .Sum(x => x.UnitPrice * x.Quantity),
                     OrderStatus = status,
-                    OrderPlacedDate = status == eOrderStatus.Placed ? DateTime.UtcNow : null,
-                    OrderShippedDate = status == eOrderStatus.Shipped ? DateTime.UtcNow : null,
-                    OrderDeliveredDate = status == eOrderStatus.Delivered ? DateTime.UtcNow : null,
-                    OrderCanceledDate = status == eOrderStatus.Canceled ? DateTime.UtcNow : null,
+                    OrderPlacedDate = placedDate,
+                    OrderShippedDate = shippedDate,
+                    OrderDeliveredDate = deliveredDate,
+                    OrderCanceledDate = canceledDate,
                     BillingAddressId = Faker.PickRandom(billingAddresses).Id,
                     ShippingAddressId = Faker.PickRandom(shippingAddresses).Id,
                     PaymentMethod = Faker.PickRandom(paymentMethods)
                 };
+
 
                 ordersToStore.Add(orderToStore);
             }
